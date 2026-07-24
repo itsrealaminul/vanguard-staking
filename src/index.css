@@ -1,0 +1,394 @@
+:root {
+  --bg-primary: #0a0a1a;
+  --bg-card: #12122a;
+  --bg-card-hover: #1a1a3a;
+  --accent: #6c5ce7;
+  --accent-light: #a29bfe;
+  --success: #00b894;
+  --warning: #fdcb6e;
+  --danger: #e17055;
+  --text-primary: #ffffff;
+  --text-secondary: #a0a0c0;
+  --border: #2a2a4a;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.app {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 16px;
+  padding-bottom: 80px;
+}
+
+/* Header */
+.header {
+  text-align: center;
+  padding: 20px 0;
+  margin-bottom: 16px;
+}
+.header h1 {
+  font-size: 24px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-light));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 4px;
+}
+.header .subtitle {
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+/* Balance Card */
+.balance-card {
+  background: linear-gradient(135deg, #1a1a3a, #2a1a4a);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 16px;
+  border: 1px solid var(--border);
+}
+.balance-card .label {
+  color: var(--text-secondary);
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+.balance-card .amount {
+  font-size: 36px;
+  font-weight: 700;
+}
+.balance-card .amount span {
+  font-size: 16px;
+  color: var(--text-secondary);
+  margin-left: 4px;
+}
+.balance-card .stats {
+  display: flex;
+  gap: 16px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+.balance-card .stat {
+  flex: 1;
+}
+.balance-card .stat .stat-label {
+  font-size: 11px;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+}
+.balance-card .stat .stat-value {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--success);
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.tabs::-webkit-scrollbar { display: none; }
+.tab {
+  padding: 8px 16px;
+  border-radius: 20px;
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  white-space: nowrap;
+  font-size: 13px;
+  transition: all 0.2s;
+}
+.tab.active {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+}
+
+/* Cards */
+.card {
+  background: var(--bg-card);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 12px;
+  border: 1px solid var(--border);
+}
+.card h3 {
+  font-size: 15px;
+  margin-bottom: 8px;
+}
+.card p {
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* Stake Plan */
+.plan-card {
+  background: var(--bg-card);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 12px;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.plan-card:hover {
+  border-color: var(--accent);
+  background: var(--bg-card-hover);
+}
+.plan-card .plan-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.plan-card .plan-name {
+  font-size: 16px;
+  font-weight: 600;
+}
+.plan-card .plan-rate {
+  color: var(--success);
+  font-weight: 600;
+}
+.plan-card .plan-details {
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+/* Buttons */
+.btn {
+  padding: 12px 24px;
+  border-radius: 10px;
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  transition: all 0.2s;
+}
+.btn-primary {
+  background: linear-gradient(135deg, var(--accent), var(--accent-light));
+  color: white;
+}
+.btn-primary:hover { opacity: 0.9; }
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.btn-secondary {
+  background: var(--bg-card);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+}
+.btn-success {
+  background: var(--success);
+  color: white;
+}
+
+/* Input */
+.input-group {
+  margin-bottom: 12px;
+}
+.input-group label {
+  display: block;
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+}
+.input-group input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-size: 14px;
+  outline: none;
+}
+.input-group input:focus {
+  border-color: var(--accent);
+}
+
+/* Active Stakes */
+.stake-item {
+  background: var(--bg-card);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 12px;
+  border: 1px solid var(--border);
+}
+.stake-item .stake-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.stake-item .stake-amount {
+  font-size: 18px;
+  font-weight: 600;
+}
+.stake-item .stake-status {
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  text-transform: uppercase;
+}
+.stake-item .stake-status.active {
+  background: rgba(0, 184, 148, 0.2);
+  color: var(--success);
+}
+.stake-item .stake-info {
+  color: var(--text-secondary);
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+.stake-item .stake-reward {
+  color: var(--success);
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+
+/* Transaction */
+.tx-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+.tx-item:last-child { border-bottom: none; }
+.tx-item .tx-info .tx-type {
+  font-size: 14px;
+  font-weight: 500;
+}
+.tx-item .tx-info .tx-date {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+.tx-item .tx-amount {
+  font-weight: 600;
+}
+.tx-item .tx-amount.positive { color: var(--success); }
+.tx-item .tx-amount.negative { color: var(--danger); }
+
+/* Bottom Nav */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--bg-card);
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-around;
+  padding: 8px 0;
+  padding-bottom: max(8px, env(safe-area-inset-bottom));
+}
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 11px;
+  transition: color 0.2s;
+  background: none;
+  border: none;
+  padding: 4px 12px;
+}
+.nav-item.active { color: var(--accent); }
+.nav-item .nav-icon { font-size: 20px; }
+
+/* Loading */
+.loading {
+  text-align: center;
+  padding: 40px;
+  color: var(--text-secondary);
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text-secondary);
+}
+.empty-state .emoji { font-size: 48px; margin-bottom: 12px; }
+
+/* Referral */
+.referral-card {
+  background: linear-gradient(135deg, #1a2a3a, #1a1a4a);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 12px;
+  border: 1px solid var(--border);
+}
+.referral-card .referral-link {
+  background: var(--bg-primary);
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 12px;
+  color: var(--accent-light);
+  word-break: break-all;
+  margin: 8px 0;
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 20px;
+}
+.modal {
+  background: var(--bg-card);
+  border-radius: 16px;
+  padding: 24px;
+  width: 100%;
+  max-width: 400px;
+  border: 1px solid var(--border);
+}
+.modal h2 {
+  margin-bottom: 16px;
+  font-size: 18px;
+}
+
+/* Withdrawal */
+.withdrawal-item {
+  background: var(--bg-card);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 12px;
+  border: 1px solid var(--border);
+}
+.withdrawal-item .wd-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+.withdrawal-item .wd-status {
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  text-transform: uppercase;
+}
+.withdrawal-item .wd-status.pending { background: rgba(253, 203, 110, 0.2); color: var(--warning); }
+.withdrawal-item .wd-status.approved { background: rgba(0, 184, 148, 0.2); color: var(--success); }
+.withdrawal-item .wd-status.rejected { background: rgba(225, 112, 85, 0.2); color: var(--danger); }
