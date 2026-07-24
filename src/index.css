@@ -1,15 +1,16 @@
 :root {
-  --bg-primary: #0a0a1a;
-  --bg-card: #12122a;
-  --bg-card-hover: #1a1a3a;
-  --accent: #6c5ce7;
-  --accent-light: #a29bfe;
+  --bg-primary: #0B1023;
+  --bg-card: #151E30;
+  --bg-card-hover: #1C2840;
+  --accent: #FFD54F;
+  --accent-dark: #C48D0A;
+  --accent-light: #FFECB3;
   --success: #00b894;
-  --warning: #fdcb6e;
+  --warning: #F0D040;
   --danger: #e17055;
   --text-primary: #ffffff;
-  --text-secondary: #a0a0c0;
-  --border: #2a2a4a;
+  --text-secondary: #7A8CA5;
+  --border: #1E2D45;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -37,57 +38,77 @@ body {
 }
 .header h1 {
   font-size: 24px;
-  background: linear-gradient(135deg, var(--accent), var(--accent-light));
+  background: linear-gradient(135deg, #C48D0A, #FFD54F, #FFECB3);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   margin-bottom: 4px;
+  font-weight: 800;
+  letter-spacing: 2px;
 }
 .header .subtitle {
-  color: var(--text-secondary);
+  color: #7A8CA5;
   font-size: 13px;
+  letter-spacing: 3px;
 }
 
 /* Balance Card */
 .balance-card {
-  background: linear-gradient(135deg, #1a1a3a, #2a1a4a);
+  background: linear-gradient(135deg, #151E30, #1A2540);
   border-radius: 16px;
   padding: 24px;
   margin-bottom: 16px;
-  border: 1px solid var(--border);
+  border: 1px solid #1E2D45;
+  position: relative;
+  overflow: hidden;
+}
+.balance-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -30%;
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, rgba(255,213,79,0.08) 0%, transparent 70%);
+  border-radius: 50%;
 }
 .balance-card .label {
-  color: var(--text-secondary);
+  color: #7A8CA5;
   font-size: 13px;
   margin-bottom: 4px;
 }
 .balance-card .amount {
   font-size: 36px;
   font-weight: 700;
+  background: linear-gradient(135deg, #FFD54F, #FFECB3);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 .balance-card .amount span {
   font-size: 16px;
-  color: var(--text-secondary);
+  color: #7A8CA5;
   margin-left: 4px;
+  -webkit-text-fill-color: #7A8CA5;
 }
 .balance-card .stats {
   display: flex;
   gap: 16px;
   margin-top: 16px;
   padding-top: 16px;
-  border-top: 1px solid var(--border);
+  border-top: 1px solid #1E2D45;
 }
 .balance-card .stat {
   flex: 1;
 }
 .balance-card .stat .stat-label {
   font-size: 11px;
-  color: var(--text-secondary);
+  color: #7A8CA5;
   text-transform: uppercase;
+  letter-spacing: 1px;
 }
 .balance-card .stat .stat-value {
   font-size: 18px;
   font-weight: 600;
-  color: var(--success);
+  color: #FFD54F;
 }
 
 /* Tabs */
@@ -102,51 +123,53 @@ body {
 .tab {
   padding: 8px 16px;
   border-radius: 20px;
-  background: var(--bg-card);
-  color: var(--text-secondary);
-  border: 1px solid var(--border);
+  background: #151E30;
+  color: #7A8CA5;
+  border: 1px solid #1E2D45;
   cursor: pointer;
   white-space: nowrap;
   font-size: 13px;
   transition: all 0.2s;
 }
 .tab.active {
-  background: var(--accent);
-  color: white;
-  border-color: var(--accent);
+  background: linear-gradient(135deg, #C48D0A, #FFD54F);
+  color: #0B1023;
+  border-color: #FFD54F;
+  font-weight: 600;
 }
 
 /* Cards */
 .card {
-  background: var(--bg-card);
+  background: #151E30;
   border-radius: 12px;
   padding: 16px;
   margin-bottom: 12px;
-  border: 1px solid var(--border);
+  border: 1px solid #1E2D45;
 }
 .card h3 {
   font-size: 15px;
   margin-bottom: 8px;
+  color: #FFD54F;
 }
 .card p {
-  color: var(--text-secondary);
+  color: #7A8CA5;
   font-size: 13px;
   line-height: 1.5;
 }
 
 /* Stake Plan */
 .plan-card {
-  background: var(--bg-card);
+  background: #151E30;
   border-radius: 12px;
   padding: 16px;
   margin-bottom: 12px;
-  border: 1px solid var(--border);
+  border: 1px solid #1E2D45;
   cursor: pointer;
   transition: all 0.2s;
 }
 .plan-card:hover {
-  border-color: var(--accent);
-  background: var(--bg-card-hover);
+  border-color: #FFD54F;
+  background: #1C2840;
 }
 .plan-card .plan-header {
   display: flex;
@@ -157,13 +180,14 @@ body {
 .plan-card .plan-name {
   font-size: 16px;
   font-weight: 600;
+  color: #FFD54F;
 }
 .plan-card .plan-rate {
-  color: var(--success);
+  color: #00b894;
   font-weight: 600;
 }
 .plan-card .plan-details {
-  color: var(--text-secondary);
+  color: #7A8CA5;
   font-size: 13px;
 }
 
@@ -179,8 +203,8 @@ body {
   transition: all 0.2s;
 }
 .btn-primary {
-  background: linear-gradient(135deg, var(--accent), var(--accent-light));
-  color: white;
+  background: linear-gradient(135deg, #C48D0A, #FFD54F);
+  color: #0B1023;
 }
 .btn-primary:hover { opacity: 0.9; }
 .btn-primary:disabled {
@@ -188,13 +212,13 @@ body {
   cursor: not-allowed;
 }
 .btn-secondary {
-  background: var(--bg-card);
-  color: var(--text-primary);
-  border: 1px solid var(--border);
+  background: #151E30;
+  color: #FFD54F;
+  border: 1px solid #1E2D45;
 }
 .btn-success {
-  background: var(--success);
-  color: white;
+  background: linear-gradient(135deg, #00b894, #00d9a7);
+  color: #0B1023;
 }
 
 /* Input */
@@ -204,30 +228,30 @@ body {
 .input-group label {
   display: block;
   font-size: 13px;
-  color: var(--text-secondary);
+  color: #7A8CA5;
   margin-bottom: 4px;
 }
 .input-group input {
   width: 100%;
   padding: 12px;
   border-radius: 10px;
-  border: 1px solid var(--border);
-  background: var(--bg-primary);
-  color: var(--text-primary);
+  border: 1px solid #1E2D45;
+  background: #0B1023;
+  color: #ffffff;
   font-size: 14px;
   outline: none;
 }
 .input-group input:focus {
-  border-color: var(--accent);
+  border-color: #FFD54F;
 }
 
 /* Active Stakes */
 .stake-item {
-  background: var(--bg-card);
+  background: #151E30;
   border-radius: 12px;
   padding: 16px;
   margin-bottom: 12px;
-  border: 1px solid var(--border);
+  border: 1px solid #1E2D45;
 }
 .stake-item .stake-header {
   display: flex;
@@ -238,6 +262,7 @@ body {
 .stake-item .stake-amount {
   font-size: 18px;
   font-weight: 600;
+  color: #FFD54F;
 }
 .stake-item .stake-status {
   padding: 4px 8px;
@@ -247,15 +272,15 @@ body {
 }
 .stake-item .stake-status.active {
   background: rgba(0, 184, 148, 0.2);
-  color: var(--success);
+  color: #00b894;
 }
 .stake-item .stake-info {
-  color: var(--text-secondary);
+  color: #7A8CA5;
   font-size: 13px;
   margin-bottom: 8px;
 }
 .stake-item .stake-reward {
-  color: var(--success);
+  color: #00b894;
   font-size: 13px;
   margin-bottom: 12px;
 }
@@ -266,7 +291,7 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 12px 0;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid #1E2D45;
 }
 .tx-item:last-child { border-bottom: none; }
 .tx-item .tx-info .tx-type {
@@ -275,13 +300,13 @@ body {
 }
 .tx-item .tx-info .tx-date {
   font-size: 12px;
-  color: var(--text-secondary);
+  color: #7A8CA5;
 }
 .tx-item .tx-amount {
   font-weight: 600;
 }
-.tx-item .tx-amount.positive { color: var(--success); }
-.tx-item .tx-amount.negative { color: var(--danger); }
+.tx-item .tx-amount.positive { color: #00b894; }
+.tx-item .tx-amount.negative { color: #e17055; }
 
 /* Bottom Nav */
 .bottom-nav {
@@ -289,8 +314,8 @@ body {
   bottom: 0;
   left: 0;
   right: 0;
-  background: var(--bg-card);
-  border-top: 1px solid var(--border);
+  background: #151E30;
+  border-top: 1px solid #1E2D45;
   display: flex;
   justify-content: space-around;
   padding: 8px 0;
@@ -301,7 +326,7 @@ body {
   flex-direction: column;
   align-items: center;
   gap: 2px;
-  color: var(--text-secondary);
+  color: #7A8CA5;
   cursor: pointer;
   font-size: 11px;
   transition: color 0.2s;
@@ -309,38 +334,38 @@ body {
   border: none;
   padding: 4px 12px;
 }
-.nav-item.active { color: var(--accent); }
+.nav-item.active { color: #FFD54F; }
 .nav-item .nav-icon { font-size: 20px; }
 
 /* Loading */
 .loading {
   text-align: center;
   padding: 40px;
-  color: var(--text-secondary);
+  color: #7A8CA5;
 }
 
 /* Empty State */
 .empty-state {
   text-align: center;
   padding: 40px 20px;
-  color: var(--text-secondary);
+  color: #7A8CA5;
 }
 .empty-state .emoji { font-size: 48px; margin-bottom: 12px; }
 
 /* Referral */
 .referral-card {
-  background: linear-gradient(135deg, #1a2a3a, #1a1a4a);
+  background: linear-gradient(135deg, #151E30, #1A2540);
   border-radius: 12px;
   padding: 16px;
   margin-bottom: 12px;
-  border: 1px solid var(--border);
+  border: 1px solid #1E2D45;
 }
 .referral-card .referral-link {
-  background: var(--bg-primary);
+  background: #0B1023;
   padding: 10px;
   border-radius: 8px;
   font-size: 12px;
-  color: var(--accent-light);
+  color: #FFD54F;
   word-break: break-all;
   margin: 8px 0;
 }
@@ -357,25 +382,26 @@ body {
   padding: 20px;
 }
 .modal {
-  background: var(--bg-card);
+  background: #151E30;
   border-radius: 16px;
   padding: 24px;
   width: 100%;
   max-width: 400px;
-  border: 1px solid var(--border);
+  border: 1px solid #1E2D45;
 }
 .modal h2 {
   margin-bottom: 16px;
   font-size: 18px;
+  color: #FFD54F;
 }
 
 /* Withdrawal */
 .withdrawal-item {
-  background: var(--bg-card);
+  background: #151E30;
   border-radius: 12px;
   padding: 16px;
   margin-bottom: 12px;
-  border: 1px solid var(--border);
+  border: 1px solid #1E2D45;
 }
 .withdrawal-item .wd-header {
   display: flex;
@@ -389,6 +415,26 @@ body {
   font-size: 11px;
   text-transform: uppercase;
 }
-.withdrawal-item .wd-status.pending { background: rgba(253, 203, 110, 0.2); color: var(--warning); }
-.withdrawal-item .wd-status.approved { background: rgba(0, 184, 148, 0.2); color: var(--success); }
-.withdrawal-item .wd-status.rejected { background: rgba(225, 112, 85, 0.2); color: var(--danger); }
+.withdrawal-item .wd-status.pending { background: rgba(240, 208, 64, 0.2); color: #F0D040; }
+.withdrawal-item .wd-status.approved { background: rgba(0, 184, 148, 0.2); color: #00b894; }
+.withdrawal-item .wd-status.rejected { background: rgba(225, 112, 85, 0.2); color: #e17055; }
+
+/* Deposit */
+.deposit-card {
+  text-align: center;
+}
+.deposit-address {
+  background: #0B1023;
+  padding: 16px;
+  border-radius: 10px;
+  border: 2px dashed #FFD54F;
+  margin-bottom: 16px;
+}
+.deposit-address .address {
+  font-size: 14px;
+  font-weight: 600;
+  color: #FFD54F;
+  word-break: break-all;
+  line-height: 1.6;
+  user-select: all;
+}
