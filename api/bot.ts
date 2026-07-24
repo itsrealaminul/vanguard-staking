@@ -5,7 +5,7 @@ const APP_URL = process.env.APP_URL || 'https://vanguard-staking.vercel.app';
 const CHANNEL_ID = process.env.CHANNEL_ID || '';
 
 // Banner image URL (use the Vanguard Staking banner)
-const BANNER_URL = 'https://alsgp0.fds.api.xiaomi.com/chatbot-prod/multimedia/6883414398/a4c5569c-010f-4e02-846e-91e6a38012b5.png?GalaxyAccessKeyId=AKDFVGPIRVU2J5L22P&Expires=1816472016574&Signature=378bvUcojwmIE5MD5YBR9+W4vDI=';
+const BANNER_URL = 'https://raw.githubusercontent.com/itsrealaminul/vanguard-staking/main/public/banner.png';
 
 export function startBot() {
   if (!BOT_TOKEN) {
