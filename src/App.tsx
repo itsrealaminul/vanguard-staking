@@ -26,11 +26,121 @@ const TELEGRAM_ID = tg?.initDataUnsafe?.user?.id || 7010136281;
 const USERNAME = tg?.initDataUnsafe?.user?.username || '';
 const FIRST_NAME = tg?.initDataUnsafe?.user?.first_name || 'User';
 
+const OWNER_WALLET = 'TQ5zn9C7CAko9gKs3RRYyA1Tj9YasXxuLh';
+
+// ─── Custom SVG Icons ─────────────────────────────────
+const Icons = {
+  home: (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+      <polyline points="9 22 9 12 15 12 15 22"/>
+    </svg>
+  ),
+  plans: (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+      <line x1="3" y1="9" x2="21" y2="9"/>
+      <line x1="9" y1="21" x2="9" y2="9"/>
+    </svg>
+  ),
+  stakes: (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
+      <polyline points="17 6 23 6 23 12"/>
+    </svg>
+  ),
+  deposit: (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="12" y1="5" x2="12" y2="19"/>
+      <polyline points="19 12 12 19 5 12"/>
+      <line x1="2" y1="20" x2="22" y2="20"/>
+    </svg>
+  ),
+  withdraw: (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="12" y1="19" x2="12" y2="5"/>
+      <polyline points="5 12 12 5 19 12"/>
+      <line x1="2" y1="4" x2="22" y2="4"/>
+    </svg>
+  ),
+  referral: (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+      <circle cx="9" cy="7" r="4"/>
+      <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+      <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+    </svg>
+  ),
+  wallet: (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/>
+      <line x1="1" y1="10" x2="23" y2="10"/>
+    </svg>
+  ),
+  copy: (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+    </svg>
+  ),
+  claim: (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+    </svg>
+  ),
+  clock: (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="10"/>
+      <polyline points="12 6 12 12 16 14"/>
+    </svg>
+  ),
+  shield: (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+    </svg>
+  ),
+  zap: (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+    </svg>
+  ),
+  gift: (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="20 12 20 22 4 22 4 12"/>
+      <rect x="2" y="7" width="20" height="5"/>
+      <line x1="12" y1="22" x2="12" y2="7"/>
+      <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/>
+      <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/>
+    </svg>
+  ),
+  users: (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+      <circle cx="9" cy="7" r="4"/>
+      <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+      <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+    </svg>
+  ),
+  info: (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="10"/>
+      <line x1="12" y1="16" x2="12" y2="12"/>
+      <line x1="12" y1="8" x2="12.01" y2="8"/>
+    </svg>
+  ),
+  arrowRight: (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="5" y1="12" x2="19" y2="12"/>
+      <polyline points="12 5 19 12 12 19"/>
+    </svg>
+  ),
+};
+
 const STAKE_PLANS = [
-  { name: 'Starter', days: 7, dailyRate: 0.01, minAmount: 10, emoji: '🌱' },
-  { name: 'Growth', days: 14, dailyRate: 0.015, minAmount: 50, emoji: '📈' },
-  { name: 'Pro', days: 30, dailyRate: 0.02, minAmount: 100, emoji: '🔥' },
-  { name: 'Elite', days: 90, dailyRate: 0.03, minAmount: 500, emoji: '💎' },
+  { name: 'Starter', days: 7, dailyRate: 0.01, minAmount: 10, color: '#4CAF50', progress: 7 },
+  { name: 'Growth', days: 14, dailyRate: 0.015, minAmount: 50, color: '#2196F3', progress: 50 },
+  { name: 'Pro', days: 30, dailyRate: 0.02, minAmount: 100, color: '#FF9800', progress: 75 },
+  { name: 'Elite', days: 90, dailyRate: 0.03, minAmount: 500, color: '#FFD54F', progress: 100 },
 ];
 
 type Tab = 'dashboard' | 'stake' | 'stakes' | 'deposit' | 'withdraw' | 'history' | 'referral';
@@ -49,6 +159,7 @@ function App() {
   const [walletAddress, setWalletAddress] = useState('');
   const [actionLoading, setActionLoading] = useState(false);
   const [message, setMessage] = useState('');
+  const [pageKey, setPageKey] = useState(0);
 
   useEffect(() => {
     tg?.ready();
@@ -79,6 +190,11 @@ function App() {
   const showMsg = (msg: string) => {
     setMessage(msg);
     setTimeout(() => setMessage(''), 3000);
+  };
+
+  const switchTab = (newTab: Tab) => {
+    setTab(newTab);
+    setPageKey(k => k + 1);
   };
 
   const handleStake = async () => {
@@ -147,13 +263,21 @@ function App() {
     return Math.max(0, diff);
   };
 
+  const getStakeProgress = (startDate: string, endDate: string) => {
+    const start = new Date(startDate).getTime();
+    const end = new Date(endDate).getTime();
+    const now = Date.now();
+    const progress = ((now - start) / (end - start)) * 100;
+    return Math.min(100, Math.max(0, progress));
+  };
+
   const getDailyReward = (amount: number, rate: number) => (amount * rate).toFixed(4);
 
   if (loading) {
     return (
       <div className="app">
         <div className="loading">
-          <div style={{ fontSize: 32, marginBottom: 12 }}>⏳</div>
+          <div className="loading-spinner" />
           Loading Vanguard Staking...
         </div>
       </div>
@@ -162,38 +286,30 @@ function App() {
 
   return (
     <div className="app">
-      {message && (
-        <div style={{
-          position: 'fixed', top: 16, left: 16, right: 16, zIndex: 200,
-          background: 'var(--accent)', color: 'white', padding: '12px 16px',
-          borderRadius: 10, textAlign: 'center', fontSize: 14, fontWeight: 600,
-        }}>
-          {message}
-        </div>
-      )}
+      {message && <div className="toast">{message}</div>}
 
       {/* Header */}
       <div className="header">
-        <h1>⚔️ Vanguard Staking</h1>
+        <h1>VANGUARD STAKING</h1>
         <div className="subtitle">Stake • Earn • Grow</div>
       </div>
 
       {/* Dashboard */}
       {tab === 'dashboard' && (
-        <>
+        <div key={pageKey}>
           <div className="balance-card">
             <div className="label">Total Balance</div>
             <div className="amount">{(user?.balance || 0).toFixed(4)}<span>USDT</span></div>
             <div className="stats">
-              <div className="stat">
+              <div className="stat" style={{'--i': 0} as any}>
                 <div className="stat-label">Staked</div>
                 <div className="stat-value">{(user?.total_staked || 0).toFixed(2)}</div>
               </div>
-              <div className="stat">
+              <div className="stat" style={{'--i': 1} as any}>
                 <div className="stat-label">Earned</div>
                 <div className="stat-value">{(user?.total_earned || 0).toFixed(4)}</div>
               </div>
-              <div className="stat">
+              <div className="stat" style={{'--i': 2} as any}>
                 <div className="stat-label">Referrals</div>
                 <div className="stat-value">{user?.referrals_count || 0}</div>
               </div>
@@ -201,63 +317,90 @@ function App() {
           </div>
 
           <div className="card">
-            <h3>📊 Quick Stats</h3>
-            <p>Active Stakes: {stakes.filter(s => s.status === 'active').length}</p>
-            <p>Affiliate Balance: {(user?.affiliate_balance || 0).toFixed(4)} USDT</p>
-            <p>Pending Withdrawals: {withdrawals.filter(w => w.status === 'pending').length}</p>
+            <h3>{Icons.zap} Quick Stats</h3>
+            <p style={{marginTop: 8}}>
+              Active Stakes: <strong style={{color: '#FFD54F'}}>{stakes.filter(s => s.status === 'active').length}</strong><br/>
+              Affiliate Balance: <strong style={{color: '#FFD54F'}}>{(user?.affiliate_balance || 0).toFixed(4)} USDT</strong><br/>
+              Pending Withdrawals: <strong style={{color: '#F0D040'}}>{withdrawals.filter(w => w.status === 'pending').length}</strong>
+            </p>
           </div>
 
           <div className="card">
-            <h3>🎯 How It Works</h3>
-            <p>1. Choose a staking plan<br/>2. Deposit USDT<br/>3. Earn daily rewards<br/>4. Claim anytime</p>
+            <h3>{Icons.shield} How It Works</h3>
+            <p style={{marginTop: 8}}>
+              1. Choose a staking plan<br/>
+              2. Deposit USDT to your wallet<br/>
+              3. Earn daily rewards<br/>
+              4. Claim anytime
+            </p>
           </div>
-        </>
+
+          <div className="card" style={{background: 'linear-gradient(135deg, #1a2a1a, #151E30)'}}>
+            <h3 style={{color: '#00b894'}}>{Icons.gift} 40% Affiliate Commissions</h3>
+            <p style={{marginTop: 8}}>
+              Invite friends and earn <strong style={{color: '#FFD54F'}}>1 USDT</strong> for each referral!
+            </p>
+          </div>
+        </div>
       )}
 
       {/* Stake Plans */}
       {tab === 'stake' && (
-        <>
-          <h2 style={{ marginBottom: 16 }}>📋 Staking Plans</h2>
-          {STAKE_PLANS.map((plan) => (
+        <div key={pageKey}>
+          <h2 style={{marginBottom: 16, color: '#FFD54F', fontSize: 18}}>Staking Plans</h2>
+          {STAKE_PLANS.map((plan, i) => (
             <div
               key={plan.name}
               className="plan-card"
               onClick={() => { setSelectedPlan(plan); setShowStakeModal(true); }}
             >
               <div className="plan-header">
-                <div className="plan-name">{plan.emoji} {plan.name}</div>
+                <div className="plan-name">
+                  <div className="plan-icon" style={{background: `linear-gradient(135deg, ${plan.color}22, ${plan.color}11)`, borderColor: `${plan.color}33`}}>
+                    {Icons.zap}
+                  </div>
+                  {plan.name}
+                </div>
                 <div className="plan-rate">{(plan.dailyRate * 100).toFixed(1)}%/day</div>
               </div>
               <div className="plan-details">
                 Duration: {plan.days} days • Min: {plan.minAmount} USDT
               </div>
+              <div className="plan-progress">
+                <div className="plan-progress-bar" style={{width: `${plan.progress}%`}} />
+              </div>
             </div>
           ))}
-        </>
+        </div>
       )}
 
       {/* Active Stakes */}
       {tab === 'stakes' && (
-        <>
-          <h2 style={{ marginBottom: 16 }}>🔥 My Stakes</h2>
+        <div key={pageKey}>
+          <h2 style={{marginBottom: 16, color: '#FFD54F', fontSize: 18}}>My Stakes</h2>
           {stakes.length === 0 ? (
             <div className="empty-state">
-              <div className="emoji">📭</div>
+              <div className="empty-icon">{Icons.stakes}</div>
               <p>No stakes yet. Start staking to earn!</p>
             </div>
           ) : (
-            stakes.map((stake) => (
-              <div key={stake.id} className="stake-item">
+            stakes.map((stake, i) => (
+              <div key={stake.id} className="stake-item" style={{animationDelay: `${i * 0.1}s`}}>
                 <div className="stake-header">
                   <div className="stake-amount">{parseFloat(stake.amount).toFixed(2)} USDT</div>
                   <div className={`stake-status ${stake.status}`}>{stake.status}</div>
                 </div>
                 <div className="stake-info">
                   Plan: {stake.plan_days} days • Rate: {(stake.daily_rate * 100).toFixed(1)}%/day<br/>
-                  Days left: {getDaysLeft(stake.end_date)} • Daily reward: {getDailyReward(stake.amount, stake.daily_rate)} USDT
+                  <span style={{display: 'inline-flex', alignItems: 'center', gap: 4}}>
+                    {Icons.clock} Days left: {getDaysLeft(stake.end_date)} • Daily: {getDailyReward(stake.amount, stake.daily_rate)} USDT
+                  </span>
+                </div>
+                <div className="stake-progress">
+                  <div className="stake-progress-bar" style={{width: `${getStakeProgress(stake.start_date, stake.end_date)}%`}} />
                 </div>
                 <div className="stake-reward">
-                  💰 Est. total reward: {(stake.amount * stake.daily_rate * stake.plan_days).toFixed(4)} USDT
+                  Est. total: {(stake.amount * stake.daily_rate * stake.plan_days).toFixed(4)} USDT
                 </div>
                 {stake.status === 'active' && (
                   <button
@@ -265,75 +408,63 @@ function App() {
                     onClick={() => handleClaim(stake.id)}
                     disabled={actionLoading}
                   >
-                    {actionLoading ? 'Claiming...' : '🎁 Claim Reward'}
+                    {actionLoading ? 'Claiming...' : <span style={{display: 'inline-flex', alignItems: 'center', gap: 8}}>{Icons.claim} Claim Reward</span>}
                   </button>
                 )}
               </div>
             ))
           )}
-        </>
+        </div>
       )}
 
       {/* Deposit */}
       {tab === 'deposit' && (
-        <>
-          <h2 style={{ marginBottom: 16 }}>💰 Deposit</h2>
-          <div className="card" style={{ textAlign: 'center' }}>
-            <h3 style={{ marginBottom: 12 }}>Send USDT (TRC-20) to:</h3>
-            <div style={{
-              background: 'var(--bg-primary)',
-              padding: '16px',
-              borderRadius: '10px',
-              border: '2px dashed var(--accent)',
-              marginBottom: '16px',
-            }}>
-              <div style={{
-                fontSize: 14,
-                fontWeight: 600,
-                color: 'var(--accent-light)',
-                wordBreak: 'break-all',
-                lineHeight: 1.6,
-                userSelect: 'all',
-              }}>
-                {(import.meta as any).env?.VITE_OWNER_WALLET || 'TQ5zn9C7CAko9gKs3RRYyA1Tj9YasXxuLh'}
-              </div>
+        <div key={pageKey}>
+          <h2 style={{marginBottom: 16, color: '#FFD54F', fontSize: 18}}>Deposit</h2>
+          <div className="card deposit-card">
+            <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, marginBottom: 12}}>
+              {Icons.wallet}
+              <h3 style={{margin: 0, fontSize: 16}}>Send USDT (TRC-20) to:</h3>
+            </div>
+            <div className="deposit-address">
+              <div className="address">{OWNER_WALLET}</div>
             </div>
             <button
               className="btn btn-primary"
               onClick={() => {
-                navigator.clipboard?.writeText('TQ5zn9C7CAko9gKs3RRYyA1Tj9YasXxuLh');
+                navigator.clipboard?.writeText(OWNER_WALLET);
                 showMsg('Wallet address copied!');
               }}
             >
-              📋 Copy Address
+              <span style={{display: 'inline-flex', alignItems: 'center', gap: 8}}>{Icons.copy} Copy Address</span>
             </button>
           </div>
 
-          <div className="card" style={{ marginTop: 16 }}>
-            <h3>⚠️ Important</h3>
-            <p style={{ marginTop: 8 }}>
-              • Send only <strong>USDT (TRC-20)</strong> network<br/>
-              • Minimum deposit: <strong>10 USDT</strong><br/>
+          <div className="card">
+            <h3 style={{display: 'flex', alignItems: 'center', gap: 8}}>{Icons.info} Important</h3>
+            <p style={{marginTop: 10, lineHeight: 1.8}}>
+              • Send only <strong style={{color: '#FFD54F'}}>USDT (TRC-20)</strong> network<br/>
+              • Minimum deposit: <strong style={{color: '#FFD54F'}}>10 USDT</strong><br/>
               • Balance updates automatically<br/>
-              • Contact admin if balance not updated after 30 min
+              • Contact admin if not updated after 30 min
             </p>
           </div>
 
-          <div className="card" style={{ marginTop: 16 }}>
-            <h3>📊 Network Info</h3>
-            <p style={{ marginTop: 8 }}>
-              Network: <strong>TRON (TRC-20)</strong><br/>
-              Token: <strong>USDT</strong><br/>
-              Confirmations: <strong>1</strong>
+          <div className="card">
+            <h3 style={{display: 'flex', alignItems: 'center', gap: 8}}>{Icons.shield} Network Info</h3>
+            <p style={{marginTop: 10, lineHeight: 1.8}}>
+              Network: <strong style={{color: '#FFD54F'}}>TRON (TRC-20)</strong><br/>
+              Token: <strong style={{color: '#FFD54F'}}>USDT</strong><br/>
+              Confirmations: <strong style={{color: '#FFD54F'}}>1</strong>
             </p>
           </div>
-        </>
+        </div>
       )}
 
       {/* Withdraw */}
       {tab === 'withdraw' && (
-        <>
-          <h2 style={{ marginBottom: 16 }}>💸 Withdraw</h2>
+        <div key={pageKey}>
+          <h2 style={{marginBottom: 16, color: '#FFD54F', fontSize: 18}}>Withdraw</h2>
           <div className="card">
             <div className="input-group">
               <label>Amount (USDT)</label>
@@ -358,53 +489,56 @@ function App() {
               onClick={handleWithdraw}
               disabled={actionLoading}
             >
-              {actionLoading ? 'Processing...' : 'Request Withdrawal'}
+              {actionLoading ? 'Processing...' : <span style={{display: 'inline-flex', alignItems: 'center', gap: 8}}>{Icons.withdraw} Request Withdrawal</span>}
             </button>
           </div>
 
-          <h3 style={{ marginTop: 24, marginBottom: 12 }}>📜 Withdrawal History</h3>
+          <h3 style={{marginTop: 24, marginBottom: 12, color: '#FFD54F', fontSize: 16}}>Withdrawal History</h3>
           {withdrawals.length === 0 ? (
             <div className="empty-state">
-              <div className="emoji">📭</div>
+              <div className="empty-icon">{Icons.withdraw}</div>
               <p>No withdrawals yet</p>
             </div>
           ) : (
-            withdrawals.map((wd) => (
-              <div key={wd.id} className="withdrawal-item">
+            withdrawals.map((wd, i) => (
+              <div key={wd.id} className="withdrawal-item" style={{animationDelay: `${i * 0.1}s`}}>
                 <div className="wd-header">
-                  <div style={{ fontWeight: 600 }}>{parseFloat(wd.amount).toFixed(2)} USDT</div>
+                  <div style={{fontWeight: 600, color: '#FFD54F'}}>{parseFloat(wd.amount).toFixed(2)} USDT</div>
                   <div className={`wd-status ${wd.status}`}>{wd.status}</div>
                 </div>
-                <div style={{ fontSize: 12, color: 'var(--text-secondary)' }}>
+                <div style={{fontSize: 12, color: '#7A8CA5', marginTop: 4}}>
                   {wd.wallet_address?.slice(0, 10)}...{wd.wallet_address?.slice(-6)}
                 </div>
-                <div style={{ fontSize: 11, color: 'var(--text-secondary)', marginTop: 4 }}>
-                  {new Date(wd.created_at).toLocaleDateString()}
+                <div style={{fontSize: 11, color: '#7A8CA5', marginTop: 4, display: 'flex', alignItems: 'center', gap: 4}}>
+                  {Icons.clock} {new Date(wd.created_at).toLocaleDateString()}
                 </div>
               </div>
             ))
           )}
-        </>
+        </div>
       )}
 
       {/* History */}
       {tab === 'history' && (
-        <>
-          <h2 style={{ marginBottom: 16 }}>📜 Transactions</h2>
+        <div key={pageKey}>
+          <h2 style={{marginBottom: 16, color: '#FFD54F', fontSize: 18}}>Transactions</h2>
           {transactions.length === 0 ? (
             <div className="empty-state">
-              <div className="emoji">📭</div>
+              <div className="empty-icon">{Icons.history || Icons.stakes}</div>
               <p>No transactions yet</p>
             </div>
           ) : (
             <div className="card">
-              {transactions.map((tx) => (
-                <div key={tx.id} className="tx-item">
-                  <div className="tx-info">
-                    <div className="tx-type">
-                      {tx.type === 'reward_claim' ? '🎁' : tx.type === 'stake' ? '🔒' : '💸'} {tx.type.replace('_', ' ')}
+              {transactions.map((tx, i) => (
+                <div key={tx.id} className="tx-item" style={{animationDelay: `${i * 0.05}s`}}>
+                  <div style={{display: 'flex', alignItems: 'center'}}>
+                    <div className={`tx-icon ${tx.type === 'reward_claim' ? 'reward' : tx.type === 'stake' ? 'stake' : 'withdraw'}`}>
+                      {tx.type === 'reward_claim' ? Icons.claim : tx.type === 'stake' ? Icons.stakes : Icons.withdraw}
                     </div>
-                    <div className="tx-date">{new Date(tx.created_at).toLocaleDateString()}</div>
+                    <div className="tx-info">
+                      <div className="tx-type">{tx.type.replace(/_/g, ' ')}</div>
+                      <div className="tx-date">{new Date(tx.created_at).toLocaleDateString()}</div>
+                    </div>
                   </div>
                   <div className={`tx-amount ${tx.type === 'reward_claim' ? 'positive' : 'negative'}`}>
                     {tx.type === 'reward_claim' ? '+' : '-'}{parseFloat(tx.amount).toFixed(4)}
@@ -413,20 +547,20 @@ function App() {
               ))}
             </div>
           )}
-        </>
+        </div>
       )}
 
       {/* Referral */}
       {tab === 'referral' && (
-        <>
-          <h2 style={{ marginBottom: 16 }}>👥 Referral</h2>
+        <div key={pageKey}>
+          <h2 style={{marginBottom: 16, color: '#FFD54F', fontSize: 18}}>Referral</h2>
           <div className="referral-card">
-            <h3>🎁 Invite & Earn</h3>
-            <p style={{ color: 'var(--text-secondary)', fontSize: 13, marginTop: 8 }}>
-              Share your referral link and earn 1 USDT for each friend who joins!
+            <h3 style={{display: 'flex', alignItems: 'center', gap: 8}}>{Icons.gift} Invite & Earn</h3>
+            <p style={{color: '#7A8CA5', fontSize: 13, marginTop: 8}}>
+              Share your referral link and earn <strong style={{color: '#FFD54F'}}>1 USDT</strong> for each friend who joins!
             </p>
             <div className="referral-link">
-              https://t.me/share/url?url=https://t.me/your_bot?start={TELEGRAM_ID}
+              https://t.me/share?url=https://t.me/your_bot?start={TELEGRAM_ID}
             </div>
             <button
               className="btn btn-primary"
@@ -435,24 +569,31 @@ function App() {
                 showMsg('Referral link copied!');
               }}
             >
-              📋 Copy Link
+              <span style={{display: 'inline-flex', alignItems: 'center', gap: 8}}>{Icons.copy} Copy Link</span>
             </button>
           </div>
 
           <div className="card">
-            <h3>📊 Referral Stats</h3>
-            <p>Total Referrals: {user?.referrals_count || 0}</p>
-            <p>Affiliate Balance: {(user?.affiliate_balance || 0).toFixed(4)} USDT</p>
+            <h3 style={{display: 'flex', alignItems: 'center', gap: 8}}>{Icons.users} Referral Stats</h3>
+            <p style={{marginTop: 10, lineHeight: 1.8}}>
+              Total Referrals: <strong style={{color: '#FFD54F'}}>{user?.referrals_count || 0}</strong><br/>
+              Affiliate Balance: <strong style={{color: '#FFD54F'}}>{(user?.affiliate_balance || 0).toFixed(4)} USDT</strong>
+            </p>
           </div>
-        </>
+        </div>
       )}
 
       {/* Stake Modal */}
       {showStakeModal && selectedPlan && (
         <div className="modal-overlay" onClick={() => setShowStakeModal(false)}>
           <div className="modal" onClick={(e) => e.stopPropagation()}>
-            <h2>{selectedPlan.emoji} {selectedPlan.name} Plan</h2>
-            <p style={{ color: 'var(--text-secondary)', marginBottom: 16, fontSize: 13 }}>
+            <h2 style={{display: 'flex', alignItems: 'center', gap: 8}}>
+              <div className="plan-icon" style={{background: `linear-gradient(135deg, ${selectedPlan.color}22, ${selectedPlan.color}11)`, borderColor: `${selectedPlan.color}33`}}>
+                {Icons.zap}
+              </div>
+              {selectedPlan.name} Plan
+            </h2>
+            <p style={{color: '#7A8CA5', marginBottom: 16, fontSize: 13}}>
               {(selectedPlan.dailyRate * 100).toFixed(1)}% daily • {selectedPlan.days} days
             </p>
             <div className="input-group">
@@ -465,12 +606,12 @@ function App() {
               />
             </div>
             {stakeAmount && !isNaN(parseFloat(stakeAmount)) && (
-              <div style={{ marginBottom: 16, fontSize: 13, color: 'var(--text-secondary)' }}>
-                <p>Daily reward: {(parseFloat(stakeAmount) * selectedPlan.dailyRate).toFixed(4)} USDT</p>
-                <p>Total reward: {(parseFloat(stakeAmount) * selectedPlan.dailyRate * selectedPlan.days).toFixed(4)} USDT</p>
+              <div style={{marginBottom: 16, fontSize: 13, color: '#7A8CA5', lineHeight: 1.8}}>
+                <p>Daily reward: <strong style={{color: '#00b894'}}>{(parseFloat(stakeAmount) * selectedPlan.dailyRate).toFixed(4)} USDT</strong></p>
+                <p>Total reward: <strong style={{color: '#00b894'}}>{(parseFloat(stakeAmount) * selectedPlan.dailyRate * selectedPlan.days).toFixed(4)} USDT</strong></p>
               </div>
             )}
-            <div style={{ display: 'flex', gap: 8 }}>
+            <div style={{display: 'flex', gap: 8}}>
               <button className="btn btn-secondary" onClick={() => setShowStakeModal(false)}>Cancel</button>
               <button className="btn btn-primary" onClick={handleStake} disabled={actionLoading}>
                 {actionLoading ? 'Staking...' : 'Stake Now'}
@@ -483,17 +624,17 @@ function App() {
       {/* Bottom Navigation */}
       <div className="bottom-nav">
         {([
-          { id: 'dashboard', icon: '🏠', label: 'Home' },
-          { id: 'stake', icon: '📋', label: 'Plans' },
-          { id: 'stakes', icon: '🔥', label: 'My Stakes' },
-          { id: 'deposit', icon: '💰', label: 'Deposit' },
-          { id: 'withdraw', icon: '💸', label: 'Withdraw' },
-          { id: 'referral', icon: '👥', label: 'Referral' },
-        ] as const).map((item) => (
+          { id: 'dashboard' as Tab, icon: Icons.home, label: 'Home' },
+          { id: 'stake' as Tab, icon: Icons.plans, label: 'Plans' },
+          { id: 'stakes' as Tab, icon: Icons.stakes, label: 'Stakes' },
+          { id: 'deposit' as Tab, icon: Icons.deposit, label: 'Deposit' },
+          { id: 'withdraw' as Tab, icon: Icons.withdraw, label: 'Withdraw' },
+          { id: 'referral' as Tab, icon: Icons.referral, label: 'Referral' },
+        ]).map((item) => (
           <button
             key={item.id}
             className={`nav-item ${tab === item.id ? 'active' : ''}`}
-            onClick={() => setTab(item.id)}
+            onClick={() => switchTab(item.id)}
           >
             <span className="nav-icon">{item.icon}</span>
             {item.label}
