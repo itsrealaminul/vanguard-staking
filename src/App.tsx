@@ -33,7 +33,7 @@ const STAKE_PLANS = [
   { name: 'Elite', days: 90, dailyRate: 0.03, minAmount: 500, emoji: '💎' },
 ];
 
-type Tab = 'dashboard' | 'stake' | 'stakes' | 'withdraw' | 'history' | 'referral';
+type Tab = 'dashboard' | 'stake' | 'stakes' | 'deposit' | 'withdraw' | 'history' | 'referral';
 
 function App() {
   const [tab, setTab] = useState<Tab>('dashboard');
@@ -274,6 +274,62 @@ function App() {
         </>
       )}
 
+      {/* Deposit */}
+      {tab === 'deposit' && (
+        <>
+          <h2 style={{ marginBottom: 16 }}>💰 Deposit</h2>
+          <div className="card" style={{ textAlign: 'center' }}>
+            <h3 style={{ marginBottom: 12 }}>Send USDT (TRC-20) to:</h3>
+            <div style={{
+              background: 'var(--bg-primary)',
+              padding: '16px',
+              borderRadius: '10px',
+              border: '2px dashed var(--accent)',
+              marginBottom: '16px',
+            }}>
+              <div style={{
+                fontSize: 14,
+                fontWeight: 600,
+                color: 'var(--accent-light)',
+                wordBreak: 'break-all',
+                lineHeight: 1.6,
+                userSelect: 'all',
+              }}>
+                {(import.meta as any).env?.VITE_OWNER_WALLET || 'TQ5zn9C7CAko9gKs3RRYyA1Tj9YasXxuLh'}
+              </div>
+            </div>
+            <button
+              className="btn btn-primary"
+              onClick={() => {
+                navigator.clipboard?.writeText('TQ5zn9C7CAko9gKs3RRYyA1Tj9YasXxuLh');
+                showMsg('Wallet address copied!');
+              }}
+            >
+              📋 Copy Address
+            </button>
+          </div>
+
+          <div className="card" style={{ marginTop: 16 }}>
+            <h3>⚠️ Important</h3>
+            <p style={{ marginTop: 8 }}>
+              • Send only <strong>USDT (TRC-20)</strong> network<br/>
+              • Minimum deposit: <strong>10 USDT</strong><br/>
+              • Balance updates automatically<br/>
+              • Contact admin if balance not updated after 30 min
+            </p>
+          </div>
+
+          <div className="card" style={{ marginTop: 16 }}>
+            <h3>📊 Network Info</h3>
+            <p style={{ marginTop: 8 }}>
+              Network: <strong>TRON (TRC-20)</strong><br/>
+              Token: <strong>USDT</strong><br/>
+              Confirmations: <strong>1</strong>
+            </p>
+          </div>
+        </>
+      )}
+
       {/* Withdraw */}
       {tab === 'withdraw' && (
         <>
@@ -430,6 +486,7 @@ function App() {
           { id: 'dashboard', icon: '🏠', label: 'Home' },
           { id: 'stake', icon: '📋', label: 'Plans' },
           { id: 'stakes', icon: '🔥', label: 'My Stakes' },
+          { id: 'deposit', icon: '💰', label: 'Deposit' },
           { id: 'withdraw', icon: '💸', label: 'Withdraw' },
           { id: 'referral', icon: '👥', label: 'Referral' },
         ] as const).map((item) => (
