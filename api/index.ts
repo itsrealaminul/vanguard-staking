@@ -11,6 +11,13 @@ const supabase = createClient(
   process.env.SUPABASE_ANON_KEY || 'sb_publishable_uOQ1Hu1Q3v_WZqxrT4lNAA_MxJ7NiuL'
 );
 
+// Helper to safely get query param as string
+function getParam(val: any): string | undefined {
+  if (typeof val === 'string') return val;
+  if (Array.isArray(val)) return val[0] as string;
+  return undefined;
+}
+
 // ─── Health ───────────────────────────────────────────
 app.get('/api/health', (_req, res) => {
   res.json({
@@ -23,8 +30,9 @@ app.get('/api/health', (_req, res) => {
 // ─── Get or Create User ───────────────────────────────
 app.get('/api/user', async (req, res) => {
   try {
-    const telegramId = req.query.telegram_id;
-    if (!telegramId) return res.status(400).json({ error: 'telegram_id required' });
+    const telegramIdStr = getParam(req.query.telegram_id);
+    if (!telegramIdStr) return res.status(400).json({ error: 'telegram_id required' });
+    const telegramId = parseInt(telegramIdStr, 10);
 
     let { data: user, error } = await supabase
       .from('users')
@@ -36,9 +44,9 @@ app.get('/api/user', async (req, res) => {
       const { data: newUser, error: insertError } = await supabase
         .from('users')
         .insert({
-          telegram_id: parseInt(telegramId),
-          username: req.query.username || null,
-          first_name: req.query.first_name || null,
+          telegram_id: telegramId,
+          username: getParam(req.query.username) || null,
+          first_name: getParam(req.query.first_name) || null,
           balance: 0,
           affiliate_balance: 0,
           total_staked: 0,
@@ -55,7 +63,7 @@ app.get('/api/user', async (req, res) => {
     }
 
     res.json(user);
-  } catch (err) {
+  } catch (err: any) {
     console.error('GET /api/user error:', err);
     res.status(500).json({ error: err.message });
   }
@@ -76,7 +84,7 @@ app.post('/api/user', async (req, res) => {
 
     if (error) throw error;
     res.json(data);
-  } catch (err) {
+  } catch (err: any) {
     console.error('POST /api/user error:', err);
     res.status(500).json({ error: err.message });
   }
@@ -85,8 +93,9 @@ app.post('/api/user', async (req, res) => {
 // ─── Get Stakes ───────────────────────────────────────
 app.get('/api/stakes', async (req, res) => {
   try {
-    const telegramId = req.query.telegram_id;
-    if (!telegramId) return res.status(400).json({ error: 'telegram_id required' });
+    const telegramIdStr = getParam(req.query.telegram_id);
+    if (!telegramIdStr) return res.status(400).json({ error: 'telegram_id required' });
+    const telegramId = parseInt(telegramIdStr, 10);
 
     const { data, error } = await supabase
       .from('stakes')
@@ -96,7 +105,7 @@ app.get('/api/stakes', async (req, res) => {
 
     if (error) throw error;
     res.json(data || []);
-  } catch (err) {
+  } catch (err: any) {
     console.error('GET /api/stakes error:', err);
     res.status(500).json({ error: err.message });
   }
@@ -146,7 +155,7 @@ app.post('/api/stakes', async (req, res) => {
     }
 
     res.json(stake);
-  } catch (err) {
+  } catch (err: any) {
     console.error('POST /api/stakes error:', err);
     res.status(500).json({ error: err.message });
   }
@@ -155,8 +164,9 @@ app.post('/api/stakes', async (req, res) => {
 // ─── Withdrawals ──────────────────────────────────────
 app.get('/api/withdrawals', async (req, res) => {
   try {
-    const telegramId = req.query.telegram_id;
-    if (!telegramId) return res.status(400).json({ error: 'telegram_id required' });
+    const telegramIdStr = getParam(req.query.telegram_id);
+    if (!telegramIdStr) return res.status(400).json({ error: 'telegram_id required' });
+    const telegramId = parseInt(telegramIdStr, 10);
 
     const { data, error } = await supabase
       .from('withdrawals')
@@ -166,7 +176,7 @@ app.get('/api/withdrawals', async (req, res) => {
 
     if (error) throw error;
     res.json(data || []);
-  } catch (err) {
+  } catch (err: any) {
     console.error('GET /api/withdrawals error:', err);
     res.status(500).json({ error: err.message });
   }
@@ -187,7 +197,7 @@ app.post('/api/withdrawals', async (req, res) => {
 
     if (error) throw error;
     res.json(data);
-  } catch (err) {
+  } catch (err: any) {
     console.error('POST /api/withdrawals error:', err);
     res.status(500).json({ error: err.message });
   }
@@ -196,8 +206,9 @@ app.post('/api/withdrawals', async (req, res) => {
 // ─── Transactions ─────────────────────────────────────
 app.get('/api/transactions', async (req, res) => {
   try {
-    const telegramId = req.query.telegram_id;
-    if (!telegramId) return res.status(400).json({ error: 'telegram_id required' });
+    const telegramIdStr = getParam(req.query.telegram_id);
+    if (!telegramIdStr) return res.status(400).json({ error: 'telegram_id required' });
+    const telegramId = parseInt(telegramIdStr, 10);
 
     const { data, error } = await supabase
       .from('transactions')
@@ -207,7 +218,7 @@ app.get('/api/transactions', async (req, res) => {
 
     if (error) throw error;
     res.json(data || []);
-  } catch (err) {
+  } catch (err: any) {
     console.error('GET /api/transactions error:', err);
     res.status(500).json({ error: err.message });
   }
@@ -233,7 +244,7 @@ app.post('/api/claim-reward', async (req, res) => {
 
     const now = new Date();
     const lastClaim = new Date(stake.last_reward_claim);
-    const daysSinceClaim = Math.floor((now - lastClaim) / (1000 * 60 * 60 * 24));
+    const daysSinceClaim = Math.floor((now.getTime() - lastClaim.getTime()) / (1000 * 60 * 60 * 24));
 
     if (daysSinceClaim < 1) {
       return res.status(400).json({ error: 'Can claim once per day' });
@@ -273,7 +284,7 @@ app.post('/api/claim-reward', async (req, res) => {
     });
 
     res.json({ success: true, reward });
-  } catch (err) {
+  } catch (err: any) {
     console.error('POST /api/claim-reward error:', err);
     res.status(500).json({ error: err.message });
   }
@@ -290,7 +301,6 @@ app.post('/api/referral', async (req, res) => {
       return res.status(400).json({ error: 'Cannot refer yourself' });
     }
 
-    // Update user's referrer
     const { error } = await supabase
       .from('users')
       .update({ referrer_id })
@@ -298,7 +308,6 @@ app.post('/api/referral', async (req, res) => {
 
     if (error) throw error;
 
-    // Increment referrer's count
     const { data: referrer } = await supabase
       .from('users')
       .select('referrals_count, affiliate_balance')
@@ -306,7 +315,7 @@ app.post('/api/referral', async (req, res) => {
       .single();
 
     if (referrer) {
-      const bonus = 1; // 1 USDT referral bonus
+      const bonus = 1;
       await supabase
         .from('users')
         .update({
@@ -317,7 +326,7 @@ app.post('/api/referral', async (req, res) => {
     }
 
     res.json({ success: true });
-  } catch (err) {
+  } catch (err: any) {
     console.error('POST /api/referral error:', err);
     res.status(500).json({ error: err.message });
   }
@@ -327,7 +336,8 @@ app.post('/api/referral', async (req, res) => {
 app.get('/api/admin/users', async (req, res) => {
   try {
     const adminId = parseInt(process.env.ADMIN_TELEGRAM_ID || '7010136281');
-    const requestorId = parseInt(req.query.telegram_id);
+    const requestorIdStr = getParam(req.query.telegram_id);
+    const requestorId = requestorIdStr ? parseInt(requestorIdStr, 10) : 0;
 
     if (requestorId !== adminId) {
       return res.status(403).json({ error: 'Admin only' });
@@ -340,7 +350,7 @@ app.get('/api/admin/users', async (req, res) => {
 
     if (error) throw error;
     res.json(data || []);
-  } catch (err) {
+  } catch (err: any) {
     console.error('GET /api/admin/users error:', err);
     res.status(500).json({ error: err.message });
   }
@@ -350,7 +360,8 @@ app.get('/api/admin/users', async (req, res) => {
 app.get('/api/admin/withdrawals', async (req, res) => {
   try {
     const adminId = parseInt(process.env.ADMIN_TELEGRAM_ID || '7010136281');
-    const requestorId = parseInt(req.query.telegram_id);
+    const requestorIdStr = getParam(req.query.telegram_id);
+    const requestorId = requestorIdStr ? parseInt(requestorIdStr, 10) : 0;
 
     if (requestorId !== adminId) {
       return res.status(403).json({ error: 'Admin only' });
@@ -363,7 +374,7 @@ app.get('/api/admin/withdrawals', async (req, res) => {
 
     if (error) throw error;
     res.json(data || []);
-  } catch (err) {
+  } catch (err: any) {
     console.error('GET /api/admin/withdrawals error:', err);
     res.status(500).json({ error: err.message });
   }
@@ -390,7 +401,7 @@ app.post('/api/admin/withdrawal', async (req, res) => {
 
     if (error) throw error;
     res.json(data);
-  } catch (err) {
+  } catch (err: any) {
     console.error('POST /api/admin/withdrawal error:', err);
     res.status(500).json({ error: err.message });
   }

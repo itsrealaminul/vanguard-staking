@@ -5,6 +5,7 @@
     "moduleResolution": "bundler",
     "esModuleInterop": true,
     "strict": false,
+    "noImplicitAny": false,
     "skipLibCheck": true,
     "jsx": "react-jsx",
     "outDir": "dist",
