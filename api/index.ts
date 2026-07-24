@@ -59,7 +59,7 @@ app.post('/api/webhook', async (req, res) => {
         const keyboard = {
           inline_keyboard: [
             [{ text: '🚀 Open Vanguard Staking', web_app: { url: APP_URL } }],
-            [{ text: '📊 Join Channel', url: CHANNEL_ID ? `https://t.me/${CHANNEL_ID}` : 'https://t.me/vanguardstakingbot' }],
+            [{ text: '📊 Join Channel', url: CHANNEL_ID ? `https://t.me/${CHANNEL_ID.replace('@', '')}` : 'https://t.me/vanguardstakingbot' }],
             [{ text: '👥 Invite Friends & Earn 40%', callback_data: `referral_${userId}` }],
           ],
         };
