@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0B1023"/>
+      <stop offset="100%" stop-color="#151E30"/>
+    </linearGradient>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#C48D0A"/>
+      <stop offset="50%" stop-color="#FFD54F"/>
+      <stop offset="100%" stop-color="#FFECB3"/>
+    </linearGradient>
+    <linearGradient id="goldGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#D89D15"/>
+      <stop offset="100%" stop-color="#FFECB3"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="softGlow">
+      <feGaussianBlur stdDeviation="20" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1280" height="640" fill="url(#bgGrad)"/>
+
+  <!-- Decorative circles -->
+  <circle cx="200" cy="320" r="250" fill="#151E30" opacity="0.5"/>
+  <circle cx="1080" cy="320" r="200" fill="#151E30" opacity="0.4"/>
+  <circle cx="640" cy="100" r="150" fill="#1A2540" opacity="0.3"/>
+
+  <!-- Gold glow behind logo -->
+  <circle cx="640" cy="220" r="120" fill="#FFD54F" opacity="0.05" filter="url(#softGlow)"/>
+
+  <!-- Logo - Outer Triangle -->
+  <polygon points="640,120 740,300 540,300" fill="none" stroke="url(#goldGrad)" stroke-width="4" filter="url(#glow)"/>
+
+  <!-- Logo - Inner Filled Triangle -->
+  <polygon points="640,150 720,290 560,290" fill="url(#goldGrad)" opacity="0.9"/>
+
+  <!-- Logo - Circle -->
+  <circle cx="640" cy="270" r="25" fill="url(#goldGrad2)" filter="url(#glow)"/>
+  <circle cx="640" cy="264" r="12" fill="#FFECB3" opacity="0.6"/>
+
+  <!-- Title -->
+  <text x="640" y="380" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="64" font-weight="800" letter-spacing="8" fill="url(#goldGrad)">VANGUARD STAKING</text>
+
+  <!-- Subtitle -->
+  <text x="640" y="430" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="24" letter-spacing="12" fill="#7A8CA5">STAKE • EARN • GROW</text>
+
+  <!-- Divider line -->
+  <line x1="440" y1="460" x2="840" y2="460" stroke="#1E2D45" stroke-width="1"/>
+
+  <!-- Features -->
+  <text x="400" y="510" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" fill="#7A8CA5">🔒 Secure Protocol</text>
+  <text x="640" y="510" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" fill="#7A8CA5">⚡ Daily Rewards</text>
+  <text x="880" y="510" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" fill="#7A8CA5">🌍 5K+ Users</text>
+
+  <!-- Commission highlight -->
+  <rect x="440" y="540" width="400" height="50" rx="25" fill="url(#goldGrad)" opacity="0.1" stroke="url(#goldGrad)" stroke-width="1"/>
+  <text x="640" y="572" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="700" fill="#FFD54F">40% AFFILIATE COMMISSIONS</text>
+</svg>

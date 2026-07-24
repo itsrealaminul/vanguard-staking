@@ -15,7 +15,7 @@ const supabase = createClient(
 const BOT_TOKEN = process.env.BOT_TOKEN || '';
 const APP_URL = process.env.APP_URL || 'https://vanguard-staking.vercel.app';
 const CHANNEL_ID = process.env.CHANNEL_ID || '';
-const BANNER_URL = 'https://alsgp0.fds.api.xiaomi.com/chatbot-prod/multimedia/6883414398/a4c5569c-010f-4e02-846e-91e6a38012b5.png?GalaxyAccessKeyId=AKDFVGPIRVU2J5L22P&Expires=1816472016574&Signature=378bvUcojwmIE5MD5YBR9+W4vDI=';
+const BANNER_URL = 'https://raw.githubusercontent.com/itsrealaminul/vanguard-staking/main/public/banner.svg';
 
 // Helper to safely get query param as string
 function getParam(val: any): string | undefined {
