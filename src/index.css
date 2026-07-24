@@ -107,6 +107,14 @@ body {
   margin-bottom: 16px;
   animation: fadeInDown 0.5s ease;
 }
+.logo-container {
+  margin-bottom: 12px;
+  animation: bounceIn 0.6s ease 0.1s both;
+}
+.logo-svg {
+  filter: drop-shadow(0 0 15px rgba(255, 213, 79, 0.3));
+  animation: float 4s ease-in-out infinite;
+}
 .header h1 {
   font-size: 26px;
   background: linear-gradient(135deg, #C48D0A, #FFD54F, #FFECB3);
@@ -121,6 +129,96 @@ body {
   font-size: 12px;
   letter-spacing: 4px;
   text-transform: uppercase;
+}
+
+/* ─── Trust Bar ───────────────────────────────────── */
+.trust-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  background: linear-gradient(135deg, #151E30, #1A2540);
+  border-radius: 12px;
+  padding: 12px 20px;
+  margin-bottom: 16px;
+  border: 1px solid #1E2D45;
+  animation: fadeInUp 0.4s ease 0.15s both;
+}
+.trust-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #FFD54F;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+.trust-item .trust-icon {
+  display: flex;
+  align-items: center;
+}
+.trust-item .trust-icon svg {
+  width: 16px;
+  height: 16px;
+}
+.trust-divider {
+  width: 1px;
+  height: 16px;
+  background: #1E2D45;
+}
+
+/* ─── Trust Section ───────────────────────────────── */
+.trust-section {
+  margin-top: 8px;
+  animation: fadeInUp 0.4s ease 0.3s both;
+}
+.trust-title {
+  font-size: 16px;
+  color: #FFD54F;
+  margin-bottom: 12px;
+  text-align: center;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+.trust-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.trust-card {
+  background: #151E30;
+  border-radius: 12px;
+  padding: 16px 12px;
+  text-align: center;
+  border: 1px solid #1E2D45;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: fadeInUp 0.4s ease calc(0.35s + var(--i, 0) * 0.1s) both;
+}
+.trust-card:hover {
+  border-color: rgba(255, 213, 79, 0.3);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(255, 213, 79, 0.08);
+}
+.trust-card-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+  color: #FFD54F;
+}
+.trust-card-icon svg {
+  width: 24px;
+  height: 24px;
+}
+.trust-card-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #FFD54F;
+  margin-bottom: 4px;
+}
+.trust-card-desc {
+  font-size: 11px;
+  color: #7A8CA5;
 }
 
 /* ─── Balance Card ────────────────────────────────── */

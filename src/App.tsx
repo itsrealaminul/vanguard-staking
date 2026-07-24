@@ -288,10 +288,62 @@ function App() {
     <div className="app">
       {message && <div className="toast">{message}</div>}
 
-      {/* Header */}
+      {/* Header with Logo */}
       <div className="header">
+        <div className="logo-container">
+          <svg className="logo-svg" width="64" height="64" viewBox="0 0 100 100" fill="none">
+            <defs>
+              <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#C48D0A" />
+                <stop offset="50%" stopColor="#FFD54F" />
+                <stop offset="100%" stopColor="#FFECB3" />
+              </linearGradient>
+              <linearGradient id="goldGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#D89D15" />
+                <stop offset="100%" stopColor="#FFECB3" />
+              </linearGradient>
+              <filter id="glow">
+                <feGaussianBlur stdDeviation="3" result="blur" />
+                <feMerge>
+                  <feMergeNode in="blur" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+            </defs>
+            {/* Outer triangle */}
+            <polygon
+              points="50,8 92,85 8,85"
+              fill="none"
+              stroke="url(#goldGrad)"
+              strokeWidth="3"
+              filter="url(#glow)"
+            />
+            {/* Inner filled triangle */}
+            <polygon
+              points="50,22 80,78 20,78"
+              fill="url(#goldGrad)"
+              opacity="0.9"
+            />
+            {/* Circle inside triangle */}
+            <circle
+              cx="50"
+              cy="65"
+              r="12"
+              fill="url(#goldGrad2)"
+              filter="url(#glow)"
+            />
+            {/* Inner circle highlight */}
+            <circle
+              cx="50"
+              cy="62"
+              r="6"
+              fill="#FFECB3"
+              opacity="0.6"
+            />
+          </svg>
+        </div>
         <h1>VANGUARD STAKING</h1>
-        <div className="subtitle">Stake • Earn • Grow</div>
+        <div className="subtitle">STAKE • EARN • GROW</div>
       </div>
 
       {/* Dashboard */}
@@ -313,6 +365,24 @@ function App() {
                 <div className="stat-label">Referrals</div>
                 <div className="stat-value">{user?.referrals_count || 0}</div>
               </div>
+            </div>
+          </div>
+
+          {/* Trust Indicators */}
+          <div className="trust-bar">
+            <div className="trust-item">
+              <span className="trust-icon">{Icons.shield}</span>
+              <span>Secure</span>
+            </div>
+            <div className="trust-divider" />
+            <div className="trust-item">
+              <span className="trust-icon">{Icons.zap}</span>
+              <span>Instant</span>
+            </div>
+            <div className="trust-divider" />
+            <div className="trust-item">
+              <span className="trust-icon">{Icons.users}</span>
+              <span>5K+ Users</span>
             </div>
           </div>
 
@@ -340,6 +410,33 @@ function App() {
             <p style={{marginTop: 8}}>
               Invite friends and earn <strong style={{color: '#FFD54F'}}>1 USDT</strong> for each referral!
             </p>
+          </div>
+
+          {/* Trust & Security Section */}
+          <div className="trust-section">
+            <h3 className="trust-title">Why Vanguard Staking?</h3>
+            <div className="trust-grid">
+              <div className="trust-card">
+                <div className="trust-card-icon">{Icons.shield}</div>
+                <div className="trust-card-title">Secure Protocol</div>
+                <div className="trust-card-desc">Audited smart contracts</div>
+              </div>
+              <div className="trust-card">
+                <div className="trust-card-icon">{Icons.zap}</div>
+                <div className="trust-card-title">Daily Rewards</div>
+                <div className="trust-card-desc">Earn up to 3% daily</div>
+              </div>
+              <div className="trust-card">
+                <div className="trust-card-icon">{Icons.withdraw}</div>
+                <div className="trust-card-title">Fast Withdrawals</div>
+                <div className="trust-card-desc">Process within 24h</div>
+              </div>
+              <div className="trust-card">
+                <div className="trust-card-icon">{Icons.users}</div>
+                <div className="trust-card-title">Active Community</div>
+                <div className="trust-card-desc">5,000+ stakers</div>
+              </div>
+            </div>
           </div>
         </div>
       )}
