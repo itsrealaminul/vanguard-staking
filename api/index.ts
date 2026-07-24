@@ -15,7 +15,7 @@ const supabase = createClient(
 const BOT_TOKEN = process.env.BOT_TOKEN || '';
 const APP_URL = process.env.APP_URL || 'https://vanguard-staking.vercel.app';
 const CHANNEL_ID = process.env.CHANNEL_ID || '';
-const BANNER_URL = 'https://raw.githubusercontent.com/itsrealaminul/vanguard-staking/main/public/banner.svg';
+const BANNER_URL = 'https://raw.githubusercontent.com/itsrealaminul/vanguard-staking/main/public/banner.png';
 
 // Helper to safely get query param as string
 function getParam(val: any): string | undefined {
