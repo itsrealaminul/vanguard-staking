@@ -69,3 +69,16 @@ export async function claimReward(telegramId: number, stakeId: string) {
   }
   return res.json();
 }
+
+export async function submitDeposit(telegramId: number, amount: number, txHash?: string) {
+  const res = await fetch(`${API_BASE}/deposit`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ telegram_id: telegramId, amount, tx_hash: txHash }),
+  });
+  if (!res.ok) {
+    const data = await res.json();
+    throw new Error(data.error || `Failed to deposit: ${res.status}`);
+  }
+  return res.json();
+}

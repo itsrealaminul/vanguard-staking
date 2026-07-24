@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { fetchUser, fetchStakes, createStake, fetchTransactions, fetchWithdrawals, requestWithdrawal, claimReward } from './api';
+import { fetchUser, fetchStakes, createStake, fetchTransactions, fetchWithdrawals, requestWithdrawal, claimReward, submitDeposit } from './api';
 
 declare global {
   interface Window {
@@ -157,6 +157,8 @@ function App() {
   const [stakeAmount, setStakeAmount] = useState('');
   const [withdrawAmount, setWithdrawAmount] = useState('');
   const [walletAddress, setWalletAddress] = useState('');
+  const [depositAmount, setDepositAmount] = useState('');
+  const [depositTxHash, setDepositTxHash] = useState('');
   const [actionLoading, setActionLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [pageKey, setPageKey] = useState(0);
@@ -537,12 +539,63 @@ function App() {
             </button>
           </div>
 
+          {/* Deposit Verification Form */}
+          <div className="card">
+            <h3 style={{display: 'flex', alignItems: 'center', gap: 8}}>{Icons.zap} Verify Your Deposit</h3>
+            <p style={{color: '#7A8CA5', fontSize: 12, marginTop: 4, marginBottom: 12}}>
+              After sending USDT, submit your deposit details below for verification.
+            </p>
+            <div className="input-group">
+              <label>Amount (USDT)</label>
+              <input
+                type="number"
+                placeholder="Enter deposited amount"
+                value={depositAmount}
+                onChange={(e) => setDepositAmount(e.target.value)}
+              />
+            </div>
+            <div className="input-group">
+              <label>Transaction Hash (Optional)</label>
+              <input
+                type="text"
+                placeholder="TRC-20 TX Hash"
+                value={depositTxHash}
+                onChange={(e) => setDepositTxHash(e.target.value)}
+              />
+            </div>
+            <button
+              className="btn btn-success"
+              onClick={async () => {
+                const amount = parseFloat(depositAmount);
+                if (isNaN(amount) || amount < 10) {
+                  showMsg('Minimum deposit: 10 USDT');
+                  return;
+                }
+                try {
+                  setActionLoading(true);
+                  await submitDeposit(TELEGRAM_ID, amount, depositTxHash || undefined);
+                  showMsg(`Deposit of ${amount} USDT submitted!`);
+                  setDepositAmount('');
+                  setDepositTxHash('');
+                  await loadData();
+                } catch (err: any) {
+                  showMsg(err.message || 'Deposit failed');
+                } finally {
+                  setActionLoading(false);
+                }
+              }}
+              disabled={actionLoading}
+            >
+              {actionLoading ? 'Submitting...' : <span style={{display: 'inline-flex', alignItems: 'center', gap: 8}}>{Icons.deposit} Submit Deposit</span>}
+            </button>
+          </div>
+
           <div className="card">
             <h3 style={{display: 'flex', alignItems: 'center', gap: 8}}>{Icons.info} Important</h3>
             <p style={{marginTop: 10, lineHeight: 1.8}}>
               • Send only <strong style={{color: '#FFD54F'}}>USDT (TRC-20)</strong> network<br/>
               • Minimum deposit: <strong style={{color: '#FFD54F'}}>10 USDT</strong><br/>
-              • Balance updates automatically<br/>
+              • Balance updates after verification<br/>
               • Contact admin if not updated after 30 min
             </p>
           </div>
