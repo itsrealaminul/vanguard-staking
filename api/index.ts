@@ -405,8 +405,8 @@ app.get('/api/setup-bot', async (_req, res) => {
       { command: 'referral', description: '👥 Get referral link' },
       { command: 'help', description: '📖 Show help' },
     ]);
-    await bot.setMyDescription('⚔️ Vanguard Staking — Stake your USDT and earn up to 3% daily rewards. Secure, fast, and trusted by 5,000+ users worldwide.\n\n💰 Stake • Earn • Grow\n👥 40% Affiliate Commissions\n🔒 Secure TRC-20 Protocol\n⚡ Instant Deposits & Fast Withdrawals\n\nTap Start to begin your staking journey!');
-    await bot.setMyShortDescription('Stake USDT, Earn Up to 3% Daily. 5,000+ Users. 40% Affiliate Commission.');
+    await bot.setMyDescription({ description: '⚔️ Vanguard Staking — Stake your USDT and earn up to 3% daily rewards. Secure, fast, and trusted by 5,000+ users worldwide.\n\n💰 Stake • Earn • Grow\n👥 40% Affiliate Commissions\n🔒 Secure TRC-20 Protocol\n⚡ Instant Deposits & Fast Withdrawals\n\nTap Start to begin your staking journey!' });
+    await bot.setMyShortDescription({ short_description: 'Stake USDT, Earn Up to 3% Daily. 5,000+ Users. 40% Affiliate Commission.' });
     res.json({ success: true, message: 'Bot configured!' });
   } catch (err: any) { res.status(500).json({ error: err.message }); }
 });
