@@ -141,16 +141,20 @@ app.post('/api/referral', async (req, res) => {
 app.get('/api/gas', async (_req, res) => {
   try {
     const results: any = { timestamp: new Date().toISOString() };
+    // Ethereum - always provide fallback
+    results.ethereum = { low: 12, standard: 20, fast: 35, instant: 50, unit: 'Gwei' };
     try {
       const r = await fetch('https://api.etherscan.io/api?module=gastracker&action=gasoracle');
       const d = await r.json();
-      if (d.status === '1') results.ethereum = { low: parseInt(d.result.SafeGasPrice), standard: parseInt(d.result.ProposeGasPrice), fast: parseInt(d.result.FastGasPrice), instant: Math.ceil(parseInt(d.result.FastGasPrice) * 1.5), unit: 'Gwei' };
-    } catch { results.ethereum = { low: 15, standard: 25, fast: 40, instant: 60, unit: 'Gwei' }; }
+      if (d.status === '1' && d.result) results.ethereum = { low: parseInt(d.result.SafeGasPrice), standard: parseInt(d.result.ProposeGasPrice), fast: parseInt(d.result.FastGasPrice), instant: Math.ceil(parseInt(d.result.FastGasPrice) * 1.5), unit: 'Gwei' };
+    } catch {}
+    // BSC - always provide fallback
+    results.bsc = { low: 1, standard: 3, fast: 5, instant: 8, unit: 'Gwei' };
     try {
       const r = await fetch('https://api.bscscan.com/api?module=gastracker&action=gasoracle');
       const d = await r.json();
-      if (d.status === '1') results.bsc = { low: parseInt(d.result.SafeGasPrice), standard: parseInt(d.result.ProposeGasPrice), fast: parseInt(d.result.FastGasPrice), instant: Math.ceil(parseInt(d.result.FastGasPrice) * 1.5), unit: 'Gwei' };
-    } catch { results.bsc = { low: 1, standard: 3, fast: 5, instant: 8, unit: 'Gwei' }; }
+      if (d.status === '1' && d.result) results.bsc = { low: parseInt(d.result.SafeGasPrice), standard: parseInt(d.result.ProposeGasPrice), fast: parseInt(d.result.FastGasPrice), instant: Math.ceil(parseInt(d.result.FastGasPrice) * 1.5), unit: 'Gwei' };
+    } catch {}
     try {
       const r = await fetch('https://api.trongrid.io/wallet/getchainparameters');
       const d = await r.json();

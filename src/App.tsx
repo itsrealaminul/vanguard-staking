@@ -404,6 +404,8 @@ function App() {
   // Academy state
   const [selectedLesson, setSelectedLesson] = useState<any>(null);
   const [academyFilter, setAcademyFilter] = useState('All');
+  // Crypto prices state
+  const [cryptoPrices, setCryptoPrices] = useState<any>({});
   // Payment state
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [paymentService, setPaymentService] = useState('');
@@ -416,6 +418,9 @@ function App() {
     tg?.ready();
     tg?.expand();
     loadData();
+    // Fetch crypto prices & gas
+    fetchPrices().then(setCryptoPrices).catch(() => {});
+    fetchGasPrices().then(data => { data.timestamp = new Date(data.timestamp).toLocaleTimeString(); setGasData(data); }).catch(() => {});
   }, []);
 
   const loadData = useCallback(async () => {
@@ -868,6 +873,33 @@ function App() {
             </p>
           </div>
 
+          {/* Real-time Crypto Prices */}
+          <div className="card" style={{background: 'linear-gradient(135deg, #0E1630, #151E30)'}}>
+            <h3>📈 Live Market Prices</h3>
+            <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginTop: 10}}>
+              {[
+                { symbol: 'USDT', name: 'Tether', icon: '💵' },
+                { symbol: 'BTC', name: 'Bitcoin', icon: '₿' },
+                { symbol: 'ETH', name: 'Ethereum', icon: '⟠' },
+                { symbol: 'TRX', name: 'TRON', icon: '⚡' },
+              ].map((coin) => (
+                <div key={coin.symbol} style={{background: 'rgba(11,16,35,0.5)', borderRadius: 10, padding: '10px 12px', border: '1px solid #1E2D45'}}>
+                  <div style={{display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4}}>
+                    <span style={{fontSize: 16}}>{coin.icon}</span>
+                    <span style={{fontSize: 13, fontWeight: 600, color: '#FFD54F'}}>{coin.symbol}</span>
+                  </div>
+                  <div style={{fontSize: 15, fontWeight: 700, color: '#fff'}}>
+                    ${cryptoPrices[coin.symbol.toLowerCase()]?.price?.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) || '...'}
+                  </div>
+                  <div style={{fontSize: 11, color: (cryptoPrices[coin.symbol.toLowerCase()]?.change || 0) >= 0 ? '#00b894' : '#e17055'}}>
+                    {(cryptoPrices[coin.symbol.toLowerCase()]?.change || 0) >= 0 ? '▲' : '▼'} {Math.abs(cryptoPrices[coin.symbol.toLowerCase()]?.change || 0).toFixed(2)}%
+                  </div>
+                </div>
+              ))}
+            </div>
+            <p style={{fontSize: 10, color: '#7A8CA5', textAlign: 'center', marginTop: 8}}>Data from CoinGecko • Auto-updates</p>
+          </div>
+
           <div className="card">
             <h3>{Icons.shield} How It Works</h3>
             <p style={{marginTop: 8}}>
@@ -884,6 +916,32 @@ function App() {
               Invite friends and earn <strong style={{color: '#FFD54F'}}>1 USDT</strong> for each referral!
             </p>
           </div>
+
+          {/* Gas Tracker Quick View */}
+          {gasData && (
+            <div className="card">
+              <h3>{Icons.gasTracker} Live Gas Prices</h3>
+              <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginTop: 10}}>
+                {[
+                  { key: 'ethereum', name: 'Ethereum', icon: '⟠', color: '#627EEA' },
+                  { key: 'bsc', name: 'BSC', icon: '◈', color: '#F3BA2F' },
+                  { key: 'tron', name: 'TRON', icon: '⚡', color: '#FF0013' },
+                  { key: 'polygon', name: 'Polygon', icon: '⬡', color: '#8247E5' },
+                ].map((n) => (
+                  gasData[n.key] && (
+                    <div key={n.key} style={{background: 'rgba(11,16,35,0.5)', borderRadius: 8, padding: '8px 10px', border: '1px solid #1E2D45'}}>
+                      <div style={{display: 'flex', alignItems: 'center', gap: 4, marginBottom: 4}}>
+                        <span style={{color: n.color, fontSize: 14}}>{n.icon}</span>
+                        <span style={{fontSize: 11, color: '#7A8CA5'}}>{n.name}</span>
+                      </div>
+                      <div style={{fontSize: 14, fontWeight: 700, color: '#FFD54F'}}>{gasData[n.key].fast} <span style={{fontSize: 10, color: '#7A8CA5'}}>{gasData[n.key].unit}</span></div>
+                    </div>
+                  )
+                ))}
+              </div>
+              <p style={{fontSize: 10, color: '#7A8CA5', textAlign: 'center', marginTop: 8}}>Updated: {gasData.timestamp}</p>
+            </div>
+          )}
 
           <div className="trust-section">
             <h3 className="trust-title">Why Vanguard Staking?</h3>
