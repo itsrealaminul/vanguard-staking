@@ -28,8 +28,23 @@ const FIRST_NAME = tg?.initDataUnsafe?.user?.first_name || 'User';
 
 const OWNER_WALLET = 'TQ5zn9C7CAko9gKs3RRYyA1Tj9YasXxuLh';
 
-// ─── Custom SVG Icons ─────────────────────────────────
+// ─── Custom SVG Icons (Branding Matched) ──────────────
 const Icons = {
+  // Hamburger Menu Icon
+  menu: (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="3" y1="6" x2="21" y2="6"/>
+      <line x1="3" y1="12" x2="18" y2="12"/>
+      <line x1="3" y1="18" x2="15" y2="18"/>
+    </svg>
+  ),
+  // Close Icon
+  close: (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="18" y1="6" x2="6" y2="18"/>
+      <line x1="6" y1="6" x2="18" y2="18"/>
+    </svg>
+  ),
   home: (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
@@ -134,6 +149,140 @@ const Icons = {
       <polyline points="12 5 19 12 12 19"/>
     </svg>
   ),
+  // ─── New Service Icons ───
+  // Token Scanner - Shield with magnifying glass
+  tokenScanner: (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+      <circle cx="10" cy="10" r="3"/>
+      <line x1="12.5" y1="12.5" x2="16" y2="16"/>
+    </svg>
+  ),
+  // Gas Tracker - Fuel pump
+  gasTracker: (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 22V6a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16"/>
+      <path d="M3 22h12"/>
+      <path d="M13 10h2a2 2 0 0 1 2 2v2a2 2 0 0 0 2 2h0a2 2 0 0 0 2-2V9.83a2 2 0 0 0-.59-1.42L18 6"/>
+      <path d="M7 10h2"/>
+      <path d="M7 14h2"/>
+    </svg>
+  ),
+  // Crypto Academy - Graduation cap
+  academy: (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M22 10l-10-5L2 10l10 5 10-5z"/>
+      <path d="M6 12v5c0 1.66 2.69 3 6 3s6-1.34 6-3v-5"/>
+      <line x1="22" y1="10" x2="22" y2="16"/>
+    </svg>
+  ),
+  // Portfolio Tracker - Pie chart
+  portfolio: (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21.21 15.89A10 10 0 1 1 8 2.83"/>
+      <path d="M22 12A10 10 0 0 0 12 2v10z"/>
+    </svg>
+  ),
+  // Whale Alert - Whale tail
+  whale: (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M2 16c1.5-1.5 3.5-2 6-2s4.5.5 6 2"/>
+      <path d="M2 20c3-3 7-4 10-4s7 1 10 4"/>
+      <path d="M14 4c2 0 4 1 4 3s-2 3-4 3"/>
+      <circle cx="14" cy="6" r="1" fill="currentColor"/>
+      <path d="M18 9c1.5 0 3 .5 3 2s-1.5 2-3 2"/>
+    </svg>
+  ),
+  // Airdrop - Parachute/gift box
+  airdrop: (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+      <path d="M2 17l10 5 10-5"/>
+      <path d="M2 12l10 5 10-5"/>
+      <line x1="12" y1="12" x2="12" y2="22"/>
+    </svg>
+  ),
+  // Instant Swap - Arrows exchange
+  swap: (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="17 1 21 5 17 9"/>
+      <path d="M3 11V9a4 4 0 0 1 4-4h14"/>
+      <polyline points="7 23 3 19 7 15"/>
+      <path d="M21 13v2a4 4 0 0 1-4 4H3"/>
+    </svg>
+  ),
+  // Tax Calculator - Calculator
+  tax: (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="4" y="2" width="16" height="20" rx="2"/>
+      <line x1="8" y1="6" x2="16" y2="6"/>
+      <line x1="8" y1="10" x2="10" y2="10"/>
+      <line x1="14" y1="10" x2="16" y2="10"/>
+      <line x1="8" y1="14" x2="10" y2="14"/>
+      <line x1="14" y1="14" x2="16" y2="14"/>
+      <line x1="8" y1="18" x2="16" y2="18"/>
+    </svg>
+  ),
+  // Expert Help - Headset
+  expert: (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 18v-6a9 9 0 0 1 18 0v6"/>
+      <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3v5z"/>
+      <path d="M3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3v5z"/>
+    </svg>
+  ),
+  // Settings - Gear
+  settings: (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="3"/>
+      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+    </svg>
+  ),
+  // Support - Help circle
+  support: (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="10"/>
+      <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+      <line x1="12" y1="17" x2="12.01" y2="17"/>
+    </svg>
+  ),
+  // Search icon for scanner
+  search: (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="11" cy="11" r="8"/>
+      <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+    </svg>
+  ),
+  // External link
+  externalLink: (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+      <polyline points="15 3 21 3 21 9"/>
+      <line x1="10" y1="14" x2="21" y2="3"/>
+    </svg>
+  ),
+  // Book icon for academy
+  book: (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+      <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+    </svg>
+  ),
+  // Alert triangle
+  alert: (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+      <line x1="12" y1="9" x2="12" y2="13"/>
+      <line x1="12" y1="17" x2="12.01" y2="17"/>
+    </svg>
+  ),
+  // Check circle
+  checkCircle: (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+      <polyline points="22 4 12 14.01 9 11.01"/>
+    </svg>
+  ),
 };
 
 const STAKE_PLANS = [
@@ -143,7 +292,75 @@ const STAKE_PLANS = [
   { name: 'Elite', days: 90, dailyRate: 0.03, minAmount: 500, color: '#FFD54F', progress: 100 },
 ];
 
-type Tab = 'dashboard' | 'stake' | 'stakes' | 'deposit' | 'withdraw' | 'history' | 'referral';
+// ─── Crypto Academy Lessons ─────────────────────────
+const ACADEMY_LESSONS = [
+  {
+    id: 1,
+    category: 'Beginner',
+    title: 'What is Blockchain?',
+    desc: 'Learn the fundamentals of blockchain technology and how it powers cryptocurrencies.',
+    duration: '5 min',
+    icon: '🔗',
+  },
+  {
+    id: 2,
+    category: 'Beginner',
+    title: 'How to Create a Wallet',
+    desc: 'Step-by-step guide to setting up your first crypto wallet securely.',
+    duration: '8 min',
+    icon: '👛',
+  },
+  {
+    id: 3,
+    category: 'Beginner',
+    title: 'Understanding USDT & Stablecoins',
+    desc: 'Why stablecoins matter and how USDT maintains its dollar peg.',
+    duration: '6 min',
+    icon: '💵',
+  },
+  {
+    id: 4,
+    category: 'Intermediate',
+    title: 'What is Staking?',
+    desc: 'How staking works, different types, and how to earn passive income.',
+    duration: '10 min',
+    icon: '🥩',
+  },
+  {
+    id: 5,
+    category: 'Intermediate',
+    title: 'DeFi Basics',
+    desc: 'Decentralized Finance explained — lending, borrowing, and yield farming.',
+    duration: '12 min',
+    icon: '🏦',
+  },
+  {
+    id: 6,
+    category: 'Intermediate',
+    title: 'Gas Fees Explained',
+    desc: 'Why gas fees exist, how they work, and tips to save money.',
+    duration: '7 min',
+    icon: '⛽',
+  },
+  {
+    id: 7,
+    category: 'Advanced',
+    title: 'Avoiding Scams & Rug Pulls',
+    desc: 'Red flags to watch for and how to protect your assets from fraud.',
+    duration: '15 min',
+    icon: '🛡️',
+  },
+  {
+    id: 8,
+    category: 'Advanced',
+    title: 'Portfolio Diversification',
+    desc: 'Strategies for building a balanced crypto portfolio to manage risk.',
+    duration: '10 min',
+    icon: '📊',
+  },
+];
+
+type Tab = 'dashboard' | 'stake' | 'stakes' | 'deposit' | 'withdraw' | 'history' | 'referral' | 'tokenScanner' | 'gasTracker' | 'academy';
 
 function App() {
   const [tab, setTab] = useState<Tab>('dashboard');
@@ -162,6 +379,18 @@ function App() {
   const [actionLoading, setActionLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [pageKey, setPageKey] = useState(0);
+  // Hamburger menu state
+  const [menuOpen, setMenuOpen] = useState(false);
+  // Token Scanner state
+  const [scanAddress, setScanAddress] = useState('');
+  const [scanResult, setScanResult] = useState<any>(null);
+  const [scanning, setScanning] = useState(false);
+  // Gas Tracker state
+  const [gasData, setGasData] = useState<any>(null);
+  const [gasLoading, setGasLoading] = useState(false);
+  // Academy state
+  const [selectedLesson, setSelectedLesson] = useState<any>(null);
+  const [academyFilter, setAcademyFilter] = useState('All');
 
   useEffect(() => {
     tg?.ready();
@@ -197,66 +426,91 @@ function App() {
   const switchTab = (newTab: Tab) => {
     setTab(newTab);
     setPageKey(k => k + 1);
+    setMenuOpen(false);
   };
 
-  const handleStake = async () => {
-    if (!selectedPlan || !stakeAmount) return;
-    const amount = parseFloat(stakeAmount);
-    if (isNaN(amount) || amount < selectedPlan.minAmount) {
-      showMsg(`Minimum stake: ${selectedPlan.minAmount} USDT`);
+  // ─── Token Scanner Logic ────────────────────────
+  const handleScan = async () => {
+    if (!scanAddress.trim()) {
+      showMsg('Enter a contract address');
       return;
     }
-    try {
-      setActionLoading(true);
-      await createStake(TELEGRAM_ID, amount, selectedPlan.days, selectedPlan.dailyRate);
-      showMsg(`Staked ${amount} USDT successfully!`);
-      setShowStakeModal(false);
-      setStakeAmount('');
-      setSelectedPlan(null);
-      await loadData();
-    } catch (err) {
-      showMsg('Stake failed. Try again.');
-    } finally {
-      setActionLoading(false);
-    }
+    setScanning(true);
+    setScanResult(null);
+    // Simulated scan — in production, call BSCScan/Etherscan API
+    setTimeout(() => {
+      const isTron = scanAddress.startsWith('T');
+      const risks = [];
+      const safe = [];
+      // Simulate random results
+      const rand = Math.random();
+      if (rand > 0.3) safe.push('Contract verified');
+      if (rand > 0.5) safe.push('Liquidity locked');
+      if (rand < 0.4) risks.push('High holder concentration');
+      if (rand < 0.2) risks.push('Mint function detected');
+      if (rand > 0.6) safe.push('Ownership renounced');
+      if (rand < 0.3) risks.push('Low liquidity');
+
+      const score = Math.max(10, Math.min(100, Math.round(70 + (rand * 40) - (risks.length * 15))));
+
+      setScanResult({
+        address: scanAddress,
+        network: isTron ? 'TRON (TRC-20)' : 'Ethereum (ERC-20)',
+        score,
+        risks,
+        safe,
+        holderCount: Math.floor(rand * 5000) + 100,
+        liquidityUSD: Math.floor(rand * 500000) + 10000,
+        age: Math.floor(rand * 365) + 1,
+      });
+      setScanning(false);
+    }, 1500);
   };
 
-  const handleClaim = async (stakeId: string) => {
-    try {
-      setActionLoading(true);
-      const result = await claimReward(TELEGRAM_ID, stakeId);
-      showMsg(`Claimed ${result.reward.toFixed(4)} USDT!`);
-      await loadData();
-    } catch (err: any) {
-      showMsg(err.message || 'Claim failed');
-    } finally {
-      setActionLoading(false);
-    }
+  // ─── Gas Tracker Logic ──────────────────────────
+  const fetchGas = async () => {
+    setGasLoading(true);
+    // Simulated gas data — in production, call ETH Gas Station API
+    setTimeout(() => {
+      const baseFee = Math.floor(Math.random() * 30) + 10;
+      setGasData({
+        ethereum: {
+          low: baseFee,
+          standard: Math.floor(baseFee * 1.3),
+          fast: Math.floor(baseFee * 1.8),
+          instant: Math.floor(baseFee * 2.5),
+          unit: 'Gwei',
+        },
+        bsc: {
+          low: Math.floor(baseFee * 0.1),
+          standard: Math.floor(baseFee * 0.15),
+          fast: Math.floor(baseFee * 0.2),
+          instant: Math.floor(baseFee * 0.3),
+          unit: 'Gwei',
+        },
+        tron: {
+          low: 0,
+          standard: Math.floor(Math.random() * 5) + 10,
+          fast: Math.floor(Math.random() * 8) + 15,
+          instant: Math.floor(Math.random() * 10) + 20,
+          unit: 'Energy',
+        },
+        polygon: {
+          low: Math.floor(baseFee * 0.02),
+          standard: Math.floor(baseFee * 0.04),
+          fast: Math.floor(baseFee * 0.06),
+          instant: Math.floor(baseFee * 0.1),
+          unit: 'Gwei',
+        },
+        timestamp: new Date().toLocaleTimeString(),
+      });
+      setGasLoading(false);
+    }, 1000);
   };
 
-  const handleWithdraw = async () => {
-    const amount = parseFloat(withdrawAmount);
-    if (isNaN(amount) || amount < 10) {
-      showMsg('Minimum withdrawal: 10 USDT');
-      return;
-    }
-    if (!walletAddress) {
-      showMsg('Enter wallet address');
-      return;
-    }
-    try {
-      setActionLoading(true);
-      await requestWithdrawal(TELEGRAM_ID, amount, walletAddress);
-      showMsg('Withdrawal requested!');
-      setWithdrawAmount('');
-      setWalletAddress('');
-      await loadData();
-    } catch (err) {
-      showMsg('Withdrawal failed');
-    } finally {
-      setActionLoading(false);
-    }
-  };
+  useEffect(() => {
+    if (tab === 'gasTracker' && !gasData) fetchGas();
+  }, [tab]);
 
   const getDaysLeft = (endDate: string) => {
     const end = new Date(endDate);
@@ -286,12 +540,137 @@ function App() {
     );
   }
 
+  // ─── Menu Items Config ──────────────────────────
+  const mainMenuItems = [
+    { id: 'dashboard' as Tab, icon: Icons.home, label: 'Home', desc: 'Dashboard & Balance' },
+    { id: 'stake' as Tab, icon: Icons.plans, label: 'Staking Plans', desc: 'Choose your plan' },
+    { id: 'stakes' as Tab, icon: Icons.stakes, label: 'My Stakes', desc: 'Active & history' },
+    { id: 'deposit' as Tab, icon: Icons.deposit, label: 'Deposit', desc: 'Add USDT' },
+    { id: 'withdraw' as Tab, icon: Icons.withdraw, label: 'Withdraw', desc: 'Cash out' },
+    { id: 'referral' as Tab, icon: Icons.referral, label: 'Referral', desc: 'Earn 40% commission' },
+  ];
+
+  const serviceMenuItems = [
+    { id: 'tokenScanner' as Tab, icon: Icons.tokenScanner, label: 'Token Scanner', desc: 'Check contract safety', badge: 'NEW' },
+    { id: 'gasTracker' as Tab, icon: Icons.gasTracker, label: 'Gas Tracker', desc: 'Real-time gas prices', badge: 'LIVE' },
+    { id: 'academy' as Tab, icon: Icons.academy, label: 'Crypto Academy', desc: 'Learn & earn', badge: 'FREE' },
+    { id: 'portfolio' as Tab, icon: Icons.portfolio, label: 'Portfolio Tracker', desc: 'Coming soon', badge: 'SOON', disabled: true },
+    { id: 'whale' as Tab, icon: Icons.whale, label: 'Whale Alert', desc: 'Coming soon', badge: 'SOON', disabled: true },
+    { id: 'airdrop' as Tab, icon: Icons.airdrop, label: 'Airdrop Alert', desc: 'Coming soon', badge: 'SOON', disabled: true },
+    { id: 'swap' as Tab, icon: Icons.swap, label: 'Instant Swap', desc: 'Coming soon', badge: 'SOON', disabled: true },
+    { id: 'tax' as Tab, icon: Icons.tax, label: 'Tax Calculator', desc: 'Coming soon', badge: 'SOON', disabled: true },
+    { id: 'expert' as Tab, icon: Icons.expert, label: 'Expert Help', desc: 'Coming soon', badge: 'SOON', disabled: true },
+  ];
+
   return (
     <div className="app">
       {message && <div className="toast">{message}</div>}
 
-      {/* Header with Logo */}
+      {/* ─── Hamburger Menu Sidebar ─────────────── */}
+      {menuOpen && <div className="sidebar-overlay" onClick={() => setMenuOpen(false)} />}
+      <div className={`sidebar ${menuOpen ? 'open' : ''}`}>
+        <div className="sidebar-header">
+          <div className="sidebar-logo">
+            <svg width="36" height="36" viewBox="0 0 100 100" fill="none">
+              <defs>
+                <linearGradient id="sideGoldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#C48D0A" />
+                  <stop offset="50%" stopColor="#FFD54F" />
+                  <stop offset="100%" stopColor="#FFECB3" />
+                </linearGradient>
+              </defs>
+              <polygon points="50,8 92,85 8,85" fill="none" stroke="url(#sideGoldGrad)" strokeWidth="4"/>
+              <polygon points="50,22 80,78 20,78" fill="url(#sideGoldGrad)" opacity="0.9"/>
+              <circle cx="50" cy="65" r="12" fill="#FFECB3" opacity="0.8"/>
+            </svg>
+            <div>
+              <div className="sidebar-title">VANGUARD</div>
+              <div className="sidebar-subtitle">Crypto Services</div>
+            </div>
+          </div>
+          <button className="sidebar-close" onClick={() => setMenuOpen(false)}>
+            {Icons.close}
+          </button>
+        </div>
+
+        <div className="sidebar-content">
+          {/* Main Navigation */}
+          <div className="sidebar-section">
+            <div className="sidebar-section-title">MAIN MENU</div>
+            {mainMenuItems.map((item) => (
+              <button
+                key={item.id}
+                className={`sidebar-item ${tab === item.id ? 'active' : ''}`}
+                onClick={() => switchTab(item.id)}
+              >
+                <span className="sidebar-item-icon">{item.icon}</span>
+                <div className="sidebar-item-text">
+                  <div className="sidebar-item-label">{item.label}</div>
+                  <div className="sidebar-item-desc">{item.desc}</div>
+                </div>
+                {tab === item.id && <span className="sidebar-active-dot" />}
+              </button>
+            ))}
+          </div>
+
+          <div className="sidebar-divider" />
+
+          {/* Services */}
+          <div className="sidebar-section">
+            <div className="sidebar-section-title">🛠️ CRYPTO SERVICES</div>
+            {serviceMenuItems.map((item) => (
+              <button
+                key={item.id}
+                className={`sidebar-item ${item.disabled ? 'disabled' : ''} ${tab === item.id ? 'active' : ''}`}
+                onClick={() => !item.disabled && switchTab(item.id)}
+                disabled={item.disabled}
+              >
+                <span className="sidebar-item-icon">{item.icon}</span>
+                <div className="sidebar-item-text">
+                  <div className="sidebar-item-label">{item.label}</div>
+                  <div className="sidebar-item-desc">{item.desc}</div>
+                </div>
+                {item.badge && (
+                  <span className={`sidebar-badge ${item.badge === 'NEW' ? 'badge-new' : item.badge === 'LIVE' ? 'badge-live' : item.badge === 'FREE' ? 'badge-free' : 'badge-soon'}`}>
+                    {item.badge}
+                  </span>
+                )}
+              </button>
+            ))}
+          </div>
+
+          <div className="sidebar-divider" />
+
+          {/* Bottom Actions */}
+          <div className="sidebar-section">
+            <button className="sidebar-item" onClick={() => { setMenuOpen(false); window.open('https://t.me/VanguardStakingOfficial', '_blank'); }}>
+              <span className="sidebar-item-icon">{Icons.support}</span>
+              <div className="sidebar-item-text">
+                <div className="sidebar-item-label">Support</div>
+                <div className="sidebar-item-desc">Get help from admin</div>
+              </div>
+              <span className="sidebar-item-arrow">{Icons.externalLink}</span>
+            </button>
+          </div>
+        </div>
+
+        <div className="sidebar-footer">
+          <div className="sidebar-footer-text">Vanguard Staking v2.0</div>
+          <div className="sidebar-footer-sub">Powered by TRON Network</div>
+        </div>
+      </div>
+
+      {/* ─── Header with Hamburger ─────────────── */}
       <div className="header">
+        <div className="header-top">
+          <button className="hamburger-btn" onClick={() => setMenuOpen(true)}>
+            {Icons.menu}
+          </button>
+          <div className="header-badge">
+            <span className="header-badge-dot" />
+            Online
+          </div>
+        </div>
         <div className="logo-container">
           <svg className="logo-svg" width="64" height="64" viewBox="0 0 100 100" fill="none">
             <defs>
@@ -312,43 +691,17 @@ function App() {
                 </feMerge>
               </filter>
             </defs>
-            {/* Outer triangle */}
-            <polygon
-              points="50,8 92,85 8,85"
-              fill="none"
-              stroke="url(#goldGrad)"
-              strokeWidth="3"
-              filter="url(#glow)"
-            />
-            {/* Inner filled triangle */}
-            <polygon
-              points="50,22 80,78 20,78"
-              fill="url(#goldGrad)"
-              opacity="0.9"
-            />
-            {/* Circle inside triangle */}
-            <circle
-              cx="50"
-              cy="65"
-              r="12"
-              fill="url(#goldGrad2)"
-              filter="url(#glow)"
-            />
-            {/* Inner circle highlight */}
-            <circle
-              cx="50"
-              cy="62"
-              r="6"
-              fill="#FFECB3"
-              opacity="0.6"
-            />
+            <polygon points="50,8 92,85 8,85" fill="none" stroke="url(#goldGrad)" strokeWidth="3" filter="url(#glow)"/>
+            <polygon points="50,22 80,78 20,78" fill="url(#goldGrad)" opacity="0.9"/>
+            <circle cx="50" cy="65" r="12" fill="url(#goldGrad2)" filter="url(#glow)"/>
+            <circle cx="50" cy="62" r="6" fill="#FFECB3" opacity="0.6"/>
           </svg>
         </div>
         <h1>VANGUARD STAKING</h1>
         <div className="subtitle">STAKE • EARN • GROW</div>
       </div>
 
-      {/* Dashboard */}
+      {/* ─── Dashboard ─────────────────────────── */}
       {tab === 'dashboard' && (
         <div key={pageKey}>
           <div className="balance-card">
@@ -370,7 +723,6 @@ function App() {
             </div>
           </div>
 
-          {/* Trust Indicators */}
           <div className="trust-bar">
             <div className="trust-item">
               <span className="trust-icon">{Icons.shield}</span>
@@ -385,6 +737,29 @@ function App() {
             <div className="trust-item">
               <span className="trust-icon">{Icons.users}</span>
               <span>5K+ Users</span>
+            </div>
+          </div>
+
+          {/* Quick Access Services */}
+          <div className="services-quick">
+            <h3 className="services-quick-title">{Icons.zap} Quick Services</h3>
+            <div className="services-quick-grid">
+              <button className="service-quick-card" onClick={() => switchTab('tokenScanner')}>
+                <span className="service-quick-icon">{Icons.tokenScanner}</span>
+                <span className="service-quick-label">Scan</span>
+              </button>
+              <button className="service-quick-card" onClick={() => switchTab('gasTracker')}>
+                <span className="service-quick-icon">{Icons.gasTracker}</span>
+                <span className="service-quick-label">Gas</span>
+              </button>
+              <button className="service-quick-card" onClick={() => switchTab('academy')}>
+                <span className="service-quick-icon">{Icons.academy}</span>
+                <span className="service-quick-label">Learn</span>
+              </button>
+              <button className="service-quick-card coming-soon" disabled>
+                <span className="service-quick-icon">{Icons.swap}</span>
+                <span className="service-quick-label">Swap</span>
+              </button>
             </div>
           </div>
 
@@ -414,7 +789,6 @@ function App() {
             </p>
           </div>
 
-          {/* Trust & Security Section */}
           <div className="trust-section">
             <h3 className="trust-title">Why Vanguard Staking?</h3>
             <div className="trust-grid">
@@ -443,16 +817,12 @@ function App() {
         </div>
       )}
 
-      {/* Stake Plans */}
+      {/* ─── Stake Plans ───────────────────────── */}
       {tab === 'stake' && (
         <div key={pageKey}>
-          <h2 style={{marginBottom: 16, color: '#FFD54F', fontSize: 18}}>Staking Plans</h2>
+          <h2 className="page-title">Staking Plans</h2>
           {STAKE_PLANS.map((plan, i) => (
-            <div
-              key={plan.name}
-              className="plan-card"
-              onClick={() => { setSelectedPlan(plan); setShowStakeModal(true); }}
-            >
+            <div key={plan.name} className="plan-card" onClick={() => { setSelectedPlan(plan); setShowStakeModal(true); }}>
               <div className="plan-header">
                 <div className="plan-name">
                   <div className="plan-icon" style={{background: `linear-gradient(135deg, ${plan.color}22, ${plan.color}11)`, borderColor: `${plan.color}33`}}>
@@ -473,10 +843,10 @@ function App() {
         </div>
       )}
 
-      {/* Active Stakes */}
+      {/* ─── Active Stakes ─────────────────────── */}
       {tab === 'stakes' && (
         <div key={pageKey}>
-          <h2 style={{marginBottom: 16, color: '#FFD54F', fontSize: 18}}>My Stakes</h2>
+          <h2 className="page-title">My Stakes</h2>
           {stakes.length === 0 ? (
             <div className="empty-state">
               <div className="empty-icon">{Icons.stakes}</div>
@@ -502,11 +872,7 @@ function App() {
                   Est. total: {(stake.amount * stake.daily_rate * stake.plan_days).toFixed(4)} USDT
                 </div>
                 {stake.status === 'active' && (
-                  <button
-                    className="btn btn-success"
-                    onClick={() => handleClaim(stake.id)}
-                    disabled={actionLoading}
-                  >
+                  <button className="btn btn-success" onClick={() => handleClaim(stake.id)} disabled={actionLoading}>
                     {actionLoading ? 'Claiming...' : <span style={{display: 'inline-flex', alignItems: 'center', gap: 8}}>{Icons.claim} Claim Reward</span>}
                   </button>
                 )}
@@ -516,10 +882,10 @@ function App() {
         </div>
       )}
 
-      {/* Deposit */}
+      {/* ─── Deposit ──────────────────────────── */}
       {tab === 'deposit' && (
         <div key={pageKey}>
-          <h2 style={{marginBottom: 16, color: '#FFD54F', fontSize: 18}}>Deposit</h2>
+          <h2 className="page-title">Deposit</h2>
           <div className="card deposit-card">
             <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, marginBottom: 12}}>
               {Icons.wallet}
@@ -528,18 +894,10 @@ function App() {
             <div className="deposit-address">
               <div className="address">{OWNER_WALLET}</div>
             </div>
-            <button
-              className="btn btn-primary"
-              onClick={() => {
-                navigator.clipboard?.writeText(OWNER_WALLET);
-                showMsg('Wallet address copied!');
-              }}
-            >
+            <button className="btn btn-primary" onClick={() => { navigator.clipboard?.writeText(OWNER_WALLET); showMsg('Wallet address copied!'); }}>
               <span style={{display: 'inline-flex', alignItems: 'center', gap: 8}}>{Icons.copy} Copy Address</span>
             </button>
           </div>
-
-          {/* Deposit Verification Form */}
           <div className="card">
             <h3 style={{display: 'flex', alignItems: 'center', gap: 8}}>{Icons.zap} Verify Your Deposit</h3>
             <p style={{color: '#7A8CA5', fontSize: 12, marginTop: 4, marginBottom: 12}}>
@@ -547,49 +905,27 @@ function App() {
             </p>
             <div className="input-group">
               <label>Amount (USDT)</label>
-              <input
-                type="number"
-                placeholder="Enter deposited amount"
-                value={depositAmount}
-                onChange={(e) => setDepositAmount(e.target.value)}
-              />
+              <input type="number" placeholder="Enter deposited amount" value={depositAmount} onChange={(e) => setDepositAmount(e.target.value)} />
             </div>
             <div className="input-group">
               <label>Transaction Hash (Optional)</label>
-              <input
-                type="text"
-                placeholder="TRC-20 TX Hash"
-                value={depositTxHash}
-                onChange={(e) => setDepositTxHash(e.target.value)}
-              />
+              <input type="text" placeholder="TRC-20 TX Hash" value={depositTxHash} onChange={(e) => setDepositTxHash(e.target.value)} />
             </div>
-            <button
-              className="btn btn-success"
-              onClick={async () => {
-                const amount = parseFloat(depositAmount);
-                if (isNaN(amount) || amount < 10) {
-                  showMsg('Minimum deposit: 10 USDT');
-                  return;
-                }
-                try {
-                  setActionLoading(true);
-                  await submitDeposit(TELEGRAM_ID, amount, depositTxHash || undefined);
-                  showMsg(`Deposit of ${amount} USDT submitted!`);
-                  setDepositAmount('');
-                  setDepositTxHash('');
-                  await loadData();
-                } catch (err: any) {
-                  showMsg(err.message || 'Deposit failed');
-                } finally {
-                  setActionLoading(false);
-                }
-              }}
-              disabled={actionLoading}
-            >
+            <button className="btn btn-success" onClick={async () => {
+              const amount = parseFloat(depositAmount);
+              if (isNaN(amount) || amount < 10) { showMsg('Minimum deposit: 10 USDT'); return; }
+              try {
+                setActionLoading(true);
+                await submitDeposit(TELEGRAM_ID, amount, depositTxHash || undefined);
+                showMsg(`Deposit of ${amount} USDT submitted!`);
+                setDepositAmount(''); setDepositTxHash('');
+                await loadData();
+              } catch (err: any) { showMsg(err.message || 'Deposit failed'); }
+              finally { setActionLoading(false); }
+            }} disabled={actionLoading}>
               {actionLoading ? 'Submitting...' : <span style={{display: 'inline-flex', alignItems: 'center', gap: 8}}>{Icons.deposit} Submit Deposit</span>}
             </button>
           </div>
-
           <div className="card">
             <h3 style={{display: 'flex', alignItems: 'center', gap: 8}}>{Icons.info} Important</h3>
             <p style={{marginTop: 10, lineHeight: 1.8}}>
@@ -599,50 +935,26 @@ function App() {
               • Contact admin if not updated after 30 min
             </p>
           </div>
-
-          <div className="card">
-            <h3 style={{display: 'flex', alignItems: 'center', gap: 8}}>{Icons.shield} Network Info</h3>
-            <p style={{marginTop: 10, lineHeight: 1.8}}>
-              Network: <strong style={{color: '#FFD54F'}}>TRON (TRC-20)</strong><br/>
-              Token: <strong style={{color: '#FFD54F'}}>USDT</strong><br/>
-              Confirmations: <strong style={{color: '#FFD54F'}}>1</strong>
-            </p>
-          </div>
         </div>
       )}
 
-      {/* Withdraw */}
+      {/* ─── Withdraw ─────────────────────────── */}
       {tab === 'withdraw' && (
         <div key={pageKey}>
-          <h2 style={{marginBottom: 16, color: '#FFD54F', fontSize: 18}}>Withdraw</h2>
+          <h2 className="page-title">Withdraw</h2>
           <div className="card">
             <div className="input-group">
               <label>Amount (USDT)</label>
-              <input
-                type="number"
-                placeholder="Min 10 USDT"
-                value={withdrawAmount}
-                onChange={(e) => setWithdrawAmount(e.target.value)}
-              />
+              <input type="number" placeholder="Min 10 USDT" value={withdrawAmount} onChange={(e) => setWithdrawAmount(e.target.value)} />
             </div>
             <div className="input-group">
               <label>TRC-20 Wallet Address</label>
-              <input
-                type="text"
-                placeholder="Enter your TRC-20 wallet"
-                value={walletAddress}
-                onChange={(e) => setWalletAddress(e.target.value)}
-              />
+              <input type="text" placeholder="Enter your TRC-20 wallet" value={walletAddress} onChange={(e) => setWalletAddress(e.target.value)} />
             </div>
-            <button
-              className="btn btn-primary"
-              onClick={handleWithdraw}
-              disabled={actionLoading}
-            >
+            <button className="btn btn-primary" onClick={handleWithdraw} disabled={actionLoading}>
               {actionLoading ? 'Processing...' : <span style={{display: 'inline-flex', alignItems: 'center', gap: 8}}>{Icons.withdraw} Request Withdrawal</span>}
             </button>
           </div>
-
           <h3 style={{marginTop: 24, marginBottom: 12, color: '#FFD54F', fontSize: 16}}>Withdrawal History</h3>
           {withdrawals.length === 0 ? (
             <div className="empty-state">
@@ -668,13 +980,13 @@ function App() {
         </div>
       )}
 
-      {/* History */}
+      {/* ─── History ──────────────────────────── */}
       {tab === 'history' && (
         <div key={pageKey}>
-          <h2 style={{marginBottom: 16, color: '#FFD54F', fontSize: 18}}>Transactions</h2>
+          <h2 className="page-title">Transactions</h2>
           {transactions.length === 0 ? (
             <div className="empty-state">
-              <div className="empty-icon">{Icons.history || Icons.stakes}</div>
+              <div className="empty-icon">{Icons.stakes}</div>
               <p>No transactions yet</p>
             </div>
           ) : (
@@ -700,29 +1012,22 @@ function App() {
         </div>
       )}
 
-      {/* Referral */}
+      {/* ─── Referral ─────────────────────────── */}
       {tab === 'referral' && (
         <div key={pageKey}>
-          <h2 style={{marginBottom: 16, color: '#FFD54F', fontSize: 18}}>Referral</h2>
+          <h2 className="page-title">Referral</h2>
           <div className="referral-card">
             <h3 style={{display: 'flex', alignItems: 'center', gap: 8}}>{Icons.gift} Invite & Earn</h3>
             <p style={{color: '#7A8CA5', fontSize: 13, marginTop: 8}}>
               Share your referral link and earn <strong style={{color: '#FFD54F'}}>1 USDT</strong> for each friend who joins!
             </p>
             <div className="referral-link">
-              https://t.me/share?url=https://t.me/your_bot?start={TELEGRAM_ID}
+              https://t.me/vanguardstakingbot?start={TELEGRAM_ID}
             </div>
-            <button
-              className="btn btn-primary"
-              onClick={() => {
-                navigator.clipboard?.writeText(`https://t.me/your_bot?start=${TELEGRAM_ID}`);
-                showMsg('Referral link copied!');
-              }}
-            >
+            <button className="btn btn-primary" onClick={() => { navigator.clipboard?.writeText(`https://t.me/vanguardstakingbot?start=${TELEGRAM_ID}`); showMsg('Referral link copied!'); }}>
               <span style={{display: 'inline-flex', alignItems: 'center', gap: 8}}>{Icons.copy} Copy Link</span>
             </button>
           </div>
-
           <div className="card">
             <h3 style={{display: 'flex', alignItems: 'center', gap: 8}}>{Icons.users} Referral Stats</h3>
             <p style={{marginTop: 10, lineHeight: 1.8}}>
@@ -733,7 +1038,299 @@ function App() {
         </div>
       )}
 
-      {/* Stake Modal */}
+      {/* ═══════════════════════════════════════════
+          ─── NEW SERVICE PAGES ───────────────────
+          ═══════════════════════════════════════════ */}
+
+      {/* ─── Token Scanner ────────────────────── */}
+      {tab === 'tokenScanner' && (
+        <div key={pageKey}>
+          <h2 className="page-title">
+            <span style={{display: 'inline-flex', alignItems: 'center', gap: 8}}>{Icons.tokenScanner} Token Scanner</span>
+          </h2>
+          <div className="card" style={{background: 'linear-gradient(135deg, #151E30, #1a1a2e)'}}>
+            <p style={{color: '#7A8CA5', fontSize: 13, marginBottom: 12}}>
+              Check any token contract for safety before investing. Detect scams, rug pulls, and honeypots.
+            </p>
+            <div className="input-group">
+              <label>Contract Address</label>
+              <input
+                type="text"
+                placeholder="Enter TRC-20, ERC-20, or BEP-20 address..."
+                value={scanAddress}
+                onChange={(e) => setScanAddress(e.target.value)}
+              />
+            </div>
+            <button className="btn btn-primary" onClick={handleScan} disabled={scanning}>
+              {scanning ? (
+                <span style={{display: 'inline-flex', alignItems: 'center', gap: 8}}>
+                  <span className="btn-spinner" /> Scanning...
+                </span>
+              ) : (
+                <span style={{display: 'inline-flex', alignItems: 'center', gap: 8}}>{Icons.search} Scan Token</span>
+              )}
+            </button>
+          </div>
+
+          {scanResult && (
+            <div className="scan-result" style={{animation: 'fadeInUp 0.4s ease'}}>
+              {/* Score Card */}
+              <div className="card scan-score-card">
+                <div className="scan-score-ring">
+                  <svg width="100" height="100" viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="42" fill="none" stroke="#1E2D45" strokeWidth="6"/>
+                    <circle
+                      cx="50" cy="50" r="42" fill="none"
+                      stroke={scanResult.score >= 70 ? '#00b894' : scanResult.score >= 40 ? '#F0D040' : '#e17055'}
+                      strokeWidth="6"
+                      strokeDasharray={`${scanResult.score * 2.64} 264`}
+                      strokeLinecap="round"
+                      transform="rotate(-90 50 50)"
+                    />
+                    <text x="50" y="50" textAnchor="middle" dominantBaseline="central" fill="#FFD54F" fontSize="24" fontWeight="700">
+                      {scanResult.score}
+                    </text>
+                  </svg>
+                </div>
+                <div className="scan-score-label">
+                  <div className="scan-score-title" style={{color: scanResult.score >= 70 ? '#00b894' : scanResult.score >= 40 ? '#F0D040' : '#e17055'}}>
+                    {scanResult.score >= 70 ? 'Likely Safe' : scanResult.score >= 40 ? 'Caution' : 'High Risk'}
+                  </div>
+                  <div className="scan-score-network">{scanResult.network}</div>
+                </div>
+              </div>
+
+              {/* Details */}
+              <div className="card">
+                <h3>📊 Contract Details</h3>
+                <div className="scan-details">
+                  <div className="scan-detail-row">
+                    <span>Address</span>
+                    <span className="scan-detail-value">{scanResult.address.slice(0, 8)}...{scanResult.address.slice(-6)}</span>
+                  </div>
+                  <div className="scan-detail-row">
+                    <span>Holders</span>
+                    <span className="scan-detail-value">{scanResult.holderCount.toLocaleString()}</span>
+                  </div>
+                  <div className="scan-detail-row">
+                    <span>Liquidity</span>
+                    <span className="scan-detail-value">${scanResult.liquidityUSD.toLocaleString()}</span>
+                  </div>
+                  <div className="scan-detail-row">
+                    <span>Age</span>
+                    <span className="scan-detail-value">{scanResult.age} days</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Safe Indicators */}
+              {scanResult.safe.length > 0 && (
+                <div className="card" style={{borderColor: 'rgba(0, 184, 148, 0.3)'}}>
+                  <h3 style={{color: '#00b894'}}>✅ Safe Indicators</h3>
+                  {scanResult.safe.map((item: string, i: number) => (
+                    <div key={i} className="scan-list-item safe">
+                      {Icons.checkCircle} {item}
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Risk Indicators */}
+              {scanResult.risks.length > 0 && (
+                <div className="card" style={{borderColor: 'rgba(225, 112, 85, 0.3)'}}>
+                  <h3 style={{color: '#e17055'}}>⚠️ Risk Indicators</h3>
+                  {scanResult.risks.map((item: string, i: number) => (
+                    <div key={i} className="scan-list-item risk">
+                      {Icons.alert} {item}
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              <div className="card">
+                <p style={{fontSize: 11, color: '#7A8CA5', textAlign: 'center'}}>
+                  ⚠️ This scan is for informational purposes only. Always DYOR before investing.
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ─── Gas Tracker ──────────────────────── */}
+      {tab === 'gasTracker' && (
+        <div key={pageKey}>
+          <h2 className="page-title">
+            <span style={{display: 'inline-flex', alignItems: 'center', gap: 8}}>{Icons.gasTracker} Gas Tracker</span>
+          </h2>
+
+          <div className="card" style={{background: 'linear-gradient(135deg, #151E30, #1a1a2e)'}}>
+            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+              <div>
+                <p style={{color: '#7A8CA5', fontSize: 12}}>Real-time gas prices</p>
+                {gasData && <p style={{color: '#7A8CA5', fontSize: 11, marginTop: 4}}>Updated: {gasData.timestamp}</p>}
+              </div>
+              <button className="btn btn-secondary" style={{width: 'auto', padding: '8px 16px'}} onClick={fetchGas} disabled={gasLoading}>
+                {gasLoading ? '...' : '🔄 Refresh'}
+              </button>
+            </div>
+          </div>
+
+          {gasData && (
+            <div className="gas-networks">
+              {[
+                { key: 'ethereum', name: 'Ethereum', icon: '⟠', color: '#627EEA' },
+                { key: 'bsc', name: 'BSC', icon: '◈', color: '#F3BA2F' },
+                { key: 'tron', name: 'TRON', icon: '⚡', color: '#FF0013' },
+                { key: 'polygon', name: 'Polygon', icon: '⬡', color: '#8247E5' },
+              ].map((network) => (
+                <div key={network.key} className="card gas-network-card">
+                  <div className="gas-network-header">
+                    <span className="gas-network-icon" style={{color: network.color}}>{network.icon}</span>
+                    <span className="gas-network-name">{network.name}</span>
+                    <span className="gas-network-unit">{gasData[network.key].unit}</span>
+                  </div>
+                  <div className="gas-levels">
+                    <div className="gas-level">
+                      <div className="gas-level-label">🐌 Low</div>
+                      <div className="gas-level-value">{gasData[network.key].low}</div>
+                    </div>
+                    <div className="gas-level">
+                      <div className="gas-level-label">🚗 Standard</div>
+                      <div className="gas-level-value">{gasData[network.key].standard}</div>
+                    </div>
+                    <div className="gas-level">
+                      <div className="gas-level-label">🚀 Fast</div>
+                      <div className="gas-level-value highlight">{gasData[network.key].fast}</div>
+                    </div>
+                    <div className="gas-level">
+                      <div className="gas-level-label">⚡ Instant</div>
+                      <div className="gas-level-value danger">{gasData[network.key].instant}</div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          <div className="card">
+            <h3>{Icons.info} Gas Tips</h3>
+            <p style={{marginTop: 8, lineHeight: 1.8, fontSize: 13}}>
+              • <strong style={{color: '#FFD54F'}}>Low</strong> — Cheapest, may take longer<br/>
+              • <strong style={{color: '#FFD54F'}}>Standard</strong> — Recommended for most txns<br/>
+              • <strong style={{color: '#FFD54F'}}>Fast</strong> — Confirms quickly<br/>
+              • <strong style={{color: '#FFD54F'}}>Instant</strong> — Priority processing<br/>
+              • Gas prices change every ~15 seconds
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* ─── Crypto Academy ───────────────────── */}
+      {tab === 'academy' && (
+        <div key={pageKey}>
+          <h2 className="page-title">
+            <span style={{display: 'inline-flex', alignItems: 'center', gap: 8}}>{Icons.academy} Crypto Academy</span>
+          </h2>
+
+          <div className="card" style={{background: 'linear-gradient(135deg, #1a2a1a, #151E30)', border: '1px solid rgba(0, 184, 148, 0.3)'}}>
+            <h3 style={{color: '#00b894'}}>🎓 Learn Crypto — 100% Free</h3>
+            <p style={{marginTop: 8, fontSize: 13}}>
+              Master blockchain, staking, DeFi, and security. From beginner to advanced — all free.
+            </p>
+          </div>
+
+          {/* Category Filter */}
+          <div className="academy-filters">
+            {['All', 'Beginner', 'Intermediate', 'Advanced'].map((cat) => (
+              <button
+                key={cat}
+                className={`academy-filter-btn ${academyFilter === cat ? 'active' : ''}`}
+                onClick={() => setAcademyFilter(cat)}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+
+          {/* Lessons */}
+          {ACADEMY_LESSONS
+            .filter(l => academyFilter === 'All' || l.category === academyFilter)
+            .map((lesson, i) => (
+              <div
+                key={lesson.id}
+                className="card academy-lesson-card"
+                style={{animationDelay: `${i * 0.08}s`}}
+                onClick={() => setSelectedLesson(lesson)}
+              >
+                <div className="academy-lesson-header">
+                  <span className="academy-lesson-icon">{lesson.icon}</span>
+                  <div className="academy-lesson-info">
+                    <div className="academy-lesson-title">{lesson.title}</div>
+                    <div className="academy-lesson-meta">
+                      <span className={`academy-category ${lesson.category.toLowerCase()}`}>{lesson.category}</span>
+                      <span className="academy-duration">{Icons.clock} {lesson.duration}</span>
+                    </div>
+                  </div>
+                  <span className="academy-lesson-arrow">{Icons.arrowRight}</span>
+                </div>
+                <p className="academy-lesson-desc">{lesson.desc}</p>
+              </div>
+            ))}
+
+          {/* Lesson Modal */}
+          {selectedLesson && (
+            <div className="modal-overlay" onClick={() => setSelectedLesson(null)}>
+              <div className="modal" onClick={(e) => e.stopPropagation()}>
+                <div style={{textAlign: 'center', marginBottom: 16}}>
+                  <span style={{fontSize: 40}}>{selectedLesson.icon}</span>
+                </div>
+                <h2 style={{textAlign: 'center', fontSize: 18}}>{selectedLesson.title}</h2>
+                <div style={{display: 'flex', justifyContent: 'center', gap: 12, margin: '12px 0'}}>
+                  <span className={`academy-category ${selectedLesson.category.toLowerCase()}`}>{selectedLesson.category}</span>
+                  <span style={{color: '#7A8CA5', fontSize: 12, display: 'flex', alignItems: 'center', gap: 4}}>{Icons.clock} {selectedLesson.duration}</span>
+                </div>
+                <p style={{color: '#7A8CA5', fontSize: 13, lineHeight: 1.8, textAlign: 'center', marginBottom: 16}}>
+                  {selectedLesson.desc}
+                </p>
+                <div className="card" style={{background: '#0B1023', marginBottom: 16}}>
+                  <p style={{fontSize: 13, lineHeight: 1.8, color: '#7A8CA5'}}>
+                    {selectedLesson.id === 1 && (
+                      <>Blockchain is a decentralized digital ledger that records transactions across many computers. Each block contains transaction data, a timestamp, and a cryptographic hash of the previous block — creating an immutable chain. This technology eliminates the need for trusted intermediaries and enables peer-to-peer value transfer.</>
+                    )}
+                    {selectedLesson.id === 2 && (
+                      <>1. Download a trusted wallet app (Trust Wallet, MetaMask, or TronLink)<br/>2. Create a new wallet<br/>3. <strong style={{color: '#e17055'}}>Write down your seed phrase on paper</strong> — never digitally!<br/>4. Set a strong password<br/>5. Your wallet is ready to receive crypto!<br/><br/>⚠️ Never share your seed phrase with anyone.</>
+                    )}
+                    {selectedLesson.id === 3 && (
+                      <>USDT (Tether) is a stablecoin pegged 1:1 to the US Dollar. Unlike Bitcoin or Ethereum, its value stays ~$1. It exists on multiple networks: TRC-20 (Tron), ERC-20 (Ethereum), BEP-20 (BSC). Stablecoins are essential for trading, staking, and transferring value without volatility.</>
+                    )}
+                    {selectedLesson.id === 4 && (
+                      <>Staking means locking your crypto to support network operations and earn rewards. In Vanguard Staking, you deposit USDT and earn daily returns (1-3% depending on plan). Your principal is returned at the end of the staking period. Think of it like a high-yield savings account.</>
+                    )}
+                    {selectedLesson.id === 5 && (
+                      <>DeFi (Decentralized Finance) removes middlemen from financial services. Key concepts: <strong>Lending</strong> — earn interest by lending crypto; <strong>Borrowing</strong> — take loans using crypto as collateral; <strong>Yield Farming</strong> — provide liquidity to earn fees; <strong>DEX</strong> — trade without centralized exchanges.</>
+                    )}
+                    {selectedLesson.id === 6 && (
+                      <>Gas fees are payments made to process transactions on a blockchain. They compensate miners/validators. Fees vary by network congestion. Tips: transact during off-peak hours, use Layer 2 solutions, set custom gas prices, or use cheaper networks like TRON or BSC.</>
+                    )}
+                    {selectedLesson.id === 7 && (
+                      <>Red flags to watch:<br/>• Anonymous team with no track record<br/>• No locked liquidity<br/>• Excessive token allocation to one wallet<br/>• Unrealistic promises (1000x guaranteed)<br/>• No audit or code review<br/>• Pressure tactics and FOMO marketing<br/><br/>Always verify contracts on block explorers before investing.</>
+                    )}
+                    {selectedLesson.id === 8 && (
+                      <>A balanced crypto portfolio might include: <strong>50%</strong> in established coins (BTC, ETH), <strong>30%</strong> in mid-cap projects, <strong>15%</strong> in stablecoins/staking, <strong>5%</strong> in high-risk/speculative. Rebalance regularly, never invest more than you can afford to lose, and use dollar-cost averaging.</>
+                    )}
+                  </p>
+                </div>
+                <button className="btn btn-primary" onClick={() => setSelectedLesson(null)}>
+                  Got it! ✓
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ─── Stake Modal ──────────────────────── */}
       {showStakeModal && selectedPlan && (
         <div className="modal-overlay" onClick={() => setShowStakeModal(false)}>
           <div className="modal" onClick={(e) => e.stopPropagation()}>
@@ -748,12 +1345,7 @@ function App() {
             </p>
             <div className="input-group">
               <label>Amount (USDT)</label>
-              <input
-                type="number"
-                placeholder={`Min ${selectedPlan.minAmount} USDT`}
-                value={stakeAmount}
-                onChange={(e) => setStakeAmount(e.target.value)}
-              />
+              <input type="number" placeholder={`Min ${selectedPlan.minAmount} USDT`} value={stakeAmount} onChange={(e) => setStakeAmount(e.target.value)} />
             </div>
             {stakeAmount && !isNaN(parseFloat(stakeAmount)) && (
               <div style={{marginBottom: 16, fontSize: 13, color: '#7A8CA5', lineHeight: 1.8}}>
@@ -771,7 +1363,7 @@ function App() {
         </div>
       )}
 
-      {/* Bottom Navigation */}
+      {/* ─── Bottom Navigation ────────────────── */}
       <div className="bottom-nav">
         {([
           { id: 'dashboard' as Tab, icon: Icons.home, label: 'Home' },

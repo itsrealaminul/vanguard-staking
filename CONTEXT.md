@@ -280,6 +280,18 @@ Gold equilateral triangle with a glowing circle inside — represents growth, st
 - Toast notifications
 - Progress bars for stakes
 - Backdrop blur for bottom nav
+- Sidebar slide-in/out transition
+- Scan score ring animation
+
+### Custom SVG Icons (25+)
+All icons are custom SVG with `stroke="currentColor"` for brand consistency:
+- Navigation: home, plans, stakes, deposit, withdraw, referral
+- Actions: wallet, copy, claim, clock, arrowRight, search, externalLink
+- Trust: shield, zap, gift, users, info, checkCircle, alert
+- Services: tokenScanner (shield+magnify), gasTracker (fuel pump), academy (graduation cap)
+- Services: portfolio (pie chart), whale, airdrop (parachute), swap (arrows)
+- Services: tax (calculator), expert (headset), book
+- UI: menu (hamburger), close (X), settings (gear), support (help circle)
 
 ---
 
@@ -344,6 +356,110 @@ https://vercel.com/aminul-islam1/vanguard-staking/deployments
 
 ---
 
+## 🍔 Hamburger Menu & Sidebar
+
+### Menu Structure
+```
+🍔 Hamburger Menu (Slide-in Sidebar)
+├── MAIN MENU
+│   ├── 🏠 Home (Dashboard)
+│   ├── 📋 Staking Plans
+│   ├── 📈 My Stakes
+│   ├── 💰 Deposit
+│   ├── 💸 Withdraw
+│   └── 👥 Referral
+├── ─────────────────
+├── 🛠️ CRYPTO SERVICES
+│   ├── 🔍 Token Scanner [NEW]
+│   ├── ⛽ Gas Tracker [LIVE]
+│   ├── 🎓 Crypto Academy [FREE]
+│   ├── 📊 Portfolio Tracker [SOON]
+│   ├── 🐋 Whale Alert [SOON]
+│   ├── 🎁 Airdrop Alert [SOON]
+│   ├── 💱 Instant Swap [SOON]
+│   ├── 🧮 Tax Calculator [SOON]
+│   └── 👨‍💼 Expert Help [SOON]
+├── ─────────────────
+└── 📞 Support
+```
+
+### Sidebar Features
+- Slide-in from left with smooth animation
+- Dark overlay backdrop with blur
+- Gold-themed icons matching brand
+- Badge system: NEW (green), LIVE (gold), FREE (blue), SOON (grey)
+- Disabled state for upcoming services
+- Active item highlight with gold dot
+- Close button with hover effect
+- Version info in footer
+
+---
+
+## 🔍 Token Scanner (NEW)
+
+Check any token contract for safety before investing.
+
+| Feature | Description |
+|---------|-------------|
+| Contract Analysis | Scan TRC-20, ERC-20, BEP-20 addresses |
+| Safety Score | 0-100 score with visual ring |
+| Risk Indicators | Mint function, holder concentration, low liquidity |
+| Safe Indicators | Verified contract, locked liquidity, renounced ownership |
+| Details | Holder count, liquidity USD, contract age |
+| Disclaimer | DYOR advisory |
+
+**API:** Uses simulated data. Integrate BSCScan/Etherscan API for production.
+
+---
+
+## ⛽ Gas Tracker (NEW)
+
+Real-time gas prices across 4 networks.
+
+| Network | Unit | Levels |
+|---------|------|--------|
+| Ethereum | Gwei | Low, Standard, Fast, Instant |
+| BSC | Gwei | Low, Standard, Fast, Instant |
+| TRON | Energy | Low, Standard, Fast, Instant |
+| Polygon | Gwei | Low, Standard, Fast, Instant |
+
+**Features:**
+- Auto-refresh on page open
+- Manual refresh button
+- Color-coded levels (gold=low, green=fast, red=instant)
+- Gas saving tips
+
+---
+
+## 🎓 Crypto Academy (NEW)
+
+Free crypto education with 8 lessons across 3 categories.
+
+| Category | Lessons |
+|----------|---------|
+| Beginner | Blockchain, Wallet Setup, USDT & Stablecoins |
+| Intermediate | Staking, DeFi Basics, Gas Fees |
+| Advanced | Avoiding Scams, Portfolio Diversification |
+
+**Features:**
+- Category filter (All/Beginner/Intermediate/Advanced)
+- Lesson detail modal with full content
+- Duration indicators
+- Color-coded category badges
+- Animated card transitions
+
+---
+
+## 🎨 Dashboard Quick Services
+
+New grid on dashboard home with 4 quick-access service cards:
+- 🔍 Scan → Token Scanner
+- ⛽ Gas → Gas Tracker
+- 🎓 Learn → Crypto Academy
+- 💱 Swap → Coming Soon (disabled)
+
+---
+
 ## 📊 Current Status
 
 - ✅ Frontend: React + Vite (working)
@@ -357,6 +473,10 @@ https://vercel.com/aminul-islam1/vanguard-staking/deployments
 - ✅ Deposit verification: Form + channel post
 - ✅ Animations: Full CSS animations
 - ✅ CONTEXT.md: This documentation
+- ✅ Hamburger Menu: Slide-in sidebar with services
+- ✅ Token Scanner: Contract safety checker
+- ✅ Gas Tracker: Multi-chain gas prices
+- ✅ Crypto Academy: 8 free lessons
 
 ---
 
