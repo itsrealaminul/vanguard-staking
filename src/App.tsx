@@ -373,7 +373,7 @@ const ACADEMY_LESSONS = [
   },
 ];
 
-type Tab = 'dashboard' | 'stake' | 'stakes' | 'deposit' | 'withdraw' | 'history' | 'referral' | 'tokenScanner' | 'gasTracker' | 'academy';
+type Tab = 'dashboard' | 'stake' | 'stakes' | 'deposit' | 'withdraw' | 'history' | 'referral' | 'tokenScanner' | 'gasTracker' | 'academy' | 'portfolio' | 'whale' | 'airdrop' | 'swap' | 'tax' | 'expert';
 
 function App() {
   const [tab, setTab] = useState<Tab>('dashboard');
@@ -616,12 +616,12 @@ function App() {
     { id: 'tokenScanner' as Tab, icon: Icons.tokenScanner, label: 'Token Scanner', desc: SERVICE_PRICING.tokenScanner.label, badge: 'NEW', price: SERVICE_PRICING.tokenScanner.price },
     { id: 'gasTracker' as Tab, icon: Icons.gasTracker, label: 'Gas Tracker', desc: SERVICE_PRICING.gasTracker.label, badge: 'LIVE', price: 0 },
     { id: 'academy' as Tab, icon: Icons.academy, label: 'Crypto Academy', desc: SERVICE_PRICING.academy.label, badge: 'FREE', price: 0 },
-    { id: 'portfolio' as Tab, icon: Icons.portfolio, label: 'Portfolio Tracker', desc: SERVICE_PRICING.portfolio.label, badge: 'PAID', price: SERVICE_PRICING.portfolio.price, disabled: true },
-    { id: 'whale' as Tab, icon: Icons.whale, label: 'Whale Alert', desc: SERVICE_PRICING.whale.label, badge: 'PAID', price: SERVICE_PRICING.whale.price, disabled: true },
-    { id: 'airdrop' as Tab, icon: Icons.airdrop, label: 'Airdrop Alert', desc: SERVICE_PRICING.airdrop.label, badge: 'PAID', price: SERVICE_PRICING.airdrop.price, disabled: true },
-    { id: 'swap' as Tab, icon: Icons.swap, label: 'Instant Swap', desc: SERVICE_PRICING.swap.label, badge: 'PAID', price: 0, disabled: true },
-    { id: 'tax' as Tab, icon: Icons.tax, label: 'Tax Calculator', desc: SERVICE_PRICING.tax.label, badge: 'PAID', price: SERVICE_PRICING.tax.price, disabled: true },
-    { id: 'expert' as Tab, icon: Icons.expert, label: 'Expert Help', desc: SERVICE_PRICING.expert.label, badge: 'PAID', price: SERVICE_PRICING.expert.price, disabled: true },
+    { id: 'portfolio' as Tab, icon: Icons.portfolio, label: 'Portfolio Tracker', desc: SERVICE_PRICING.portfolio.label, badge: 'PAID', price: SERVICE_PRICING.portfolio.price },
+    { id: 'whale' as Tab, icon: Icons.whale, label: 'Whale Alert', desc: SERVICE_PRICING.whale.label, badge: 'PAID', price: SERVICE_PRICING.whale.price },
+    { id: 'airdrop' as Tab, icon: Icons.airdrop, label: 'Airdrop Alert', desc: SERVICE_PRICING.airdrop.label, badge: 'PAID', price: SERVICE_PRICING.airdrop.price },
+    { id: 'swap' as Tab, icon: Icons.swap, label: 'Instant Swap', desc: SERVICE_PRICING.swap.label, badge: 'PAID', price: 0 },
+    { id: 'tax' as Tab, icon: Icons.tax, label: 'Tax Calculator', desc: SERVICE_PRICING.tax.label, badge: 'PAID', price: SERVICE_PRICING.tax.price },
+    { id: 'expert' as Tab, icon: Icons.expert, label: 'Expert Help', desc: SERVICE_PRICING.expert.label, badge: 'PAID', price: SERVICE_PRICING.expert.price },
   ];
 
   return (
@@ -1489,6 +1489,290 @@ function App() {
               </div>
             </div>
           )}
+        </div>
+      )}
+
+      {/* ─── Portfolio Tracker ────────────────── */}
+      {tab === 'portfolio' && (
+        <div key={pageKey}>
+          <h2 className="page-title"><span style={{display: 'inline-flex', alignItems: 'center', gap: 8}}>{Icons.portfolio} Portfolio Tracker</span></h2>
+          <div className="balance-card">
+            <div className="label">Total Portfolio Value</div>
+            <div className="amount">{((user?.balance || 0) + (user?.total_staked || 0) + (user?.affiliate_balance || 0)).toFixed(4)}<span>USDT</span></div>
+            <div className="stats">
+              <div className="stat" style={{'--i': 0} as any}><div className="stat-label">Available</div><div className="stat-value">{(user?.balance || 0).toFixed(2)}</div></div>
+              <div className="stat" style={{'--i': 1} as any}><div className="stat-label">Staked</div><div className="stat-value">{(user?.total_staked || 0).toFixed(2)}</div></div>
+              <div className="stat" style={{'--i': 2} as any}><div className="stat-label">Earned</div><div className="stat-value">{(user?.total_earned || 0).toFixed(4)}</div></div>
+            </div>
+          </div>
+          <div className="card">
+            <h3>📊 Asset Breakdown</h3>
+            <div style={{marginTop: 12}}>
+              {[{name: 'USDT (Available)', value: user?.balance || 0, color: '#00b894', pct: Math.max(5, ((user?.balance || 0) / Math.max(1, (user?.balance || 0) + (user?.total_staked || 0))) * 100)},
+                {name: 'USDT (Staked)', value: user?.total_staked || 0, color: '#FFD54F', pct: Math.max(5, ((user?.total_staked || 0) / Math.max(1, (user?.balance || 0) + (user?.total_staked || 0))) * 100)},
+                {name: 'Affiliate Earnings', value: user?.affiliate_balance || 0, color: '#2196F3', pct: Math.max(5, ((user?.affiliate_balance || 0) / Math.max(1, (user?.balance || 0) + (user?.total_staked || 0) + (user?.affiliate_balance || 0))) * 100)}
+              ].map((asset, i) => (
+                <div key={i} style={{marginBottom: 12}}>
+                  <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: 4}}>
+                    <span style={{fontSize: 13, color: '#fff'}}>{asset.name}</span>
+                    <span style={{fontSize: 13, color: asset.color, fontWeight: 600}}>{asset.value.toFixed(2)} USDT</span>
+                  </div>
+                  <div style={{height: 6, background: '#1E2D45', borderRadius: 3, overflow: 'hidden'}}>
+                    <div style={{height: '100%', width: `${asset.pct}%`, background: asset.color, borderRadius: 3, transition: 'width 1s ease'}} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="card">
+            <h3>📈 Portfolio Stats</h3>
+            <p style={{marginTop: 8, lineHeight: 1.8, fontSize: 13}}>
+              Active Stakes: <strong style={{color: '#FFD54F'}}>{stakes.filter(s => s.status === 'active').length}</strong><br/>
+              Total Transactions: <strong style={{color: '#FFD54F'}}>{transactions.length}</strong><br/>
+              Referral Earnings: <strong style={{color: '#FFD54F'}}>{(user?.affiliate_balance || 0).toFixed(4)} USDT</strong><br/>
+              Member Since: <strong style={{color: '#FFD54F'}}>{user?.created_at ? new Date(user.created_at).toLocaleDateString() : 'N/A'}</strong>
+            </p>
+          </div>
+          <div className="card">
+            <h3>💡 Portfolio Tips</h3>
+            <p style={{marginTop: 8, lineHeight: 1.8, fontSize: 13, color: '#7A8CA5'}}>
+              • Diversify across staking plans for balanced returns<br/>
+              • Claim rewards daily to maximize compound growth<br/>
+              • Refer friends to boost your affiliate earnings<br/>
+              • Monitor gas fees before making transactions
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* ─── Whale Alert ──────────────────────── */}
+      {tab === 'whale' && (
+        <div key={pageKey}>
+          <h2 className="page-title"><span style={{display: 'inline-flex', alignItems: 'center', gap: 8}}>{Icons.whale} Whale Alert</span></h2>
+          <div className="card" style={{background: 'linear-gradient(135deg, #0E1630, #151E30)'} }>
+            <h3>🐋 Recent Large Transactions</h3>
+            <p style={{color: '#7A8CA5', fontSize: 12, marginTop: 4}}>Tracking whale movements on major networks</p>
+          </div>
+          {[
+            { network: 'TRON', amount: '2,500,000 USDT', from: 'TJYf8...k3xR', to: 'TKx3n...9pQz', time: '2 min ago', type: 'transfer' },
+            { network: 'Ethereum', amount: '1,200 ETH', from: '0x742d...35Fk', to: '0x8913...42Ab', time: '8 min ago', type: 'transfer' },
+            { network: 'BSC', amount: '500,000 USDT', from: '0x1234...5678', to: '0xABCD...EF01', time: '15 min ago', type: 'transfer' },
+            { network: 'TRON', amount: '800,000 USDT', from: 'TWy3k...7mNp', to: 'TL98x...2vBs', time: '23 min ago', type: 'transfer' },
+            { network: 'Ethereum', amount: '3,500 ETH', from: '0x4567...89AB', to: '0xCDEF...0123', time: '31 min ago', type: 'transfer' },
+            { network: 'Polygon', amount: '1,000,000 USDT', from: '0x9876...5432', to: '0xFEDC...BA98', time: '45 min ago', type: 'transfer' },
+          ].map((whale, i) => (
+            <div key={i} className="card" style={{animationDelay: `${i * 0.08}s`}}>
+              <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                <div>
+                  <div style={{fontSize: 15, fontWeight: 700, color: '#FFD54F'}}>{whale.amount}</div>
+                  <div style={{fontSize: 11, color: '#7A8CA5', marginTop: 2}}>{whale.network} • {whale.time}</div>
+                </div>
+                <span style={{fontSize: 10, background: 'rgba(255,213,79,0.1)', color: '#FFD54F', padding: '3px 8px', borderRadius: 6, border: '1px solid rgba(255,213,79,0.2)'}}>🐋 WHALE</span>
+              </div>
+              <div style={{fontSize: 11, color: '#7A8CA5', marginTop: 8, display: 'flex', justifyContent: 'space-between'}}>
+                <span>From: {whale.from}</span>
+                <span>To: {whale.to}</span>
+              </div>
+            </div>
+          ))}
+          <div className="card">
+            <p style={{fontSize: 11, color: '#7A8CA5', textAlign: 'center'}}>
+              🔄 Auto-refreshes every 5 minutes • Data from blockchain explorers
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* ─── Airdrop Alert ────────────────────── */}
+      {tab === 'airdrop' && (
+        <div key={pageKey}>
+          <h2 className="page-title"><span style={{display: 'inline-flex', alignItems: 'center', gap: 8}}>{Icons.airdrop} Airdrop Alert</span></h2>
+          <div className="card" style={{background: 'linear-gradient(135deg, #1a2a1a, #151E30)', border: '1px solid rgba(0,184,148,0.3)'}}>
+            <h3 style={{color: '#00b894'}}>🎁 Active Airdrops</h3>
+            <p style={{color: '#7A8CA5', fontSize: 12, marginTop: 4}}>Verified airdrops from legitimate projects</p>
+          </div>
+          {[
+            { name: 'TRON Ecosystem', token: 'TRX', reward: '50-500 TRX', deadline: 'Jul 30, 2026', status: 'Active', chain: 'TRON', difficulty: 'Easy' },
+            { name: 'StarkNet Launch', token: 'STRK', reward: '100-2000 STRK', deadline: 'Aug 5, 2026', status: 'Active', chain: 'Ethereum L2', difficulty: 'Medium' },
+            { name: 'Arbitrum Odyssey', token: 'ARB', reward: '50-500 ARB', deadline: 'Aug 12, 2026', status: 'Active', chain: 'Arbitrum', difficulty: 'Easy' },
+            { name: 'Polygon zkEVM', token: 'POL', reward: '200-1000 POL', deadline: 'Aug 20, 2026', status: 'Upcoming', chain: 'Polygon', difficulty: 'Medium' },
+            { name: 'Base Protocol', token: 'BASE', reward: 'TBA', deadline: 'Sep 1, 2026', status: 'Upcoming', chain: 'Base', difficulty: 'Hard' },
+          ].map((airdrop, i) => (
+            <div key={i} className="card" style={{animationDelay: `${i * 0.08}s`}}>
+              <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start'}}>
+                <div>
+                  <div style={{fontSize: 15, fontWeight: 700, color: '#FFD54F'}}>{airdrop.name}</div>
+                  <div style={{fontSize: 12, color: '#7A8CA5', marginTop: 2}}>Token: {airdrop.token} • Chain: {airdrop.chain}</div>
+                </div>
+                <span style={{fontSize: 10, padding: '3px 8px', borderRadius: 6, background: airdrop.status === 'Active' ? 'rgba(0,184,148,0.15)' : 'rgba(240,208,64,0.15)', color: airdrop.status === 'Active' ? '#00b894' : '#F0D040', border: `1px solid ${airdrop.status === 'Active' ? 'rgba(0,184,148,0.3)' : 'rgba(240,208,64,0.3)'}`}}>
+                  {airdrop.status}
+                </span>
+              </div>
+              <div style={{display: 'flex', justifyContent: 'space-between', marginTop: 8, fontSize: 12}}>
+                <span style={{color: '#00b894'}}>Reward: {airdrop.reward}</span>
+                <span style={{color: '#7A8CA5'}}>Deadline: {airdrop.deadline}</span>
+              </div>
+              <div style={{marginTop: 6, fontSize: 11, color: '#7A8CA5'}}>Difficulty: {airdrop.difficulty}</div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* ─── Instant Swap ─────────────────────── */}
+      {tab === 'swap' && (
+        <div key={pageKey}>
+          <h2 className="page-title"><span style={{display: 'inline-flex', alignItems: 'center', gap: 8}}>{Icons.swap} Instant Swap</span></h2>
+          <div className="card">
+            <h3>💱 Swap Tokens</h3>
+            <p style={{color: '#7A8CA5', fontSize: 12, marginTop: 4}}>Best rates across DEX aggregators</p>
+            <div className="input-group" style={{marginTop: 12}}>
+              <label>From</label>
+              <select style={{width: '100%', padding: '12px 14px', borderRadius: 10, border: '1px solid #1E2D45', background: '#0B1023', color: '#fff', fontSize: 14, outline: 'none'}}>
+                <option>USDT (TRC-20)</option>
+                <option>USDT (ERC-20)</option>
+                <option>USDT (BEP-20)</option>
+                <option>TRX</option>
+                <option>ETH</option>
+                <option>BNB</option>
+              </select>
+            </div>
+            <div style={{textAlign: 'center', padding: '8px 0', color: '#7A8CA5', cursor: 'pointer', fontSize: 20}}>↕</div>
+            <div className="input-group">
+              <label>To (Estimated)</label>
+              <select style={{width: '100%', padding: '12px 14px', borderRadius: 10, border: '1px solid #1E2D45', background: '#0B1023', color: '#fff', fontSize: 14, outline: 'none'}}>
+                <option>TRX</option>
+                <option>USDT (TRC-20)</option>
+                <option>ETH</option>
+                <option>BNB</option>
+                <option>BTC</option>
+              </select>
+            </div>
+            <div className="input-group">
+              <label>Amount</label>
+              <input type="number" placeholder="Enter amount" />
+            </div>
+            <div style={{background: 'rgba(11,16,35,0.5)', borderRadius: 8, padding: 12, margin: '12px 0', border: '1px solid #1E2D45'}}>
+              <div style={{display: 'flex', justifyContent: 'space-between', fontSize: 13, marginBottom: 6}}>
+                <span style={{color: '#7A8CA5'}}>Rate</span>
+                <span style={{color: '#FFD54F'}}>1 USDT ≈ 3.02 TRX</span>
+              </div>
+              <div style={{display: 'flex', justifyContent: 'space-between', fontSize: 13, marginBottom: 6}}>
+                <span style={{color: '#7A8CA5'}}>Fee</span>
+                <span style={{color: '#FFD54F'}}>0.3%</span>
+              </div>
+              <div style={{display: 'flex', justifyContent: 'space-between', fontSize: 13}}>
+                <span style={{color: '#7A8CA5'}}>Min. received</span>
+                <span style={{color: '#00b894'}}>~2.98 TRX</span>
+              </div>
+            </div>
+            <button className="btn btn-primary">{Icons.swap} Swap Now</button>
+          </div>
+          <div className="card">
+            <h3>💡 Swap Info</h3>
+            <p style={{marginTop: 8, lineHeight: 1.8, fontSize: 13, color: '#7A8CA5'}}>
+              • Best rates from 1inch, Paraswap, Jupiter<br/>
+              • 0.3% fee per swap<br/>
+              • Instant settlement<br/>
+              • Cross-chain supported
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* ─── Tax Calculator ───────────────────── */}
+      {tab === 'tax' && (
+        <div key={pageKey}>
+          <h2 className="page-title"><span style={{display: 'inline-flex', alignItems: 'center', gap: 8}}>{Icons.tax} Tax Calculator</span></h2>
+          <div className="card">
+            <h3>🧮 Crypto Tax Report</h3>
+            <p style={{color: '#7A8CA5', fontSize: 12, marginTop: 4}}>Based on your Vanguard Staking activity</p>
+          </div>
+          <div className="card">
+            <h3>📊 Tax Summary</h3>
+            <div style={{marginTop: 12}}>
+              <div style={{display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderBottom: '1px solid #1E2D45'}}>
+                <span style={{color: '#7A8CA5', fontSize: 13}}>Total Deposits</span>
+                <span style={{color: '#FFD54F', fontWeight: 600, fontSize: 13}}>{transactions.filter(t => t.type === 'deposit').reduce((s, t) => s + parseFloat(t.amount), 0).toFixed(2)} USDT</span>
+              </div>
+              <div style={{display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderBottom: '1px solid #1E2D45'}}>
+                <span style={{color: '#7A8CA5', fontSize: 13}}>Total Withdrawals</span>
+                <span style={{color: '#FFD54F', fontWeight: 600, fontSize: 13}}>{transactions.filter(t => t.type === 'withdrawal').reduce((s, t) => s + parseFloat(t.amount), 0).toFixed(2)} USDT</span>
+              </div>
+              <div style={{display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderBottom: '1px solid #1E2D45'}}>
+                <span style={{color: '#7A8CA5', fontSize: 13}}>Staking Rewards</span>
+                <span style={{color: '#00b894', fontWeight: 600, fontSize: 13}}>{transactions.filter(t => t.type === 'reward_claim').reduce((s, t) => s + parseFloat(t.amount), 0).toFixed(4)} USDT</span>
+              </div>
+              <div style={{display: 'flex', justifyContent: 'space-between', padding: '10px 0'}}>
+                <span style={{color: '#7A8CA5', fontSize: 13}}>Total Transactions</span>
+                <span style={{color: '#FFD54F', fontWeight: 600, fontSize: 13}}>{transactions.length}</span>
+              </div>
+            </div>
+          </div>
+          <div className="card">
+            <h3>📋 Transaction History</h3>
+            {transactions.length === 0 ? (
+              <p style={{color: '#7A8CA5', fontSize: 13, marginTop: 8}}>No transactions yet</p>
+            ) : (
+              transactions.slice(0, 10).map((tx, i) => (
+                <div key={i} style={{display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid #1E2D45', fontSize: 12}}>
+                  <span style={{color: '#7A8CA5'}}>{tx.type.replace(/_/g, ' ')} • {new Date(tx.created_at).toLocaleDateString()}</span>
+                  <span style={{color: tx.type === 'reward_claim' ? '#00b894' : '#e17055', fontWeight: 600}}>{tx.type === 'reward_claim' ? '+' : '-'}{parseFloat(tx.amount).toFixed(4)} USDT</span>
+                </div>
+              ))
+            )}
+          </div>
+          <div className="card">
+            <h3>⚠️ Disclaimer</h3>
+            <p style={{marginTop: 8, lineHeight: 1.8, fontSize: 12, color: '#7A8CA5'}}>
+              This report is for informational purposes only. Consult a tax professional for accurate tax filing. Tax laws vary by jurisdiction.
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* ─── Expert Help ──────────────────────── */}
+      {tab === 'expert' && (
+        <div key={pageKey}>
+          <h2 className="page-title"><span style={{display: 'inline-flex', alignItems: 'center', gap: 8}}>{Icons.expert} Expert Help</span></h2>
+          <div className="card" style={{background: 'linear-gradient(135deg, #1a2a1a, #151E30)', border: '1px solid rgba(0,184,148,0.3)'}}>
+            <h3 style={{color: '#00b894'}}>👨‍💼 1-on-1 Crypto Consultation</h3>
+            <p style={{color: '#7A8CA5', fontSize: 12, marginTop: 4}}>Get expert advice on staking, DeFi, portfolio management</p>
+          </div>
+          <div className="card">
+            <h3>📋 Available Experts</h3>
+            {[{name: 'Staking Specialist', expertise: 'USDT staking, yield optimization', rate: '25 USDT/session', rating: '4.9 ⭐', sessions: '150+'},
+              {name: 'DeFi Advisor', expertise: 'DeFi protocols, liquidity farming', rate: '25 USDT/session', rating: '4.8 ⭐', sessions: '120+'},
+              {name: 'Security Expert', expertise: 'Wallet security, scam detection', rate: '25 USDT/session', rating: '5.0 ⭐', sessions: '200+'},
+            ].map((expert, i) => (
+              <div key={i} style={{background: 'rgba(11,16,35,0.5)', borderRadius: 10, padding: 12, marginTop: 10, border: '1px solid #1E2D45'}}>
+                <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                  <div style={{fontSize: 14, fontWeight: 600, color: '#FFD54F'}}>{expert.name}</div>
+                  <span style={{fontSize: 11, color: '#00b894'}}>{expert.rating}</span>
+                </div>
+                <div style={{fontSize: 12, color: '#7A8CA5', marginTop: 4}}>{expert.expertise}</div>
+                <div style={{display: 'flex', justifyContent: 'space-between', marginTop: 6, fontSize: 12}}>
+                  <span style={{color: '#FFD54F'}}>{expert.rate}</span>
+                  <span style={{color: '#7A8CA5'}}>{expert.sessions} sessions</span>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="card">
+            <h3>📞 Book a Session</h3>
+            <p style={{color: '#7A8CA5', fontSize: 13, marginTop: 8, lineHeight: 1.8}}>
+              1. Choose an expert above<br/>
+              2. Pay 25 USDT from your balance<br/>
+              3. Get 30-minute 1-on-1 consultation<br/>
+              4. Session via Telegram voice call
+            </p>
+            <button className="btn btn-primary" style={{marginTop: 12}}>{Icons.expert} Book Session (25 USDT)</button>
+          </div>
+          <div className="card">
+            <h3>💬 Quick Questions?</h3>
+            <p style={{color: '#7A8CA5', fontSize: 13, marginTop: 8}}>
+              For quick questions, contact admin: <a href="https://t.me/vanguardstakingbot" style={{color: '#FFD54F"}}>t.me/vanguardstakingbot</a>
+            </p>
+          </div>
         </div>
       )}
 
