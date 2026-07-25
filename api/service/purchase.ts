@@ -1,7 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
 
 const supabase = createClient(process.env.SUPABASE_URL || '', process.env.SUPABASE_ANON_KEY || '');
-const BOT_TOKEN = proces…OKEN || '';
+const BOT_TOKEN = process.env.BOT_TOKEN || '';
 const CHANNEL_ID = process.env.CHANNEL_ID || '';
 const ADMIN_ID = process.env.ADMIN_TELEGRAM_ID || '7010136281';
 const APP_URL = process.env.APP_URL || '';
