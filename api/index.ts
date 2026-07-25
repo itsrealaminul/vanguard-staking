@@ -78,8 +78,15 @@ app.get('/api/withdrawals', async (req, res) => {
 app.post('/api/withdrawals', async (req, res) => {
   try {
     const { telegram_id, amount, wallet_address } = req.body;
-    const { data } = await supabase.from('withdrawals').insert({ telegram_id, amount, wallet_address, status: 'pending' }).select().single();
-    res.json(data);
+    if (!telegram_id || !amount || !wallet_address) return res.status(400).json({ error: 'Missing fields' });
+    const { data, error } = await supabase.from('withdrawals').insert({ telegram_id: parseInt(telegram_id), amount: parseFloat(amount), wallet_address, status: 'pending' }).select().single();
+    if (error) return res.status(500).json({ error: error.message });
+    // Deduct from user balance
+    const { data: user } = await supabase.from('users').select('balance').eq('telegram_id', telegram_id).single();
+    if (user) await supabase.from('users').update({ balance: Math.max(0, (user.balance || 0) - parseFloat(amount)) }).eq('telegram_id', telegram_id);
+    // Log transaction
+    await supabase.from('transactions').insert({ telegram_id: parseInt(telegram_id), type: 'withdrawal', amount: parseFloat(amount), details: `Withdrawal to ${wallet_address}` });
+    res.json(data || { success: true });
   } catch (err: any) { res.status(500).json({ error: err.message }); }
 });
 
@@ -97,10 +104,12 @@ app.post('/api/deposit', async (req, res) => {
   try {
     const { telegram_id, amount, tx_hash } = req.body;
     if (!telegram_id || !amount) return res.status(400).json({ error: 'telegram_id and amount required' });
-    const { data: user } = await supabase.from('users').select('balance').eq('telegram_id', telegram_id).single();
-    const newBalance = (user?.balance || 0) + parseFloat(amount);
+    const amt = parseFloat(amount);
+    if (amt < 10) return res.status(400).json({ error: 'Minimum deposit: 10 USDT' });
+    const { data: user } = await supabase.from('users').select('balance, username, first_name').eq('telegram_id', telegram_id).single();
+    const newBalance = (user?.balance || 0) + amt;
     await supabase.from('users').update({ balance: newBalance }).eq('telegram_id', telegram_id);
-    await supabase.from('transactions').insert({ telegram_id, type: 'deposit', amount: parseFloat(amount), details: tx_hash || 'Manual' });
+    await supabase.from('transactions').insert({ telegram_id: parseInt(telegram_id), type: 'deposit', amount: amt, details: tx_hash ? `TX: ${tx_hash}` : 'Manual deposit' });
     res.json({ success: true, balance: newBalance });
   } catch (err: any) { res.status(500).json({ error: err.message }); }
 });
@@ -155,17 +164,21 @@ app.get('/api/gas', async (_req, res) => {
       const d = await r.json();
       if (d.status === '1' && d.result) results.bsc = { low: parseInt(d.result.SafeGasPrice), standard: parseInt(d.result.ProposeGasPrice), fast: parseInt(d.result.FastGasPrice), instant: Math.ceil(parseInt(d.result.FastGasPrice) * 1.5), unit: 'Gwei' };
     } catch {}
+    // Polygon - always provide fallback
+    results.polygon = { low: 30, standard: 50, fast: 80, instant: 120, unit: 'Gwei' };
+    try {
+      const r = await fetch('https://api.polygonscan.com/api?module=gastracker&action=gasoracle');
+      const d = await r.json();
+      if (d.status === '1' && d.result) results.polygon = { low: parseInt(d.result.SafeGasPrice), standard: parseInt(d.result.ProposeGasPrice), fast: parseInt(d.result.FastGasPrice), instant: Math.ceil(parseInt(d.result.FastGasPrice) * 1.5), unit: 'Gwei' };
+    } catch {}
+    // TRON - always provide fallback
+    results.tron = { low: 340, standard: 420, fast: 550, instant: 750, unit: 'Energy' };
     try {
       const r = await fetch('https://api.trongrid.io/wallet/getchainparameters');
       const d = await r.json();
       const ef = d?.chainParameter?.find((p: any) => p.key === 'getEnergyFee')?.value || 420;
       results.tron = { low: Math.round(ef * 0.8), standard: ef, fast: Math.round(ef * 1.3), instant: Math.round(ef * 1.8), unit: 'Energy' };
-    } catch { results.tron = { low: 340, standard: 420, fast: 550, instant: 750, unit: 'Energy' }; }
-    try {
-      const r = await fetch('https://api.polygonscan.com/api?module=gastracker&action=gasoracle');
-      const d = await r.json();
-      if (d.status === '1') results.polygon = { low: parseInt(d.result.SafeGasPrice), standard: parseInt(d.result.ProposeGasPrice), fast: parseInt(d.result.FastGasPrice), instant: Math.ceil(parseInt(d.result.FastGasPrice) * 1.5), unit: 'Gwei' };
-    } catch { results.polygon = { low: 30, standard: 50, fast: 80, instant: 120, unit: 'Gwei' }; }
+    } catch {}
     res.setHeader('Cache-Control', 's-maxage=15, stale-while-revalidate');
     res.json(results);
   } catch (err: any) { res.status(500).json({ error: err.message }); }
