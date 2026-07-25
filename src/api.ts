@@ -82,3 +82,48 @@ export async function submitDeposit(telegramId: number, amount: number, txHash?:
   }
   return res.json();
 }
+
+// ─── Real-time Gas Tracker ───────────────────────────
+export async function fetchGasPrices() {
+  const res = await fetch(`${API_BASE}/gas`);
+  if (!res.ok) throw new Error(`Failed to fetch gas: ${res.status}`);
+  return res.json();
+}
+
+// ─── Real-time Token Scanner ─────────────────────────
+export async function scanToken(address: string) {
+  const res = await fetch(`${API_BASE}/scan?address=${encodeURIComponent(address)}`);
+  if (!res.ok) {
+    const data = await res.json();
+    throw new Error(data.error || `Failed to scan: ${res.status}`);
+  }
+  return res.json();
+}
+
+// ─── Crypto Prices ───────────────────────────────────
+export async function fetchPrices() {
+  const res = await fetch(`${API_BASE}/prices`);
+  if (!res.ok) throw new Error(`Failed to fetch prices: ${res.status}`);
+  return res.json();
+}
+
+// ─── Service Purchase ────────────────────────────────
+export async function purchaseService(telegramId: number, serviceId: string, paymentMethod: 'balance' | 'direct') {
+  const res = await fetch(`${API_BASE}/service/purchase`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ telegram_id: telegramId, service_id: serviceId, payment_method: paymentMethod }),
+  });
+  if (!res.ok) {
+    const data = await res.json();
+    throw new Error(data.error || `Failed to purchase: ${res.status}`);
+  }
+  return res.json();
+}
+
+// ─── Check Service Access ────────────────────────────
+export async function checkServiceAccess(telegramId: number, serviceId: string) {
+  const res = await fetch(`${API_BASE}/service/access?telegram_id=${telegramId}&service_id=${serviceId}`);
+  if (!res.ok) return { hasAccess: false };
+  return res.json();
+}

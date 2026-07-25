@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { fetchUser, fetchStakes, createStake, fetchTransactions, fetchWithdrawals, requestWithdrawal, claimReward, submitDeposit } from './api';
+import { fetchUser, fetchStakes, createStake, fetchTransactions, fetchWithdrawals, requestWithdrawal, claimReward, submitDeposit, fetchGasPrices, scanToken, purchaseService, checkServiceAccess, fetchPrices } from './api';
 
 declare global {
   interface Window {
@@ -475,22 +475,29 @@ function App() {
     }
 
     setPaymentProcessing(true);
-    // Simulate payment processing
-    await new Promise(r => setTimeout(r, 1500));
+    try {
+      const result = await purchaseService(TELEGRAM_ID, paymentService, paymentMethod);
 
-    if (pricing.type === 'subscription') {
-      const expiry = new Date();
-      expiry.setDate(expiry.getDate() + 30);
-      setActiveSubscriptions(prev => ({...prev, [paymentService]: expiry.toISOString()}));
-      showMsg(`✅ Subscribed to ${paymentService} for 30 days!`);
-    } else {
-      setPurchasedServices(prev => new Set([...prev, paymentService]));
-      showMsg(`✅ ${paymentService} unlocked!`);
+      if (pricing.type === 'subscription') {
+        setActiveSubscriptions(prev => ({...prev, [paymentService]: result.expiresAt}));
+        showMsg(`✅ Subscribed! Valid for 30 days.`);
+      } else {
+        setPurchasedServices(prev => new Set([...prev, paymentService]));
+        showMsg(`✅ ${paymentService} unlocked!`);
+      }
+
+      // Refresh user data to get updated balance
+      if (paymentMethod === 'balance') {
+        const userData = await fetchUser(TELEGRAM_ID, USERNAME, FIRST_NAME);
+        setUser(userData);
+      }
+
+      setShowPaymentModal(false);
+    } catch (err: any) {
+      showMsg(err.message || 'Payment failed. Try again.');
+    } finally {
+      setPaymentProcessing(false);
     }
-
-    setPaymentProcessing(false);
-    setShowPaymentModal(false);
-    return true;
   };
 
   const hasAccess = (serviceId: string) => {
@@ -501,7 +508,27 @@ function App() {
     return false;
   };
 
-  // ─── Token Scanner Logic ────────────────────────
+  // Check service access on load
+  useEffect(() => {
+    const checkAccess = async () => {
+      const services = ['tokenScanner', 'portfolio', 'whale', 'airdrop', 'tax', 'expert'];
+      for (const svc of services) {
+        try {
+          const result = await checkServiceAccess(TELEGRAM_ID, svc);
+          if (result.hasAccess) {
+            if (SERVICE_PRICING[svc]?.type === 'subscription') {
+              setActiveSubscriptions(prev => ({...prev, [svc]: result.expiresAt}));
+            } else {
+              setPurchasedServices(prev => new Set([...prev, svc]));
+            }
+          }
+        } catch {}
+      }
+    };
+    checkAccess();
+  }, []);
+
+  // ─── Token Scanner Logic (Real-time) ─────────────
   const handleScan = async () => {
     if (!scanAddress.trim()) {
       showMsg('Enter a contract address');
@@ -514,75 +541,28 @@ function App() {
     }
     setScanning(true);
     setScanResult(null);
-    // Simulated scan — in production, call BSCScan/Etherscan API
-    setTimeout(() => {
-      const isTron = scanAddress.startsWith('T');
-      const risks = [];
-      const safe = [];
-      // Simulate random results
-      const rand = Math.random();
-      if (rand > 0.3) safe.push('Contract verified');
-      if (rand > 0.5) safe.push('Liquidity locked');
-      if (rand < 0.4) risks.push('High holder concentration');
-      if (rand < 0.2) risks.push('Mint function detected');
-      if (rand > 0.6) safe.push('Ownership renounced');
-      if (rand < 0.3) risks.push('Low liquidity');
-
-      const score = Math.max(10, Math.min(100, Math.round(70 + (rand * 40) - (risks.length * 15))));
-
-      setScanResult({
-        address: scanAddress,
-        network: isTron ? 'TRON (TRC-20)' : 'Ethereum (ERC-20)',
-        score,
-        risks,
-        safe,
-        holderCount: Math.floor(rand * 5000) + 100,
-        liquidityUSD: Math.floor(rand * 500000) + 10000,
-        age: Math.floor(rand * 365) + 1,
-      });
+    try {
+      const result = await scanToken(scanAddress);
+      setScanResult(result);
+    } catch (err: any) {
+      showMsg(err.message || 'Scan failed. Try again.');
+    } finally {
       setScanning(false);
-    }, 1500);
+    }
   };
 
-  // ─── Gas Tracker Logic ──────────────────────────
+  // ─── Gas Tracker Logic (Real-time) ──────────────
   const fetchGas = async () => {
     setGasLoading(true);
-    // Simulated gas data — in production, call ETH Gas Station API
-    setTimeout(() => {
-      const baseFee = Math.floor(Math.random() * 30) + 10;
-      setGasData({
-        ethereum: {
-          low: baseFee,
-          standard: Math.floor(baseFee * 1.3),
-          fast: Math.floor(baseFee * 1.8),
-          instant: Math.floor(baseFee * 2.5),
-          unit: 'Gwei',
-        },
-        bsc: {
-          low: Math.floor(baseFee * 0.1),
-          standard: Math.floor(baseFee * 0.15),
-          fast: Math.floor(baseFee * 0.2),
-          instant: Math.floor(baseFee * 0.3),
-          unit: 'Gwei',
-        },
-        tron: {
-          low: 0,
-          standard: Math.floor(Math.random() * 5) + 10,
-          fast: Math.floor(Math.random() * 8) + 15,
-          instant: Math.floor(Math.random() * 10) + 20,
-          unit: 'Energy',
-        },
-        polygon: {
-          low: Math.floor(baseFee * 0.02),
-          standard: Math.floor(baseFee * 0.04),
-          fast: Math.floor(baseFee * 0.06),
-          instant: Math.floor(baseFee * 0.1),
-          unit: 'Gwei',
-        },
-        timestamp: new Date().toLocaleTimeString(),
-      });
+    try {
+      const data = await fetchGasPrices();
+      data.timestamp = new Date(data.timestamp).toLocaleTimeString();
+      setGasData(data);
+    } catch (err) {
+      showMsg('Failed to fetch gas prices');
+    } finally {
       setGasLoading(false);
-    }, 1000);
+    }
   };
 
   useEffect(() => {

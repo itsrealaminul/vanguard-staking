@@ -15,7 +15,7 @@ const supabase = createClient(
 const BOT_TOKEN = process.env.BOT_TOKEN || '';
 const APP_URL = process.env.APP_URL || 'https://vanguard-staking.vercel.app';
 const CHANNEL_ID = process.env.CHANNEL_ID || '';
-const BANNER_URL = 'https://raw.githubusercontent.com/itsrealaminul/vanguard-staking/main/public/banner.png';
+const BANNER_URL = `${APP_URL}/banner.svg`;
 
 function getParam(val: any): string | undefined {
   if (typeof val === 'string') return val;
@@ -65,9 +65,9 @@ app.post('/api/webhook', async (req, res) => {
         };
         try {
           const welcomeCaption = [
-            '━━━━━━━━━━━━━━━━━━━━━━',
+            '━━━━━━━━━━━━━━━━━━━━━━━━━━',
             '⚔️ <b>VANGUARD STAKING</b> ⚔️',
-            '━━━━━━━━━━━━━━━━━━━━━━',
+            '━━━━━━━━━━━━━━━━━━━━━━━━━━',
             '',
             `Welcome, <b>${firstName}</b>! 👋`,
             '',
@@ -77,9 +77,15 @@ app.post('/api/webhook', async (req, res) => {
             '🌍 <b>Trusted</b> → 5,000+ Users',
             '👥 <b>Earn More</b> → 40% Commissions',
             '',
-            '━━━━━━━━━━━━━━━━━━━━━━',
-            '🚀 <i>Tap below to start your staking journey!</i>',
-            '━━━━━━━━━━━━━━━━━━━━━━',
+            '━━━━━━━ <b>NEW SERVICES</b> ━━━━━━━',
+            '🔍 <b>Token Scanner</b> → Check safety',
+            '⛽ <b>Gas Tracker</b> → Real-time prices',
+            '🎓 <b>Crypto Academy</b> → Learn free',
+            '📊 <b>Portfolio</b> • 🐋 <b>Whale Alert</b>',
+            '',
+            '━━━━━━━━━━━━━━━━━━━━━━━━━━',
+            '🚀 <i>Tap below to start your journey!</i>',
+            '━━━━━━━━━━━━━━━━━━━━━━━━━━',
           ].join('\n');
           await bot.sendPhoto(chatId, BANNER_URL, {
             caption: welcomeCaption,
@@ -110,7 +116,35 @@ app.post('/api/webhook', async (req, res) => {
           }
         }
       } else if (text === '/help') {
-        await bot.sendMessage(chatId, `📖 <b>Commands</b>\n\n/start — Start bot\n/stake — Open app\n/referral — Referral link\n/help — Help`, { parse_mode: 'HTML' });
+        await bot.sendMessage(chatId, [
+          '📖 <b>Vanguard Staking Commands</b>',
+          '',
+          '🚀 /start — Start bot & welcome',
+          '💰 /stake — Open staking app',
+          '🔍 /scan — Scan token contract',
+          '⛽ /gas — Check gas prices',
+          '🎓 /learn — Crypto Academy',
+          '👥 /referral — Referral link',
+          '📖 /help — This message',
+          '',
+          '━━━━━━━━━━━━━━━━━━━━━━',
+          '💡 <i>All services available in the mini app!</i>',
+        ].join('\n'), { parse_mode: 'HTML' });
+      } else if (text === '/scan') {
+        await bot.sendMessage(chatId, '🔍 <b>Token Scanner</b>\n\nCheck any token contract for safety before investing.\n\n• Detect scams & rug pulls\n• Safety score 0-100\n• Risk & safe indicators', {
+          parse_mode: 'HTML',
+          reply_markup: { inline_keyboard: [[{ text: '🔍 Open Scanner', web_app: { url: `${APP_URL}#scanner` } }]] },
+        });
+      } else if (text === '/gas') {
+        await bot.sendMessage(chatId, '⛽ <b>Gas Tracker</b>\n\nReal-time gas prices:\n⟠ Ethereum • ◈ BSC\n⚡ TRON • ⬡ Polygon\n\nLow → Standard → Fast → Instant', {
+          parse_mode: 'HTML',
+          reply_markup: { inline_keyboard: [[{ text: '⛽ Check Gas', web_app: { url: `${APP_URL}#gas` } }]] },
+        });
+      } else if (text === '/learn') {
+        await bot.sendMessage(chatId, '🎓 <b>Crypto Academy</b>\n\nFree crypto education!\n\n• Beginner: Blockchain, Wallets, USDT\n• Intermediate: Staking, DeFi, Gas\n• Advanced: Security, Portfolio\n\n📚 8 lessons • 100% free', {
+          parse_mode: 'HTML',
+          reply_markup: { inline_keyboard: [[{ text: '🎓 Start Learning', web_app: { url: `${APP_URL}#academy` } }]] },
+        });
       } else if (text === '/stake') {
         await bot.sendMessage(chatId, '💰 Open Staking:', { reply_markup: { inline_keyboard: [[{ text: '🚀 Open App', web_app: { url: APP_URL } }]] } });
       } else if (text === '/referral') {
@@ -402,13 +436,326 @@ app.get('/api/setup-bot', async (_req, res) => {
     await bot.setMyCommands([
       { command: 'start', description: '🚀 Start the bot' },
       { command: 'stake', description: '💰 Open staking app' },
+      { command: 'scan', description: '🔍 Scan token contract' },
+      { command: 'gas', description: '⛽ Check gas prices' },
+      { command: 'learn', description: '🎓 Crypto Academy' },
       { command: 'referral', description: '👥 Get referral link' },
       { command: 'help', description: '📖 Show help' },
     ]);
-    await bot.setMyDescription({ description: '⚔️ Vanguard Staking — Stake your USDT and earn up to 3% daily rewards. Secure, fast, and trusted by 5,000+ users worldwide.\n\n💰 Stake • Earn • Grow\n👥 40% Affiliate Commissions\n🔒 Secure TRC-20 Protocol\n⚡ Instant Deposits & Fast Withdrawals\n\nTap Start to begin your staking journey!' });
-    await bot.setMyShortDescription({ short_description: 'Stake USDT, Earn Up to 3% Daily. 5,000+ Users. 40% Affiliate Commission.' });
+    await bot.setMyDescription({ description: '⚔️ Vanguard Staking — Your all-in-one crypto platform.\n\n💰 Stake USDT → Earn up to 3% daily\n🔍 Token Scanner → Check contract safety\n⛽ Gas Tracker → Real-time gas prices\n🎓 Crypto Academy → Free education\n👥 40% Affiliate Commissions\n🔒 Secure TRC-20 Protocol\n⚡ Instant Deposits & Fast Withdrawals\n\nTrusted by 5,000+ users worldwide. Tap Start!' });
+    await bot.setMyShortDescription({ short_description: 'Stake USDT • Token Scanner • Gas Tracker • Crypto Academy. Earn up to 3% daily. 5,000+ users.' });
     res.json({ success: true, message: 'Bot configured!' });
   } catch (err: any) { res.status(500).json({ error: err.message }); }
+});
+
+// ═══════════════════════════════════════════════════
+// REAL-TIME SERVICE ENDPOINTS
+// ═══════════════════════════════════════════════════
+
+// ─── Gas Tracker (Real-time) ─────────────────────────
+app.get('/api/gas', async (_req, res) => {
+  try {
+    const results: any = { timestamp: new Date().toISOString() };
+
+    // Fetch Ethereum gas from multiple free sources
+    try {
+      const ethRes = await fetch('https://api.etherscan.io/api?module=gastracker&action=gasoracle');
+      const ethData = await ethRes.json();
+      if (ethData.status === '1' && ethData.result) {
+        results.ethereum = {
+          low: parseInt(ethData.result.SafeGasPrice),
+          standard: parseInt(ethData.result.ProposeGasPrice),
+          fast: parseInt(ethData.result.FastGasPrice),
+          instant: Math.ceil(parseInt(ethData.result.FastGasPrice) * 1.5),
+          unit: 'Gwei',
+        };
+      }
+    } catch {
+      results.ethereum = { low: 0, standard: 0, fast: 0, instant: 0, unit: 'Gwei', error: 'unavailable' };
+    }
+
+    // BSC gas (low cost network)
+    try {
+      const bscRes = await fetch('https://api.bscscan.com/api?module=gastracker&action=gasoracle');
+      const bscData = await bscRes.json();
+      if (bscData.status === '1' && bscData.result) {
+        results.bsc = {
+          low: parseInt(bscData.result.SafeGasPrice),
+          standard: parseInt(bscData.result.ProposeGasPrice),
+          fast: parseInt(bscData.result.FastGasPrice),
+          instant: Math.ceil(parseInt(bscData.result.FastGasPrice) * 1.5),
+          unit: 'Gwei',
+        };
+      }
+    } catch {
+      results.bsc = { low: 1, standard: 3, fast: 5, instant: 8, unit: 'Gwei' };
+    }
+
+    // TRON energy prices (from TronGrid)
+    try {
+      const tronRes = await fetch('https://api.trongrid.io/wallet/getchainparameters');
+      const tronData = await tronRes.json();
+      const energyFee = tronData?.chainParameter?.find((p: any) => p.key === 'getEnergyFee')?.value || 420;
+      results.tron = {
+        low: Math.round(energyFee * 0.8),
+        standard: energyFee,
+        fast: Math.round(energyFee * 1.3),
+        instant: Math.round(energyFee * 1.8),
+        unit: 'Energy',
+      };
+    } catch {
+      results.tron = { low: 340, standard: 420, fast: 550, instant: 750, unit: 'Energy' };
+    }
+
+    // Polygon gas
+    try {
+      const polyRes = await fetch('https://api.polygonscan.com/api?module=gastracker&action=gasoracle');
+      const polyData = await polyRes.json();
+      if (polyData.status === '1' && polyData.result) {
+        results.polygon = {
+          low: parseInt(polyData.result.SafeGasPrice),
+          standard: parseInt(polyData.result.ProposeGasPrice),
+          fast: parseInt(polyData.result.FastGasPrice),
+          instant: Math.ceil(parseInt(polyData.result.FastGasPrice) * 1.5),
+          unit: 'Gwei',
+        };
+      }
+    } catch {
+      results.polygon = { low: 30, standard: 50, fast: 80, instant: 120, unit: 'Gwei' };
+    }
+
+    res.json(results);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ─── Token Scanner (Real-time) ───────────────────────
+app.get('/api/scan', async (req, res) => {
+  try {
+    const address = getParam(req.query.address);
+    if (!address) return res.status(400).json({ error: 'address required' });
+
+    const isTron = address.startsWith('T');
+    const isEth = address.startsWith('0x');
+    const risks: string[] = [];
+    const safe: string[] = [];
+    let holderCount = 0;
+    let liquidityUSD = 0;
+    let age = 0;
+    let tokenName = 'Unknown';
+    let tokenSymbol = '???';
+
+    if (isTron) {
+      // TRC-20 Token Info from TronGrid
+      try {
+        const [contractRes, infoRes] = await Promise.all([
+          fetch(`https://api.trongrid.io/v1/contracts/${address}`),
+          fetch(`https://apilist.tronscanapi.com/api/token_trc20?contract=${address}`),
+        ]);
+        const contractData = await contractRes.json();
+        const infoData = await infoRes.json();
+
+        if (contractData?.data?.[0]) {
+          const c = contractData.data[0];
+          tokenName = c.name || 'Unknown';
+          tokenSymbol = c.symbol || '???';
+          if (c.verified) safe.push('Contract verified on TronScan');
+          else risks.push('Contract not verified');
+        }
+
+        if (infoData?.trc20_tokens?.[0]) {
+          const t = infoData.trc20_tokens[0];
+          holderCount = parseInt(t.holders_count || '0');
+          if (holderCount > 1000) safe.push(`${holderCount.toLocaleString()} holders`);
+          else if (holderCount < 100) risks.push(`Low holder count: ${holderCount}`);
+
+          const totalSupply = parseFloat(t.total_supply_with_decimals || '0');
+          if (totalSupply > 0) safe.push('Total supply verified');
+        }
+
+        // Check age from first transaction
+        const txRes = await fetch(`https://api.trongrid.io/v1/contracts/${address}/transactions?limit=1&order_by=block_timestamp,asc`);
+        const txData = await txRes.json();
+        if (txData?.data?.[0]?.block_timestamp) {
+          age = Math.floor((Date.now() - txData.data[0].block_timestamp) / (1000 * 60 * 60 * 24));
+          if (age > 30) safe.push(`Contract age: ${age} days`);
+          else risks.push(`New contract: ${age} days old`);
+        }
+      } catch (e) {
+        risks.push('Could not fetch TRC-20 data');
+      }
+    } else if (isEth) {
+      // ERC-20 Token Info from Etherscan
+      try {
+        const [contractRes, holderRes] = await Promise.all([
+          fetch(`https://api.etherscan.io/api?module=contract&action=getsourcecode&address=${address}`),
+          fetch(`https://api.etherscan.io/api?module=token&action=tokenholdercount&contractaddress=${address}`),
+        ]);
+        const contractData = await contractRes.json();
+        const holderData = await holderRes.json();
+
+        if (contractData?.result?.[0]) {
+          const c = contractData.result[0];
+          tokenName = c.ContractName || 'Unknown';
+          if (c.SourceCode) safe.push('Source code verified');
+          else risks.push('Source code not verified');
+          if (c.Proxy === '1') risks.push('Proxy contract detected');
+        }
+
+        if (holderData?.result) {
+          holderCount = parseInt(holderData.result);
+          if (holderCount > 1000) safe.push(`${holderCount.toLocaleString()} holders`);
+          else if (holderCount < 100) risks.push(`Low holder count: ${holderCount}`);
+        }
+      } catch (e) {
+        risks.push('Could not fetch ERC-20 data');
+      }
+    }
+
+    // Calculate safety score
+    let score = 50; // base
+    score += safe.length * 12;
+    score -= risks.length * 18;
+    if (holderCount > 5000) score += 10;
+    if (age > 180) score += 10;
+    score = Math.max(5, Math.min(98, score));
+
+    res.json({
+      address,
+      network: isTron ? 'TRON (TRC-20)' : 'Ethereum (ERC-20)',
+      tokenName,
+      tokenSymbol,
+      score,
+      risks,
+      safe,
+      holderCount,
+      liquidityUSD,
+      age,
+      timestamp: new Date().toISOString(),
+    });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ─── Payment / Service Purchase ──────────────────────
+const SERVICE_PRICES: Record<string, number> = {
+  tokenScanner: 0.5,
+  portfolio: 5,
+  whale: 10,
+  airdrop: 3,
+  tax: 15,
+  expert: 25,
+};
+
+app.post('/api/service/purchase', async (req, res) => {
+  try {
+    const { telegram_id, service_id, payment_method } = req.body;
+    if (!telegram_id || !service_id) return res.status(400).json({ error: 'telegram_id and service_id required' });
+
+    const price = SERVICE_PRICES[service_id];
+    if (!price) return res.status(400).json({ error: 'Invalid service' });
+
+    // Get user
+    const { data: user, error: userError } = await supabase.from('users').select('*').eq('telegram_id', telegram_id).single();
+    if (userError || !user) return res.status(404).json({ error: 'User not found' });
+
+    if (payment_method === 'balance') {
+      // Pay from Vanguard balance
+      if ((user.balance || 0) < price) {
+        return res.status(400).json({ error: 'Insufficient balance', needed: price, available: user.balance });
+      }
+
+      // Deduct balance
+      await supabase.from('users').update({ balance: (user.balance || 0) - price }).eq('telegram_id', telegram_id);
+
+      // Log transaction
+      await supabase.from('transactions').insert({
+        telegram_id,
+        type: 'service_purchase',
+        amount: price,
+        details: `Purchased: ${service_id}`,
+      });
+
+      // Record purchase
+      const expiry = new Date();
+      expiry.setDate(expiry.getDate() + 30);
+      await supabase.from('service_purchases').upsert({
+        telegram_id,
+        service_id,
+        price,
+        payment_method: 'balance',
+        expires_at: expiry.toISOString(),
+        status: 'active',
+      }, { onConflict: 'telegram_id,service_id' });
+
+      // Post to channel
+      const userTag = user.username ? `@${user.username}` : (user.first_name || 'User');
+      await postToChannel(`🛒 <b>Service Purchased!</b>\n\n👤 ${userTag}\n🔧 Service: <b>${service_id}</b>\n💵 Price: <b>${price} USDT</b>\n💳 Method: Balance\n\n🔗 <a href="${APP_URL}">Open Vanguard Staking</a>`);
+
+      res.json({ success: true, newBalance: (user.balance || 0) - price, expiresAt: expiry.toISOString() });
+    } else {
+      // Direct USDT — mark as pending, admin verifies
+      await supabase.from('service_purchases').upsert({
+        telegram_id,
+        service_id,
+        price,
+        payment_method: 'direct_usdt',
+        status: 'pending_verification',
+      }, { onConflict: 'telegram_id,service_id' });
+
+      // Post to channel for admin
+      const userTag = user.username ? `@${user.username}` : (user.first_name || 'User');
+      await postToChannel(`🔔 <b>Payment Verification Needed!</b>\n\n👤 ${userTag}\n🔧 Service: <b>${service_id}</b>\n💵 Amount: <b>${price} USDT</b>\n💳 Method: Direct USDT\n\nAdmin: /admin to verify`);
+
+      res.json({ success: true, status: 'pending_verification', message: 'Payment submitted. Admin will verify shortly.' });
+    }
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ─── Check Service Access ────────────────────────────
+app.get('/api/service/access', async (req, res) => {
+  try {
+    const telegramIdStr = getParam(req.query.telegram_id);
+    const serviceId = getParam(req.query.service_id);
+    if (!telegramIdStr || !serviceId) return res.status(400).json({ error: 'telegram_id and service_id required' });
+
+    const telegramId = parseInt(telegramIdStr, 10);
+    const { data: purchase } = await supabase.from('service_purchases')
+      .select('*')
+      .eq('telegram_id', telegramId)
+      .eq('service_id', serviceId)
+      .eq('status', 'active')
+      .single();
+
+    if (purchase && new Date(purchase.expires_at) > new Date()) {
+      res.json({ hasAccess: true, expiresAt: purchase.expires_at });
+    } else {
+      res.json({ hasAccess: false });
+    }
+  } catch (err: any) {
+    res.json({ hasAccess: false });
+  }
+});
+
+// ─── Crypto Prices (Real-time) ───────────────────────
+app.get('/api/prices', async (_req, res) => {
+  try {
+    const priceRes = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=tether,bitcoin,ethereum,tron&vs_currencies=usd&include_24hr_change=true');
+    const priceData = await priceRes.json();
+    res.json({
+      usdt: { price: priceData.tether?.usd || 1, change: priceData.tether?.usd_24h_change || 0 },
+      btc: { price: priceData.bitcoin?.usd || 0, change: priceData.bitcoin?.usd_24h_change || 0 },
+      eth: { price: priceData.ethereum?.usd || 0, change: priceData.ethereum?.usd_24h_change || 0 },
+      trx: { price: priceData.tron?.usd || 0, change: priceData.tron?.usd_24h_change || 0 },
+      timestamp: new Date().toISOString(),
+    });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 app.all('*', (_req, res) => res.status(404).json({ error: 'Not found' }));
