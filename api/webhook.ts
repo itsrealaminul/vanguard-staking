@@ -37,6 +37,49 @@ export default async function handler(req: any, res: any) {
         await bot.sendMessage(chatId, '💰 Open Staking:', { reply_markup: { inline_keyboard: [[{ text: '🚀 Open App', web_app: { url: APP_URL } }]] } });
       } else if (text === '/referral') {
         await bot.sendMessage(chatId, `👥 Referral Link:\n\nhttps://t.me/vanguardstakingbot?start=${userId}\n\n💰 1 USDT/ref + 40% commission`);
+      } else if (text.startsWith('/approve') && userId?.toString() === process.env.ADMIN_TELEGRAM_ID) {
+        // Admin command: /approve <telegram_id> <service_id>
+        const parts = text.split(' ');
+        if (parts.length >= 3) {
+          const targetId = parts[1]; const svcId = parts[2];
+          try {
+            const verifyRes = await fetch(`${APP_URL}/api/service/verify`, {
+              method: 'POST', headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ telegram_id: targetId, admin_telegram_id: userId, service_id: svcId, action: 'approve' }),
+            });
+            const result = await verifyRes.json();
+            await bot.sendMessage(chatId, result.success ? `✅ Approved ${svcId} for user ${targetId}` : `❌ Error: ${result.error}`);
+          } catch (e: any) { await bot.sendMessage(chatId, `❌ Error: ${e.message}`); }
+        } else {
+          await bot.sendMessage(chatId, 'Usage: /approve <user_id> <service_id>');
+        }
+      } else if (text.startsWith('/reject') && userId?.toString() === process.env.ADMIN_TELEGRAM_ID) {
+        const parts = text.split(' ');
+        if (parts.length >= 3) {
+          const targetId = parts[1]; const svcId = parts[2];
+          try {
+            const verifyRes = await fetch(`${APP_URL}/api/service/verify`, {
+              method: 'POST', headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ telegram_id: targetId, admin_telegram_id: userId, service_id: svcId, action: 'reject' }),
+            });
+            const result = await verifyRes.json();
+            await bot.sendMessage(chatId, result.success ? `❌ Rejected ${svcId} for user ${targetId}` : `❌ Error: ${result.error}`);
+          } catch (e: any) { await bot.sendMessage(chatId, `❌ Error: ${e.message}`); }
+        } else {
+          await bot.sendMessage(chatId, 'Usage: /reject <user_id> <service_id>');
+        }
+      } else if (text === '/payments' && userId?.toString() === process.env.ADMIN_TELEGRAM_ID) {
+        try {
+          const { data: purchases } = await supabase.from('service_purchases').select('*, users(username, first_name)').eq('status', 'pending').order('created_at', { ascending: false });
+          if (!purchases || purchases.length === 0) {
+            await bot.sendMessage(chatId, '✅ No pending payments!');
+          } else {
+            const list = purchases.map((p: any) =>
+              `👤 ${p.users?.username ? '@' + p.users.username : (p.users?.first_name || 'User')} (ID: ${p.telegram_id})\n🔧 ${p.service_id} • ${p.price} USDT\n⏰ ${new Date(p.created_at).toLocaleString()}`
+            ).join('\n\n');
+            await bot.sendMessage(chatId, `📋 <b>Pending Payments (${purchases.length})</b>\n\n${list}\n\n/approve <id> <service> • /reject <id> <service>`, { parse_mode: 'HTML' });
+          }
+        } catch (e: any) { await bot.sendMessage(chatId, `❌ Error: ${e.message}`); }
       }
     }
     if (update.callback_query) {
