@@ -173,6 +173,11 @@ app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok', bot: 'Vanguard Staking Bot', appUrl: APP_URL });
 });
 
+// ─── Debug: Test new endpoints ───────────────────────
+app.get('/api/test-gas', (_req, res) => {
+  res.json({ status: 'gas-route-works', timestamp: new Date().toISOString() });
+});
+
 // ─── Get or Create User ───────────────────────────────
 app.get('/api/user', async (req, res) => {
   try {
