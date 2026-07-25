@@ -406,6 +406,31 @@ function App() {
   const [academyFilter, setAcademyFilter] = useState('All');
   // Crypto prices state
   const [cryptoPrices, setCryptoPrices] = useState<any>({});
+  const [tokenSearch, setTokenSearch] = useState('');
+  const [showAllTokens, setShowAllTokens] = useState(false);
+  const [selectedToken, setSelectedToken] = useState<any>(null);
+  const marketTokens = [
+    { id: 'tether', symbol: 'USDT', name: 'Tether', icon: '💵' },
+    { id: 'bitcoin', symbol: 'BTC', name: 'Bitcoin', icon: '₿' },
+    { id: 'ethereum', symbol: 'ETH', name: 'Ethereum', icon: '⟠' },
+    { id: 'tron', symbol: 'TRX', name: 'TRON', icon: '⚡' },
+    { id: 'binancecoin', symbol: 'BNB', name: 'BNB', icon: '◆' },
+    { id: 'solana', symbol: 'SOL', name: 'Solana', icon: '◎' },
+    { id: 'ripple', symbol: 'XRP', name: 'XRP', icon: '✕' },
+    { id: 'cardano', symbol: 'ADA', name: 'Cardano', icon: '◇' },
+    { id: 'dogecoin', symbol: 'DOGE', name: 'Dogecoin', icon: '🐕' },
+    { id: 'matic-network', symbol: 'POL', name: 'Polygon', icon: '⬡' },
+    { id: 'polkadot', symbol: 'DOT', name: 'Polkadot', icon: '●' },
+    { id: 'chainlink', symbol: 'LINK', name: 'Chainlink', icon: '⬡' },
+    { id: 'avalanche-2', symbol: 'AVAX', name: 'Avalanche', icon: '▲' },
+    { id: 'uniswap', symbol: 'UNI', name: 'Uniswap', icon: '🦄' },
+    { id: 'litecoin', symbol: 'LTC', name: 'Litecoin', icon: 'Ł' },
+    { id: 'cosmos', symbol: 'ATOM', name: 'Cosmos', icon: '⚛' },
+    { id: 'near', symbol: 'NEAR', name: 'NEAR', icon: 'Ⓝ' },
+    { id: 'aptos', symbol: 'APT', name: 'Aptos', icon: 'Ⓐ' },
+    { id: 'sui', symbol: 'SUI', name: 'Sui', icon: 'Ⓢ' },
+    { id: 'arbitrum', symbol: 'ARB', name: 'Arbitrum', icon: '◆' },
+  ];
   // Payment state
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [paymentService, setPaymentService] = useState('');
@@ -418,8 +443,23 @@ function App() {
     tg?.ready();
     tg?.expand();
     loadData();
-    // Fetch crypto prices & gas
-    fetchPrices().then(setCryptoPrices).catch(() => {});
+    // Fetch crypto prices & gas (20 tokens)
+    const tokenIds = 'tether,bitcoin,ethereum,tron,binancecoin,solana,ripple,cardano,dogecoin,matic-network,polkadot,chainlink,avalanche-2,uniswap,litecoin,cosmos,near,aptos,sui,arbitrum';
+    fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${tokenIds}&vs_currencies=usd&include_24hr_change=true&include_market_cap=true&include_24hr_vol=true`)
+      .then(r => r.json())
+      .then(data => {
+        const prices: any = {};
+        Object.entries(data).forEach(([id, d]: any) => {
+          prices[id] = {
+            price: d.usd,
+            change: d.usd_24h_change || 0,
+            marketCap: d.usd_market_cap || 0,
+            volume: d.usd_24h_vol || 0,
+          };
+        });
+        setCryptoPrices(prices);
+      })
+      .catch(() => {});
     fetchGasPrices().then(data => { data.timestamp = new Date(data.timestamp).toLocaleTimeString(); setGasData(data); }).catch(() => {});
   }, []);
 
@@ -873,32 +913,106 @@ function App() {
             </p>
           </div>
 
-          {/* Real-time Crypto Prices */}
+          {/* Real-time Crypto Market */}
           <div className="card" style={{background: 'linear-gradient(135deg, #0E1630, #151E30)'}}>
-            <h3>📈 Live Market Prices</h3>
-            <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginTop: 10}}>
-              {[
-                { symbol: 'USDT', name: 'Tether', icon: '💵' },
-                { symbol: 'BTC', name: 'Bitcoin', icon: '₿' },
-                { symbol: 'ETH', name: 'Ethereum', icon: '⟠' },
-                { symbol: 'TRX', name: 'TRON', icon: '⚡' },
-              ].map((coin) => (
-                <div key={coin.symbol} style={{background: 'rgba(11,16,35,0.5)', borderRadius: 10, padding: '10px 12px', border: '1px solid #1E2D45'}}>
-                  <div style={{display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4}}>
-                    <span style={{fontSize: 16}}>{coin.icon}</span>
-                    <span style={{fontSize: 13, fontWeight: 600, color: '#FFD54F'}}>{coin.symbol}</span>
+            <h3>📈 Live Crypto Market</h3>
+            <input
+              type="text"
+              placeholder="🔍 Search token (BTC, ETH, SOL...)"
+              value={tokenSearch}
+              onChange={(e) => setTokenSearch(e.target.value.toUpperCase())}
+              style={{width: '100%', padding: '10px 12px', borderRadius: 8, border: '1px solid #1E2D45', background: '#0B1023', color: '#fff', fontSize: 13, outline: 'none', marginTop: 10, marginBottom: 10}}
+            />
+            <div style={{overflowX: 'auto'}}>
+              <table style={{width: '100%', borderCollapse: 'collapse', fontSize: 12}}>
+                <thead>
+                  <tr style={{borderBottom: '1px solid #1E2D45'}}>
+                    <th style={{textAlign: 'left', padding: '8px 6px', color: '#7A8CA5', fontWeight: 600, fontSize: 10}}>TOKEN</th>
+                    <th style={{textAlign: 'right', padding: '8px 6px', color: '#7A8CA5', fontWeight: 600, fontSize: 10}}>PRICE</th>
+                    <th style={{textAlign: 'right', padding: '8px 6px', color: '#7A8CA5', fontWeight: 600, fontSize: 10}}>24H</th>
+                    <th style={{textAlign: 'right', padding: '8px 6px', color: '#7A8CA5', fontWeight: 600, fontSize: 10}}>MCAP</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {marketTokens
+                    .filter(t => !tokenSearch || t.symbol.includes(tokenSearch) || t.name.toUpperCase().includes(tokenSearch))
+                    .slice(0, showAllTokens ? 20 : 8)
+                    .map((token, i) => (
+                    <tr key={token.id} style={{borderBottom: '1px solid rgba(30,45,69,0.5)', cursor: 'pointer'}} onClick={() => setSelectedToken(token)}>
+                      <td style={{padding: '10px 6px'}}>
+                        <div style={{display: 'flex', alignItems: 'center', gap: 8}}>
+                          <span style={{fontSize: 18}}>{token.icon}</span>
+                          <div>
+                            <div style={{fontWeight: 600, color: '#fff', fontSize: 13}}>{token.symbol}</div>
+                            <div style={{color: '#7A8CA5', fontSize: 10}}>{token.name}</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td style={{textAlign: 'right', padding: '10px 6px', fontWeight: 700, color: '#FFD54F', fontSize: 13}}>
+                        ${cryptoPrices[token.id]?.price?.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 6}) || '...'}
+                      </td>
+                      <td style={{textAlign: 'right', padding: '10px 6px', fontWeight: 600, fontSize: 12, color: (cryptoPrices[token.id]?.change || 0) >= 0 ? '#00b894' : '#e17055'}}>
+                        {(cryptoPrices[token.id]?.change || 0) >= 0 ? '▲' : '▼'} {Math.abs(cryptoPrices[token.id]?.change || 0).toFixed(2)}%
+                      </td>
+                      <td style={{textAlign: 'right', padding: '10px 6px', color: '#7A8CA5', fontSize: 11}}>
+                        {cryptoPrices[token.id]?.marketCap ? `$${(cryptoPrices[token.id].marketCap / 1e9).toFixed(1)}B` : '...'}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            {!tokenSearch && (
+              <button onClick={() => setShowAllTokens(!showAllTokens)} style={{width: '100%', padding: '8px', background: 'transparent', border: '1px solid #1E2D45', borderRadius: 8, color: '#FFD54F', fontSize: 12, cursor: 'pointer', marginTop: 8}}>
+                {showAllTokens ? 'Show Less' : `Show All ${marketTokens.length} Tokens`}
+              </button>
+            )}
+            <p style={{fontSize: 10, color: '#7A8CA5', textAlign: 'center', marginTop: 8}}>Data from CoinGecko • Tap token for details</p>
+          </div>
+
+          {/* Token Detail Modal */}
+          {selectedToken && cryptoPrices[selectedToken.id] && (
+            <div className="modal-overlay" onClick={() => setSelectedToken(null)}>
+              <div className="modal" onClick={(e) => e.stopPropagation()}>
+                <div style={{textAlign: 'center', marginBottom: 16}}>
+                  <span style={{fontSize: 40}}>{selectedToken.icon}</span>
+                  <h2 style={{margin: '8px 0 4px', fontSize: 20}}>{selectedToken.name}</h2>
+                  <div style={{color: '#7A8CA5', fontSize: 13}}>{selectedToken.symbol}</div>
+                </div>
+                <div style={{textAlign: 'center', marginBottom: 16}}>
+                  <div style={{fontSize: 28, fontWeight: 800, color: '#FFD54F'}}>
+                    ${cryptoPrices[selectedToken.id]?.price?.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 6})}
                   </div>
-                  <div style={{fontSize: 15, fontWeight: 700, color: '#fff'}}>
-                    ${cryptoPrices[coin.symbol.toLowerCase()]?.price?.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) || '...'}
-                  </div>
-                  <div style={{fontSize: 11, color: (cryptoPrices[coin.symbol.toLowerCase()]?.change || 0) >= 0 ? '#00b894' : '#e17055'}}>
-                    {(cryptoPrices[coin.symbol.toLowerCase()]?.change || 0) >= 0 ? '▲' : '▼'} {Math.abs(cryptoPrices[coin.symbol.toLowerCase()]?.change || 0).toFixed(2)}%
+                  <div style={{fontSize: 14, fontWeight: 600, color: (cryptoPrices[selectedToken.id]?.change || 0) >= 0 ? '#00b894' : '#e17055', marginTop: 4}}>
+                    {(cryptoPrices[selectedToken.id]?.change || 0) >= 0 ? '▲' : '▼'} {Math.abs(cryptoPrices[selectedToken.id]?.change || 0).toFixed(2)}% (24h)
                   </div>
                 </div>
-              ))}
+                <div style={{background: 'rgba(11,16,35,0.5)', borderRadius: 10, padding: 14, border: '1px solid #1E2D45'}}>
+                  <div style={{display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid #1E2D45'}}>
+                    <span style={{color: '#7A8CA5', fontSize: 13}}>Market Cap</span>
+                    <span style={{color: '#FFD54F', fontWeight: 600, fontSize: 13}}>{cryptoPrices[selectedToken.id]?.marketCap ? `$${(cryptoPrices[selectedToken.id].marketCap / 1e9).toFixed(2)}B` : 'N/A'}</span>
+                  </div>
+                  <div style={{display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid #1E2D45'}}>
+                    <span style={{color: '#7A8CA5', fontSize: 13}}>24h Volume</span>
+                    <span style={{color: '#FFD54F', fontWeight: 600, fontSize: 13}}>{cryptoPrices[selectedToken.id]?.volume ? `$${(cryptoPrices[selectedToken.id].volume / 1e9).toFixed(2)}B` : 'N/A'}</span>
+                  </div>
+                  <div style={{display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid #1E2D45'}}>
+                    <span style={{color: '#7A8CA5', fontSize: 13}}>24h High</span>
+                    <span style={{color: '#00b894', fontWeight: 600, fontSize: 13}}>{cryptoPrices[selectedToken.id]?.high ? `$${cryptoPrices[selectedToken.id].high.toLocaleString()}` : 'N/A'}</span>
+                  </div>
+                  <div style={{display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid #1E2D45'}}>
+                    <span style={{color: '#7A8CA5', fontSize: 13}}>24h Low</span>
+                    <span style={{color: '#e17055', fontWeight: 600, fontSize: 13}}>{cryptoPrices[selectedToken.id]?.low ? `$${cryptoPrices[selectedToken.id].low.toLocaleString()}` : 'N/A'}</span>
+                  </div>
+                  <div style={{display: 'flex', justifyContent: 'space-between', padding: '8px 0'}}>
+                    <span style={{color: '#7A8CA5', fontSize: 13}}>Rank</span>
+                    <span style={{color: '#FFD54F', fontWeight: 600, fontSize: 13}}>#{cryptoPrices[selectedToken.id]?.rank || 'N/A'}</span>
+                  </div>
+                </div>
+                <button className="btn btn-primary" style={{marginTop: 12}} onClick={() => setSelectedToken(null)}>Close</button>
+              </div>
             </div>
-            <p style={{fontSize: 10, color: '#7A8CA5', textAlign: 'center', marginTop: 8}}>Data from CoinGecko • Auto-updates</p>
-          </div>
+          )}
 
           <div className="card">
             <h3>{Icons.shield} How It Works</h3>

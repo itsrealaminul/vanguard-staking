@@ -217,15 +217,19 @@ app.get('/api/scan', async (req, res) => {
 // ═══════════════════════════════════════════════════
 app.get('/api/prices', async (_req, res) => {
   try {
-    const r = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=tether,bitcoin,ethereum,tron&vs_currencies=usd&include_24hr_change=true');
+    const ids = 'tether,bitcoin,ethereum,tron,binancecoin,solana,ripple,cardano,dogecoin,matic-network,polkadot,chainlink,avalanche-2,uniswap,litecoin,cosmos,near,aptos,sui,arbitrum';
+    const r = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd&include_24hr_change=true&include_market_cap=true&include_24hr_vol=true`);
     const d = await r.json();
-    res.json({
-      usdt: { price: d.tether?.usd || 1, change: d.tether?.usd_24h_change || 0 },
-      btc: { price: d.bitcoin?.usd || 0, change: d.bitcoin?.usd_24h_change || 0 },
-      eth: { price: d.ethereum?.usd || 0, change: d.ethereum?.usd_24h_change || 0 },
-      trx: { price: d.tron?.usd || 0, change: d.tron?.usd_24h_change || 0 },
-      timestamp: new Date().toISOString(),
+    const result: any = { timestamp: new Date().toISOString() };
+    Object.entries(d).forEach(([id, data]: any) => {
+      result[id] = {
+        price: data.usd,
+        change: data.usd_24h_change || 0,
+        marketCap: data.usd_market_cap || 0,
+        volume: data.usd_24h_vol || 0,
+      };
     });
+    res.json(result);
   } catch (err: any) { res.status(500).json({ error: err.message }); }
 });
 
