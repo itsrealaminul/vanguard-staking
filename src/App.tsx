@@ -292,6 +292,19 @@ const STAKE_PLANS = [
   { name: 'Elite', days: 90, dailyRate: 0.03, minAmount: 500, color: '#FFD54F', progress: 100 },
 ];
 
+// ─── Service Pricing ─────────────────────────────────
+const SERVICE_PRICING: Record<string, { price: number; label: string; type: 'per_use' | 'subscription' | 'free' }> = {
+  tokenScanner: { price: 0.5, label: '0.5 USDT / scan', type: 'per_use' },
+  gasTracker: { price: 0, label: 'Free', type: 'free' },
+  academy: { price: 0, label: 'Free', type: 'free' },
+  portfolio: { price: 5, label: '5 USDT / month', type: 'subscription' },
+  whale: { price: 10, label: '10 USDT / month', type: 'subscription' },
+  airdrop: { price: 3, label: '3 USDT / month', type: 'subscription' },
+  swap: { price: 0, label: '0.3% per swap', type: 'per_use' },
+  tax: { price: 15, label: '15 USDT / report', type: 'per_use' },
+  expert: { price: 25, label: '25 USDT / session', type: 'per_use' },
+};
+
 // ─── Crypto Academy Lessons ─────────────────────────
 const ACADEMY_LESSONS = [
   {
@@ -391,6 +404,13 @@ function App() {
   // Academy state
   const [selectedLesson, setSelectedLesson] = useState<any>(null);
   const [academyFilter, setAcademyFilter] = useState('All');
+  // Payment state
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [paymentService, setPaymentService] = useState('');
+  const [paymentMethod, setPaymentMethod] = useState<'balance' | 'direct'>('balance');
+  const [paymentProcessing, setPaymentProcessing] = useState(false);
+  const [purchasedServices, setPurchasedServices] = useState<Set<string>>(new Set());
+  const [activeSubscriptions, setActiveSubscriptions] = useState<Record<string, string>>({}); // service -> expiry date
 
   useEffect(() => {
     tg?.ready();
@@ -429,10 +449,67 @@ function App() {
     setMenuOpen(false);
   };
 
+  // ─── Payment Logic ──────────────────────────────
+  const openPayment = (serviceId: string) => {
+    const pricing = SERVICE_PRICING[serviceId];
+    if (!pricing || pricing.type === 'free') return true; // free service
+    if (purchasedServices.has(serviceId)) return true; // already purchased
+    if (activeSubscriptions[serviceId] && new Date(activeSubscriptions[serviceId]) > new Date()) return true; // active sub
+    // Show payment modal
+    setPaymentService(serviceId);
+    setPaymentMethod('balance');
+    setShowPaymentModal(true);
+    return false;
+  };
+
+  const handlePayment = async () => {
+    const pricing = SERVICE_PRICING[paymentService];
+    if (!pricing) return;
+
+    if (paymentMethod === 'balance') {
+      const balance = user?.balance || 0;
+      if (balance < pricing.price) {
+        showMsg(`Insufficient balance! Need ${pricing.price} USDT. You have ${balance.toFixed(2)} USDT.`);
+        return;
+      }
+    }
+
+    setPaymentProcessing(true);
+    // Simulate payment processing
+    await new Promise(r => setTimeout(r, 1500));
+
+    if (pricing.type === 'subscription') {
+      const expiry = new Date();
+      expiry.setDate(expiry.getDate() + 30);
+      setActiveSubscriptions(prev => ({...prev, [paymentService]: expiry.toISOString()}));
+      showMsg(`✅ Subscribed to ${paymentService} for 30 days!`);
+    } else {
+      setPurchasedServices(prev => new Set([...prev, paymentService]));
+      showMsg(`✅ ${paymentService} unlocked!`);
+    }
+
+    setPaymentProcessing(false);
+    setShowPaymentModal(false);
+    return true;
+  };
+
+  const hasAccess = (serviceId: string) => {
+    const pricing = SERVICE_PRICING[serviceId];
+    if (!pricing || pricing.type === 'free') return true;
+    if (purchasedServices.has(serviceId)) return true;
+    if (activeSubscriptions[serviceId] && new Date(activeSubscriptions[serviceId]) > new Date()) return true;
+    return false;
+  };
+
   // ─── Token Scanner Logic ────────────────────────
   const handleScan = async () => {
     if (!scanAddress.trim()) {
       showMsg('Enter a contract address');
+      return;
+    }
+    // Check payment access
+    if (!hasAccess('tokenScanner')) {
+      openPayment('tokenScanner');
       return;
     }
     setScanning(true);
@@ -551,15 +628,15 @@ function App() {
   ];
 
   const serviceMenuItems = [
-    { id: 'tokenScanner' as Tab, icon: Icons.tokenScanner, label: 'Token Scanner', desc: 'Check contract safety', badge: 'NEW' },
-    { id: 'gasTracker' as Tab, icon: Icons.gasTracker, label: 'Gas Tracker', desc: 'Real-time gas prices', badge: 'LIVE' },
-    { id: 'academy' as Tab, icon: Icons.academy, label: 'Crypto Academy', desc: 'Learn & earn', badge: 'FREE' },
-    { id: 'portfolio' as Tab, icon: Icons.portfolio, label: 'Portfolio Tracker', desc: 'Coming soon', badge: 'SOON', disabled: true },
-    { id: 'whale' as Tab, icon: Icons.whale, label: 'Whale Alert', desc: 'Coming soon', badge: 'SOON', disabled: true },
-    { id: 'airdrop' as Tab, icon: Icons.airdrop, label: 'Airdrop Alert', desc: 'Coming soon', badge: 'SOON', disabled: true },
-    { id: 'swap' as Tab, icon: Icons.swap, label: 'Instant Swap', desc: 'Coming soon', badge: 'SOON', disabled: true },
-    { id: 'tax' as Tab, icon: Icons.tax, label: 'Tax Calculator', desc: 'Coming soon', badge: 'SOON', disabled: true },
-    { id: 'expert' as Tab, icon: Icons.expert, label: 'Expert Help', desc: 'Coming soon', badge: 'SOON', disabled: true },
+    { id: 'tokenScanner' as Tab, icon: Icons.tokenScanner, label: 'Token Scanner', desc: SERVICE_PRICING.tokenScanner.label, badge: 'NEW', price: SERVICE_PRICING.tokenScanner.price },
+    { id: 'gasTracker' as Tab, icon: Icons.gasTracker, label: 'Gas Tracker', desc: SERVICE_PRICING.gasTracker.label, badge: 'LIVE', price: 0 },
+    { id: 'academy' as Tab, icon: Icons.academy, label: 'Crypto Academy', desc: SERVICE_PRICING.academy.label, badge: 'FREE', price: 0 },
+    { id: 'portfolio' as Tab, icon: Icons.portfolio, label: 'Portfolio Tracker', desc: SERVICE_PRICING.portfolio.label, badge: 'PAID', price: SERVICE_PRICING.portfolio.price, disabled: true },
+    { id: 'whale' as Tab, icon: Icons.whale, label: 'Whale Alert', desc: SERVICE_PRICING.whale.label, badge: 'PAID', price: SERVICE_PRICING.whale.price, disabled: true },
+    { id: 'airdrop' as Tab, icon: Icons.airdrop, label: 'Airdrop Alert', desc: SERVICE_PRICING.airdrop.label, badge: 'PAID', price: SERVICE_PRICING.airdrop.price, disabled: true },
+    { id: 'swap' as Tab, icon: Icons.swap, label: 'Instant Swap', desc: SERVICE_PRICING.swap.label, badge: 'PAID', price: 0, disabled: true },
+    { id: 'tax' as Tab, icon: Icons.tax, label: 'Tax Calculator', desc: SERVICE_PRICING.tax.label, badge: 'PAID', price: SERVICE_PRICING.tax.price, disabled: true },
+    { id: 'expert' as Tab, icon: Icons.expert, label: 'Expert Help', desc: SERVICE_PRICING.expert.label, badge: 'PAID', price: SERVICE_PRICING.expert.price, disabled: true },
   ];
 
   return (
@@ -621,9 +698,14 @@ function App() {
             {serviceMenuItems.map((item) => (
               <button
                 key={item.id}
-                className={`sidebar-item ${item.disabled ? 'disabled' : ''} ${tab === item.id ? 'active' : ''}`}
-                onClick={() => !item.disabled && switchTab(item.id)}
-                disabled={item.disabled}
+                className={`sidebar-item ${item.disabled && !hasAccess(item.id) ? 'disabled' : ''} ${tab === item.id ? 'active' : ''}`}
+                onClick={() => {
+                  if (item.disabled && !hasAccess(item.id)) {
+                    openPayment(item.id);
+                    return;
+                  }
+                  switchTab(item.id);
+                }}
               >
                 <span className="sidebar-item-icon">{item.icon}</span>
                 <div className="sidebar-item-text">
@@ -631,13 +713,45 @@ function App() {
                   <div className="sidebar-item-desc">{item.desc}</div>
                 </div>
                 {item.badge && (
-                  <span className={`sidebar-badge ${item.badge === 'NEW' ? 'badge-new' : item.badge === 'LIVE' ? 'badge-live' : item.badge === 'FREE' ? 'badge-free' : 'badge-soon'}`}>
-                    {item.badge}
+                  <span className={`sidebar-badge ${item.badge === 'NEW' ? 'badge-new' : item.badge === 'LIVE' ? 'badge-live' : item.badge === 'FREE' ? 'badge-free' : hasAccess(item.id) ? 'badge-new' : 'badge-paid'}`}>
+                    {hasAccess(item.id) ? 'ACTIVE' : item.badge}
                   </span>
                 )}
               </button>
             ))}
           </div>
+
+          {/* My Purchases */}
+          {(purchasedServices.size > 0 || Object.keys(activeSubscriptions).length > 0) && (
+            <>
+              <div className="sidebar-divider" />
+              <div className="sidebar-section">
+                <div className="sidebar-section-title">✅ MY PURCHASES</div>
+                {Array.from(purchasedServices).map(serviceId => (
+                  <div key={serviceId} className="sidebar-item" style={{cursor: 'default'}}>
+                    <span className="sidebar-item-icon" style={{background: 'rgba(0, 184, 148, 0.1)', borderColor: 'rgba(0, 184, 148, 0.2)', color: '#00b894'}}>
+                      {Icons.checkCircle}
+                    </span>
+                    <div className="sidebar-item-text">
+                      <div className="sidebar-item-label" style={{color: '#00b894'}}>{serviceId.replace(/([A-Z])/g, ' $1').replace(/^./, (s: string) => s.toUpperCase())}</div>
+                      <div className="sidebar-item-desc">Unlocked</div>
+                    </div>
+                  </div>
+                ))}
+                {Object.entries(activeSubscriptions).map(([serviceId, expiry]) => (
+                  <div key={serviceId} className="sidebar-item" style={{cursor: 'default'}}>
+                    <span className="sidebar-item-icon" style={{background: 'rgba(255, 213, 79, 0.1)', borderColor: 'rgba(255, 213, 79, 0.2)', color: '#FFD54F'}}>
+                      {Icons.clock}
+                    </span>
+                    <div className="sidebar-item-text">
+                      <div className="sidebar-item-label">{serviceId.replace(/([A-Z])/g, ' $1').replace(/^./, (s: string) => s.toUpperCase())}</div>
+                      <div className="sidebar-item-desc">Until {new Date(expiry).toLocaleDateString()}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
 
           <div className="sidebar-divider" />
 
@@ -747,6 +861,7 @@ function App() {
               <button className="service-quick-card" onClick={() => switchTab('tokenScanner')}>
                 <span className="service-quick-icon">{Icons.tokenScanner}</span>
                 <span className="service-quick-label">Scan</span>
+                {hasAccess('tokenScanner') && <span className="service-quick-check">✓</span>}
               </button>
               <button className="service-quick-card" onClick={() => switchTab('gasTracker')}>
                 <span className="service-quick-icon">{Icons.gasTracker}</span>
@@ -756,9 +871,10 @@ function App() {
                 <span className="service-quick-icon">{Icons.academy}</span>
                 <span className="service-quick-label">Learn</span>
               </button>
-              <button className="service-quick-card coming-soon" disabled>
+              <button className="service-quick-card" onClick={() => openPayment('swap')}>
                 <span className="service-quick-icon">{Icons.swap}</span>
                 <span className="service-quick-label">Swap</span>
+                <span className="service-quick-price">0.3%</span>
               </button>
             </div>
           </div>
@@ -1061,15 +1177,23 @@ function App() {
                 onChange={(e) => setScanAddress(e.target.value)}
               />
             </div>
-            <button className="btn btn-primary" onClick={handleScan} disabled={scanning}>
-              {scanning ? (
+            {!hasAccess('tokenScanner') ? (
+              <button className="btn btn-primary" onClick={() => openPayment('tokenScanner')}>
                 <span style={{display: 'inline-flex', alignItems: 'center', gap: 8}}>
-                  <span className="btn-spinner" /> Scanning...
+                  {Icons.zap} Unlock Scanner — 0.5 USDT
                 </span>
-              ) : (
-                <span style={{display: 'inline-flex', alignItems: 'center', gap: 8}}>{Icons.search} Scan Token</span>
-              )}
-            </button>
+              </button>
+            ) : (
+              <button className="btn btn-primary" onClick={handleScan} disabled={scanning}>
+                {scanning ? (
+                  <span style={{display: 'inline-flex', alignItems: 'center', gap: 8}}>
+                    <span className="btn-spinner" /> Scanning...
+                  </span>
+                ) : (
+                  <span style={{display: 'inline-flex', alignItems: 'center', gap: 8}}>{Icons.search} Scan Token</span>
+                )}
+              </button>
+            )}
           </div>
 
           {scanResult && (
@@ -1358,6 +1482,130 @@ function App() {
               <button className="btn btn-primary" onClick={handleStake} disabled={actionLoading}>
                 {actionLoading ? 'Staking...' : 'Stake Now'}
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ─── Payment Modal ─────────────────── */}
+      {showPaymentModal && SERVICE_PRICING[paymentService] && (
+        <div className="modal-overlay" onClick={() => setShowPaymentModal(false)}>
+          <div className="modal payment-modal" onClick={(e) => e.stopPropagation()}>
+            {/* Header */}
+            <div className="payment-header">
+              <div className="payment-icon-wrap">
+                {paymentService === 'tokenScanner' && Icons.tokenScanner}
+                {paymentService === 'portfolio' && Icons.portfolio}
+                {paymentService === 'whale' && Icons.whale}
+                {paymentService === 'airdrop' && Icons.airdrop}
+                {paymentService === 'swap' && Icons.swap}
+                {paymentService === 'tax' && Icons.tax}
+                {paymentService === 'expert' && Icons.expert}
+              </div>
+              <h2>Unlock {paymentService.replace(/([A-Z])/g, ' $1').replace(/^./, (s: string) => s.toUpperCase())}</h2>
+              <div className="payment-price-tag">
+                <span className="payment-price-amount">{SERVICE_PRICING[paymentService].price}</span>
+                <span className="payment-price-unit">USDT</span>
+              </div>
+              <div className="payment-price-label">{SERVICE_PRICING[paymentService].label}</div>
+            </div>
+
+            {/* Balance Info */}
+            <div className="payment-balance-info">
+              <span>Your Balance:</span>
+              <span className="payment-balance-amount">{(user?.balance || 0).toFixed(4)} USDT</span>
+            </div>
+
+            {/* Payment Methods */}
+            <div className="payment-methods">
+              <div className="payment-section-title">Select Payment Method</div>
+
+              {/* Method 1: Balance Pay */}
+              <button
+                className={`payment-method-btn ${paymentMethod === 'balance' ? 'active' : ''}`}
+                onClick={() => setPaymentMethod('balance')}
+              >
+                <div className="payment-method-icon">{Icons.wallet}</div>
+                <div className="payment-method-info">
+                  <div className="payment-method-name">Vanguard Balance</div>
+                  <div className="payment-method-desc">Pay from your staking balance</div>
+                </div>
+                <div className={`payment-radio ${paymentMethod === 'balance' ? 'checked' : ''}`} />
+              </button>
+
+              {/* Method 2: Direct USDT */}
+              <button
+                className={`payment-method-btn ${paymentMethod === 'direct' ? 'active' : ''}`}
+                onClick={() => setPaymentMethod('direct')}
+              >
+                <div className="payment-method-icon">{Icons.deposit}</div>
+                <div className="payment-method-info">
+                  <div className="payment-method-name">Direct USDT (TRC-20)</div>
+                  <div className="payment-method-desc">Send USDT to payment wallet</div>
+                </div>
+                <div className={`payment-radio ${paymentMethod === 'direct' ? 'checked' : ''}`} />
+              </button>
+            </div>
+
+            {/* Direct Payment Address */}
+            {paymentMethod === 'direct' && (
+              <div className="payment-direct-section">
+                <div className="payment-direct-address">
+                  <div className="payment-direct-label">Send exactly <strong style={{color: '#FFD54F'}}>{SERVICE_PRICING[paymentService].price} USDT</strong> to:</div>
+                  <div className="payment-wallet-box">
+                    <span className="payment-wallet-text">{OWNER_WALLET}</span>
+                    <button className="payment-copy-btn" onClick={() => { navigator.clipboard?.writeText(OWNER_WALLET); showMsg('Copied!'); }}>
+                      {Icons.copy}
+                    </button>
+                  </div>
+                  <div className="payment-direct-note">
+                    After sending, click "I've Paid" below. Access unlocks after verification.
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Action Buttons */}
+            <div className="payment-actions">
+              <button className="btn btn-secondary" onClick={() => setShowPaymentModal(false)}>Cancel</button>
+              {paymentMethod === 'balance' ? (
+                <button
+                  className="btn btn-primary"
+                  onClick={handlePayment}
+                  disabled={paymentProcessing || (user?.balance || 0) < SERVICE_PRICING[paymentService].price}
+                >
+                  {paymentProcessing ? (
+                    <span style={{display: 'inline-flex', alignItems: 'center', gap: 8}}>
+                      <span className="btn-spinner" /> Processing...
+                    </span>
+                  ) : (
+                    <span style={{display: 'inline-flex', alignItems: 'center', gap: 8}}>
+                      {Icons.zap} Pay {SERVICE_PRICING[paymentService].price} USDT
+                    </span>
+                  )}
+                </button>
+              ) : (
+                <button
+                  className="btn btn-success"
+                  onClick={handlePayment}
+                  disabled={paymentProcessing}
+                >
+                  {paymentProcessing ? (
+                    <span style={{display: 'inline-flex', alignItems: 'center', gap: 8}}>
+                      <span className="btn-spinner" /> Verifying...
+                    </span>
+                  ) : (
+                    <span style={{display: 'inline-flex', alignItems: 'center', gap: 8}}>
+                      {Icons.checkCircle} I've Paid
+                    </span>
+                  )}
+                </button>
+              )}
+            </div>
+
+            {/* Security Note */}
+            <div className="payment-security">
+              {Icons.shield} <span>Secure payment • Instant access • No refund</span>
             </div>
           </div>
         </div>

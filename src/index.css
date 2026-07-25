@@ -1268,6 +1268,35 @@ body {
   font-weight: 600;
   letter-spacing: 0.5px;
 }
+.service-quick-check {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #00b894;
+  color: #0B1023;
+  font-size: 10px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.service-quick-price {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  font-size: 8px;
+  font-weight: 700;
+  color: #FFD54F;
+  background: rgba(255, 213, 79, 0.15);
+  padding: 2px 5px;
+  border-radius: 4px;
+}
+.service-quick-card {
+  position: relative;
+}
 
 /* ═══════════════════════════════════════════════════
    TOKEN SCANNER PAGE
@@ -1552,4 +1581,269 @@ body {
   .sidebar {
     width: 280px;
   }
+}
+
+/* ═══════════════════════════════════════════════════
+   PAYMENT MODAL
+   ═══════════════════════════════════════════════════ */
+
+.payment-modal {
+  max-height: 90vh;
+  overflow-y: auto;
+}
+.payment-header {
+  text-align: center;
+  margin-bottom: 16px;
+}
+.payment-icon-wrap {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(255, 213, 79, 0.15), rgba(196, 141, 10, 0.1));
+  border: 1px solid rgba(255, 213, 79, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 12px;
+  color: #FFD54F;
+  animation: glow 3s infinite;
+}
+.payment-icon-wrap svg {
+  width: 28px;
+  height: 28px;
+}
+.payment-header h2 {
+  font-size: 18px;
+  color: #ffffff;
+  margin-bottom: 12px;
+}
+.payment-price-tag {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  background: linear-gradient(135deg, rgba(255, 213, 79, 0.1), rgba(196, 141, 10, 0.05));
+  border: 1px solid rgba(255, 213, 79, 0.2);
+  border-radius: 12px;
+  padding: 10px 20px;
+  margin-bottom: 6px;
+}
+.payment-price-amount {
+  font-size: 32px;
+  font-weight: 800;
+  background: linear-gradient(135deg, #C48D0A, #FFD54F, #FFECB3);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.payment-price-unit {
+  font-size: 16px;
+  color: #7A8CA5;
+  font-weight: 600;
+}
+.payment-price-label {
+  font-size: 12px;
+  color: #7A8CA5;
+}
+
+/* Balance Info */
+.payment-balance-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: rgba(11, 16, 35, 0.5);
+  border-radius: 10px;
+  border: 1px solid #1E2D45;
+  margin-bottom: 16px;
+  font-size: 13px;
+}
+.payment-balance-info span:first-child {
+  color: #7A8CA5;
+}
+.payment-balance-amount {
+  color: #FFD54F;
+  font-weight: 700;
+  font-size: 15px;
+}
+
+/* Payment Methods */
+.payment-methods {
+  margin-bottom: 16px;
+}
+.payment-section-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: #7A8CA5;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+}
+.payment-method-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  background: #0B1023;
+  border: 1px solid #1E2D45;
+  color: #ffffff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 8px;
+  text-align: left;
+}
+.payment-method-btn:hover {
+  border-color: rgba(255, 213, 79, 0.3);
+  background: #0E1428;
+}
+.payment-method-btn.active {
+  border-color: #FFD54F;
+  background: rgba(255, 213, 79, 0.06);
+  box-shadow: 0 0 0 1px rgba(255, 213, 79, 0.15);
+}
+.payment-method-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: rgba(255, 213, 79, 0.1);
+  border: 1px solid rgba(255, 213, 79, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FFD54F;
+  flex-shrink: 0;
+}
+.payment-method-icon svg {
+  width: 20px;
+  height: 20px;
+}
+.payment-method-info {
+  flex: 1;
+}
+.payment-method-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 2px;
+}
+.payment-method-desc {
+  font-size: 11px;
+  color: #7A8CA5;
+}
+.payment-radio {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid #1E2D45;
+  flex-shrink: 0;
+  position: relative;
+  transition: all 0.2s ease;
+}
+.payment-radio.checked {
+  border-color: #FFD54F;
+}
+.payment-radio.checked::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #FFD54F;
+}
+
+/* Direct Payment */
+.payment-direct-section {
+  margin-bottom: 16px;
+  animation: fadeInUp 0.3s ease;
+}
+.payment-direct-address {
+  background: rgba(11, 16, 35, 0.5);
+  border-radius: 10px;
+  border: 1px solid #1E2D45;
+  padding: 14px;
+}
+.payment-direct-label {
+  font-size: 13px;
+  color: #7A8CA5;
+  margin-bottom: 10px;
+  text-align: center;
+}
+.payment-wallet-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #0B1023;
+  border: 1px dashed rgba(255, 213, 79, 0.4);
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-bottom: 10px;
+}
+.payment-wallet-text {
+  flex: 1;
+  font-size: 12px;
+  color: #FFD54F;
+  font-weight: 600;
+  word-break: break-all;
+}
+.payment-copy-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  background: rgba(255, 213, 79, 0.1);
+  border: 1px solid rgba(255, 213, 79, 0.2);
+  color: #FFD54F;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+.payment-copy-btn:hover {
+  background: rgba(255, 213, 79, 0.2);
+}
+.payment-copy-btn svg {
+  width: 14px;
+  height: 14px;
+}
+.payment-direct-note {
+  font-size: 11px;
+  color: #7A8CA5;
+  text-align: center;
+  line-height: 1.4;
+}
+
+/* Payment Actions */
+.payment-actions {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.payment-actions .btn {
+  flex: 1;
+}
+
+/* Security Note */
+.payment-security {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 11px;
+  color: #7A8CA5;
+}
+.payment-security svg {
+  width: 14px;
+  height: 14px;
+  color: #00b894;
+}
+
+/* PAID Badge */
+.badge-paid {
+  background: rgba(255, 213, 79, 0.15);
+  color: #FFD54F;
+  border: 1px solid rgba(255, 213, 79, 0.3);
 }
