@@ -1,9 +1,1 @@
-{
-  "version": 2,
-  "functions": {
-    "api/**/*.ts": {
-      "runtime": "@vercel/node@3",
-      "includeFiles": "api/**"
-    }
-  }
-}
+{"version":2}
