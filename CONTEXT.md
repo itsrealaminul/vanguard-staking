@@ -32,13 +32,15 @@ vanguard-staking/
 │   ├── index.ts          # Main API + Bot webhook + Channel posting
 │   └── health.ts         # Health check endpoint
 ├── public/
-│   └── banner.png        # Bot welcome banner (1280x640)
+│   ├── banner.png        # Bot welcome banner (1280x640)
+│   └── banner.svg        # Banner source (SVG)
 ├── src/
 │   ├── App.tsx           # Main React app (all pages)
 │   ├── api.ts            # Frontend API utility functions
 │   ├── index.css         # All styles + animations
 │   ├── main.tsx          # React entry point
 │   └── vite-env.d.ts     # Vite type declarations
+├── CONTEXT.md            # This file — project documentation
 ├── index.html            # HTML entry point
 ├── package.json          # Dependencies
 ├── tsconfig.json         # TypeScript config
@@ -52,14 +54,14 @@ vanguard-staking/
 
 | Variable | Description | Example |
 |----------|-------------|---------|
-| `SUPABASE_URL` | Supabase project URL | `https://xxx.supabase.co` |
-| `SUPABASE_ANON_KEY` | Supabase public key | `sb_pub_xxx` |
-| `BOT_TOKEN` | Telegram Bot token | `123456:ABC-DEF` |
+| `SUPABASE_URL` | Supabase project URL | `https://sudpqfzogswuvhoblbyj.supabase.co` |
+| `SUPABASE_ANON_KEY` | Supabase public key | `sb_publishable_xxx` |
+| `BOT_TOKEN` | Telegram Bot token | `898922…DDLA` |
 | `APP_URL` | Vercel deployment URL | `https://vanguard-staking.vercel.app` |
 | `ADMIN_TELEGRAM_ID` | Admin Telegram user ID | `7010136281` |
 | `CHANNEL_ID` | Telegram channel for auto-posts | `@VanguardStakingOfficial` |
-| `OWNER_WALLET_ADDRESS` | TRC-20 deposit wallet | `TQ5zn...xuLh` |
-| `VITE_OWNER_WALLET_ADDRESS` | Same (for frontend) | `TQ5zn...xuLh` |
+| `OWNER_WALLET_ADDRESS` | TRC-20 deposit wallet | `TQ5zn9C7CAko9gKs3RRYyA1Tj9YasXxuLh` |
+| `VITE_OWNER_WALLET_ADDRESS` | Same (for frontend build) | `TQ5zn9C7CAko9gKs3RRYyA1Tj9YasXxuLh` |
 
 ---
 
@@ -125,7 +127,7 @@ CREATE TABLE public.transactions (
 
 ## 📡 API Endpoints
 
-### Public
+### Public Routes
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | GET | `/api/health` | Health check |
@@ -140,14 +142,14 @@ CREATE TABLE public.transactions (
 | POST | `/api/claim-reward` | Claim stake reward |
 | POST | `/api/referral` | Process referral |
 
-### Admin
+### Admin Routes
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | GET | `/api/admin/users?telegram_id=` | Get all users (admin only) |
 | GET | `/api/admin/withdrawals?telegram_id=` | Get all withdrawals |
 | POST | `/api/admin/withdrawal` | Approve/reject withdrawal |
 
-### Bot
+### Bot Routes
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | POST | `/api/webhook` | Telegram webhook handler |
@@ -163,64 +165,121 @@ CREATE TABLE public.transactions (
 - `/referral` — Get referral link
 - `/help` — Show help
 
-### Channel Auto-Posts
-All these events automatically post to `@VanguardStakingOfficial`:
-- 🆕 New user joined
-- 💰 Deposit submitted
-- 🔒 New stake created
-- 🎁 Reward claimed
-- 👥 New referral
-- 💸 Withdrawal requested
-- ✅ Withdrawal approved/rejected
+### Welcome Message Format
+```
+━━━━━━━━━━━━━━━━━━━━━━
+⚔️ VANGUARD STAKING ⚔️
+━━━━━━━━━━━━━━━━━━━━━━
+
+Welcome, {name}! 👋
+
+💰 Stake USDT → Earn up to 3% daily
+🔒 Secure → TRC-20 Protocol
+⚡ Fast → Instant Deposits
+🌍 Trusted → 5,000+ Users
+👥 Earn More → 40% Commissions
+
+━━━━━━━━━━━━━━━━━━━━━━
+🚀 Tap below to start your staking journey!
+━━━━━━━━━━━━━━━━━━━━━━
+```
+
+### Inline Buttons
+- 🚀 Open Vanguard Staking (Web App)
+- 📊 Join Channel
+- 👥 Invite Friends & Earn 40%
+
+### Channel Auto-Posts (@VanguardStakingOfficial)
+| Event | Post Format |
+|-------|-------------|
+| 🆕 New user | `New User Joined! @username` |
+| 💰 Deposit | `New Deposit! @username deposited X USDT` |
+| 🔒 Stake | `New Stake! @username staked X USDT (Y days)` |
+| 🎁 Claim | `Reward Claimed! @username claimed X USDT` |
+| 👥 Referral | `New Referral! @user joined via @referrer` |
+| 💸 Withdrawal | `Withdrawal Request! @username X USDT` |
+| ✅ Approved | `Withdrawal Approved! @username X USDT` |
+| ❌ Rejected | `Withdrawal Rejected! @username X USDT` |
 
 ---
 
 ## 🎨 Frontend Pages (Mini App)
 
-| Tab | Description |
-|-----|-------------|
-| **Dashboard** | Balance, stats, trust indicators, how it works |
-| **Plans** | 4 staking plans (Starter/Growth/Pro/Elite) |
-| **Stakes** | Active stakes with claim rewards + progress bars |
-| **Deposit** | Wallet address + deposit verification form |
-| **Withdraw** | Withdrawal form + history |
-| **Referral** | Referral link + stats |
+### Tabs
+| Tab | Icon | Description |
+|-----|------|-------------|
+| **Home** | 🏠 | Balance, stats, trust indicators, how it works |
+| **Plans** | 📋 | 4 staking plans with progress bars |
+| **Stakes** | 📈 | Active stakes with claim rewards + progress |
+| **Deposit** | 💰 | Wallet address + deposit verification form |
+| **Withdraw** | 💸 | Withdrawal form + history |
+| **Referral** | 👥 | Referral link + stats |
 
 ### Staking Plans
-| Plan | Days | Daily Rate | Min Amount |
-|------|------|------------|------------|
-| Starter | 7 | 1.0%/day | 10 USDT |
-| Growth | 14 | 1.5%/day | 50 USDT |
-| Pro | 30 | 2.0%/day | 100 USDT |
-| Elite | 90 | 3.0%/day | 500 USDT |
+| Plan | Days | Daily Rate | Min Amount | Progress |
+|------|------|------------|------------|----------|
+| 🌱 Starter | 7 | 1.0%/day | 10 USDT | 7% |
+| 📈 Growth | 14 | 1.5%/day | 50 USDT | 50% |
+| 🔥 Pro | 30 | 2.0%/day | 100 USDT | 75% |
+| 💎 Elite | 90 | 3.0%/day | 500 USDT | 100% |
+
+### Deposit Flow
+1. User copies wallet address (`TQ5zn...xuLh`)
+2. Sends USDT via TRC-20
+3. Submits deposit form (amount + optional TX hash)
+4. Channel auto-posts deposit notification
+5. Admin verifies and updates balance
+
+### Trust Indicators
+- 🔒 Secure Protocol
+- ⚡ Instant
+- 🌍 5K+ Users
+- 🛡️ Security badge
+- 💰 Daily Rewards badge
+- 💸 Fast Withdrawals badge
+- 👥 Active Community badge
 
 ---
 
 ## 🎨 Branding & Design
 
-### Colors
-| Element | Color |
-|---------|-------|
-| Background | `#0B1023` (deep midnight blue) |
-| Cards | `#151E30` (dark navy) |
-| Accent | `#FFD54F` → `#C48D0A` (gold gradient) |
-| Text Primary | `#FFFFFF` |
-| Text Secondary | `#7A8CA5` (slate grey) |
-| Success | `#00b894` (green) |
-| Warning | `#F0D040` (yellow) |
-| Danger | `#e17055` (red) |
-| Border | `#1E2D45` |
+### Color Palette
+| Element | Color | Hex |
+|---------|-------|-----|
+| Background (Primary) | Deep Midnight Blue | `#0B1023` |
+| Background (Card) | Dark Navy | `#151E30` |
+| Accent (Gold) | Gold | `#FFD54F` |
+| Accent (Dark Gold) | Dark Gold | `#C48D0A` |
+| Accent (Light) | Light Gold | `#FFECB3` |
+| Success | Green | `#00b894` |
+| Warning | Yellow | `#F0D040` |
+| Danger | Red | `#e17055` |
+| Text Primary | White | `#FFFFFF` |
+| Text Secondary | Slate Grey | `#7A8CA5` |
+| Border | Dark Blue-Grey | `#1E2D45` |
 
 ### Logo
-Gold equilateral triangle with a circle inside — represents growth, stability, and value.
+Gold equilateral triangle with a glowing circle inside — represents growth, stability, and value. SVG + PNG formats available.
 
-### Banner
-1280x640 PNG with:
-- Animated-style characters (phone, selfie, laptop, withdraw, celebrate)
-- Gold triangle logo with glow
-- Floating particles
-- Trust message
-- 40% commission badge
+### Banner (1280x640 PNG)
+- 5 animated-style characters (phone, selfie, laptop, withdraw, celebrate)
+- Gold triangle logo with glow effects
+- Floating particles and sparkle effects
+- Trust message: "Trusted by 5,000+ users worldwide"
+- 40% Affiliate Commission badge
+- Corner bracket decorations
+- Dark gradient background with depth circles
+
+### Animations
+- fadeIn, fadeInUp, fadeInDown, slideIn, scaleIn
+- bounceIn, slideUp, slideDown
+- pulse, shimmer, float, glow, spin
+- Staggered delays for list items
+- Hover effects with translateY + shadow
+- Loading spinner (gold ring)
+- Toast notifications
+- Progress bars for stakes
+- Backdrop blur for bottom nav
 
 ---
 
@@ -228,13 +287,14 @@ Gold equilateral triangle with a circle inside — represents growth, stability,
 
 ### Push to GitHub
 ```bash
+cd vanguard-repo
 git add -A
 git commit -m "description"
 git push origin main
 ```
 
-### Vercel Auto-Deploys
-Push to `main` branch triggers automatic deployment.
+### Vercel Auto-Deploy
+Push to `main` branch triggers automatic deployment on Vercel.
 
 ### Manual Redeploy
 ```
@@ -242,41 +302,68 @@ https://vercel.com/aminul-islam1/vanguard-staking/deployments
 → ⋯ → Redeploy
 ```
 
-### Setup Bot After Deploy
-```
-https://vanguard-staking.vercel.app/api/setup-bot
-```
+### Post-Deploy Steps
+1. **Setup bot:** `https://vanguard-staking.vercel.app/api/setup-bot`
+2. **Set domain:** `@BotFather → /setdomain → vanguard-staking.vercel.app`
+3. **Set menu:** `@BotFather → /setmenubutton → https://vanguard-staking.vercel.app`
+4. **Test bot:** `https://t.me/vanguardstakingbot → /start`
 
 ---
 
 ## ⚠️ Important Notes
 
-1. **RLS (Row Level Security):** If Supabase tables have RLS enabled, disable them or add proper policies for the API to work.
+1. **Supabase RLS:** If tables have Row Level Security enabled, disable them or add proper policies for the serverless API to work.
 
-2. **Bot Webhook:** The bot uses webhook mode (not polling). The webhook URL is automatically set to `{APP_URL}/api/webhook` when the API starts.
+2. **Bot Webhook:** Uses webhook mode (not polling). Webhook URL is auto-set to `{APP_URL}/api/webhook` when API starts.
 
-3. **Channel Admin:** The bot must be added as an admin to `@VanguardStakingOfficial` with "Post Messages" permission.
+3. **Channel Admin:** Bot must be added as admin to `@VanguardStakingOfficial` with "Post Messages" permission.
 
-4. **Token Security:** Never commit tokens or keys to GitHub. Use Vercel environment variables.
+4. **Token Security:** Never commit tokens or keys to GitHub. Always use Vercel environment variables.
 
-5. **Deposit Verification:** Deposits are manually verified. Users submit amount + TX hash, admin reviews and updates balance.
+5. **Deposit Verification:** Deposits require manual admin verification. Users submit amount + TX hash via the app.
+
+6. **CHANNEL_ID Format:** Use `@VanguardStakingOfficial` (with @). The code strips `@` when building `t.me/` URLs.
+
+7. **Owner Wallet:** `TQ5zn9C7CAko9gKs3RRYyA1Tj9YasXxuLh` — TRC-20 USDT deposit address.
 
 ---
 
 ## 🔧 Troubleshooting
 
-| Issue | Solution |
-|-------|----------|
-| 500 error on /api/user | Check Supabase tables exist + RLS disabled |
-| Bot not responding | Check BOT_TOKEN in Vercel ENV + redeploy |
-| Channel not posting | Check bot is admin in channel + CHANNEL_ID set |
-| Banner not showing | Check banner.png URL is accessible |
-| Join Channel not working | Ensure CHANNEL_ID doesn't have double @ |
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| 500 error on /api/user | Supabase tables missing or RLS enabled | Create tables + disable RLS |
+| Bot not responding | BOT_TOKEN missing or wrong | Check Vercel ENV + redeploy |
+| Channel not posting | Bot not admin in channel | Add bot as channel admin |
+| Banner not showing | Image URL inaccessible | Check banner.png in repo |
+| "Join Channel" not working | Double @ in URL | CHANNEL_ID should be `@name` not `@@name` |
+| TypeScript build error | API type mismatch | Check setMyDescription format |
+| Mini app 403 | Domain not set in BotFather | Run /setdomain |
+| Mini app 500 | API crash | Check Vercel function logs |
+| Connection Failed | Vercel deployment protection | Disable in Settings |
+
+---
+
+## 📊 Current Status
+
+- ✅ Frontend: React + Vite (working)
+- ✅ Backend: Express API (working)
+- ✅ Database: Supabase (4 tables created)
+- ✅ Bot: Telegram webhook (working)
+- ✅ Channel: Auto-posting (working)
+- ✅ Banner: Custom PNG with characters
+- ✅ Logo: SVG gold triangle
+- ✅ Trust indicators: 4 trust cards
+- ✅ Deposit verification: Form + channel post
+- ✅ Animations: Full CSS animations
+- ✅ CONTEXT.md: This documentation
 
 ---
 
 ## 📞 Support
 
-- **Admin Telegram ID:** 7010136281
+- **Admin ID:** 7010136281
 - **Channel:** https://t.me/VanguardStakingOfficial
 - **Bot:** https://t.me/vanguardstakingbot
+- **GitHub:** https://github.com/itsrealaminul/vanguard-staking
+- **Vercel:** https://vercel.com/aminul-islam1/vanguard-staking
