@@ -2,7 +2,7 @@
 
 ## 📋 Project Overview
 
-**Vanguard Staking** is a full-stack Telegram Mini App and Bot for USDT staking on the TRON (TRC-20) network. Users can stake USDT, earn daily rewards, refer friends, and withdraw earnings — all within Telegram.
+**Vanguard Staking** is a full-stack Telegram Mini App and Bot for USDT staking on the TRON (TRC-20) network. Users can stake USDT, earn daily rewards, refer friends, withdraw earnings, and access premium crypto tools — all within Telegram.
 
 - **Live URL:** https://vanguard-staking.vercel.app
 - **Telegram Bot:** https://t.me/vanguardstakingbot
@@ -16,11 +16,12 @@
 | Layer | Technology |
 |-------|-----------|
 | Frontend | React 18 + Vite + TypeScript |
-| Backend | Express.js (Vercel Serverless Functions) |
+| Backend | Express.js (Single Vercel Serverless Function) |
 | Database | Supabase (PostgreSQL) |
 | Bot | node-telegram-bot-api (Webhook mode) |
-| Hosting | Vercel |
+| Hosting | Vercel (Hobby plan — max 12 functions) |
 | Network | TRON (TRC-20) |
+| Real-time Data | CoinGecko, Etherscan, BSCScan, TronGrid, PolygonScan |
 
 ---
 
@@ -29,17 +30,20 @@
 ```
 vanguard-staking/
 ├── api/
-│   ├── index.ts          # Main API + Bot webhook + Channel posting
-│   └── health.ts         # Health check endpoint
+│   ├── index.ts          # ALL API endpoints (Express app — single function)
+│   ├── health.ts         # Health check endpoint
+│   ├── setup-bot.ts      # Bot commands & description setup
+│   └── webhook.ts        # Telegram webhook handler
 ├── public/
 │   ├── banner.png        # Bot welcome banner (1280x640)
 │   └── banner.svg        # Banner source (SVG)
 ├── src/
-│   ├── App.tsx           # Main React app (all pages)
+│   ├── App.tsx           # Main React app (all pages + services)
 │   ├── api.ts            # Frontend API utility functions
 │   ├── index.css         # All styles + animations
 │   ├── main.tsx          # React entry point
 │   └── vite-env.d.ts     # Vite type declarations
+├── supabase-service-purchases.sql  # Service purchases table SQL
 ├── CONTEXT.md            # This file — project documentation
 ├── index.html            # HTML entry point
 ├── package.json          # Dependencies
@@ -123,24 +127,70 @@ CREATE TABLE public.transactions (
 );
 ```
 
+### Service Purchases Table
+```sql
+CREATE TABLE public.service_purchases (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  telegram_id BIGINT,
+  service_id TEXT NOT NULL,
+  price NUMERIC NOT NULL,
+  payment_method TEXT NOT NULL DEFAULT 'balance',
+  status TEXT NOT NULL DEFAULT 'pending',
+  expires_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE UNIQUE INDEX idx_service_purchases_user_service
+ON public.service_purchases(telegram_id, service_id);
+
+ALTER TABLE public.service_purchases DISABLE ROW LEVEL SECURITY;
+```
+
+### RLS Disable (Required for Serverless)
+```sql
+ALTER TABLE public.users DISABLE ROW LEVEL SECURITY;
+ALTER TABLE public.stakes DISABLE ROW LEVEL SECURITY;
+ALTER TABLE public.withdrawals DISABLE ROW LEVEL SECURITY;
+ALTER TABLE public.transactions DISABLE ROW LEVEL SECURITY;
+ALTER TABLE public.service_purchases DISABLE ROW LEVEL SECURITY;
+```
+
 ---
 
 ## 📡 API Endpoints
 
-### Public Routes
+All endpoints are in a single Express app (`api/index.ts`).
+
+### Core Routes
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | GET | `/api/health` | Health check |
 | GET | `/api/user?telegram_id=` | Get or create user |
 | POST | `/api/user` | Update user |
-| POST | `/api/deposit` | Submit deposit (amount, tx_hash) |
+| POST | `/api/deposit` | Submit deposit (min 10 USDT) |
 | GET | `/api/stakes?telegram_id=` | Get user stakes |
 | POST | `/api/stakes` | Create new stake |
 | GET | `/api/withdrawals?telegram_id=` | Get withdrawals |
-| POST | `/api/withdrawals` | Request withdrawal |
+| POST | `/api/withdrawals` | Request withdrawal (deducts balance) |
 | GET | `/api/transactions?telegram_id=` | Get transactions |
 | POST | `/api/claim-reward` | Claim stake reward |
 | POST | `/api/referral` | Process referral |
+
+### Real-time Data Routes
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/gas` | Gas prices (ETH, BSC, TRON, Polygon) |
+| GET | `/api/scan?address=` | Token scanner (TRC-20, ERC-20) |
+| GET | `/api/prices` | 20 crypto prices (CoinGecko) |
+| GET | `/api/whale-alerts` | Large blockchain transactions |
+| GET | `/api/airdrops` | Active airdrop listings |
+
+### Service Payment Routes
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/service/purchase` | Purchase service (balance/direct) |
+| GET | `/api/service/access?telegram_id=&service_id=` | Check service access |
+| POST | `/api/service/verify` | Admin approve/reject payment |
 
 ### Admin Routes
 | Method | Endpoint | Description |
@@ -148,6 +198,7 @@ CREATE TABLE public.transactions (
 | GET | `/api/admin/users?telegram_id=` | Get all users (admin only) |
 | GET | `/api/admin/withdrawals?telegram_id=` | Get all withdrawals |
 | POST | `/api/admin/withdrawal` | Approve/reject withdrawal |
+| GET | `/api/admin/pending-payments?telegram_id=` | List pending payments |
 
 ### Bot Routes
 | Method | Endpoint | Description |
@@ -160,16 +211,24 @@ CREATE TABLE public.transactions (
 ## 🤖 Bot Features
 
 ### Commands
-- `/start` — Welcome message with banner + referral handling
-- `/stake` — Open staking mini app
-- `/referral` — Get referral link
-- `/help` — Show help
+| Command | Description |
+|---------|-------------|
+| `/start` | Welcome message with banner + referral handling |
+| `/stake` | Open staking mini app |
+| `/scan` | Token scanner info |
+| `/gas` | Gas prices info |
+| `/learn` | Crypto Academy info |
+| `/referral` | Get referral link |
+| `/payments` | **Admin:** List pending payments |
+| `/approve <user_id> <service>` | **Admin:** Approve payment |
+| `/reject <user_id> <service>` | **Admin:** Reject payment |
+| `/help` | Show help |
 
 ### Welcome Message Format
 ```
-━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━━━━━━━━━━━━━━━━━
 ⚔️ VANGUARD STAKING ⚔️
-━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 Welcome, {name}! 👋
 
@@ -179,15 +238,15 @@ Welcome, {name}! 👋
 🌍 Trusted → 5,000+ Users
 👥 Earn More → 40% Commissions
 
-━━━━━━━━━━━━━━━━━━━━━━
-🚀 Tap below to start your staking journey!
-━━━━━━━━━━━━━━━━━━━━━━
-```
+━━━━━━━━━ NEW SERVICES ━━━━━━━━
+🔍 Token Scanner → Check safety
+⛽ Gas Tracker → Real-time prices
+🎓 Crypto Academy → Learn free
 
-### Inline Buttons
-- 🚀 Open Vanguard Staking (Web App)
-- 📊 Join Channel
-- 👥 Invite Friends & Earn 40%
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+🚀 Tap below to start your journey!
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
 
 ### Channel Auto-Posts (@VanguardStakingOfficial)
 | Event | Post Format |
@@ -200,20 +259,127 @@ Welcome, {name}! 👋
 | 💸 Withdrawal | `Withdrawal Request! @username X USDT` |
 | ✅ Approved | `Withdrawal Approved! @username X USDT` |
 | ❌ Rejected | `Withdrawal Rejected! @username X USDT` |
+| 🛒 Purchase | `Service Purchased! @username bought X` |
+| 🔔 Payment | `Payment Pending! @username needs verification` |
+
+---
+
+## 🍔 Hamburger Menu & Sidebar
+
+### Menu Structure
+```
+🍔 Hamburger Menu (Slide-in Sidebar)
+├── MAIN MENU
+│   ├── 🏠 Home (Dashboard)
+│   ├── 📋 Staking Plans
+│   ├── 📈 My Stakes
+│   ├── 💰 Deposit
+│   ├── 💸 Withdraw
+│   └── 👥 Referral
+├── ─────────────────
+├── 🛠️ CRYPTO SERVICES
+│   ├── 🔍 Token Scanner [PAID - 0.5 USDT/scan]
+│   ├── ⛽ Gas Tracker [FREE]
+│   ├── 🎓 Crypto Academy [FREE]
+│   ├── 📊 Portfolio Tracker [PAID - 5 USDT/month]
+│   ├── 🐋 Whale Alert [PAID - 10 USDT/month]
+│   ├── 🎁 Airdrop Alert [PAID - 3 USDT/month]
+│   ├── 💱 Instant Swap [PAID - 0.3% fee]
+│   ├── 🧮 Tax Calculator [PAID - 15 USDT/report]
+│   └── 👨‍💼 Expert Help [PAID - 25 USDT/session]
+├── ─────────────────
+├── ✅ MY PURCHASES (shows active services)
+└── 📞 Support
+```
+
+---
+
+## 💰 Payment System
+
+### Payment Methods
+| Method | Verification | How it Works |
+|--------|-------------|--------------|
+| **Balance Pay** | Auto (instant) | Deducts from user's Vanguard balance |
+| **Direct USDT** | Manual (admin) | User sends USDT → Admin verifies → Approves |
+
+### Service Pricing
+| Service | Price | Type |
+|---------|-------|------|
+| Token Scanner | 0.5 USDT | Per scan |
+| Gas Tracker | Free | Free |
+| Crypto Academy | Free | Free |
+| Portfolio Tracker | 5 USDT/month | Subscription |
+| Whale Alert | 10 USDT/month | Subscription |
+| Airdrop Alert | 3 USDT/month | Subscription |
+| Instant Swap | 0.3% fee | Per swap |
+| Tax Calculator | 15 USDT/report | Per use |
+| Expert Help | 25 USDT/session | Per session |
+
+### Admin Verification Flow
+```
+1. User sends USDT to wallet → clicks "I've Paid"
+2. Bot sends DM to admin:
+   "🔔 Payment Verification Needed!
+    👤 @username (ID: 123456)
+    🔧 Token Scanner • 0.5 USDT"
+3. Admin checks wallet → verifies payment received
+4. Admin types in bot: /approve 123456 tokenScanner
+5. User gets DM: "✅ Payment Verified!"
+6. Service activates for 30 days
+```
+
+### Admin Bot Commands
+| Command | Description |
+|---------|-------------|
+| `/payments` | List all pending payments |
+| `/approve <user_id> <service>` | Approve and activate service |
+| `/reject <user_id> <service>` | Reject payment |
 
 ---
 
 ## 🎨 Frontend Pages (Mini App)
 
-### Tabs
+### Bottom Navigation Tabs
 | Tab | Icon | Description |
 |-----|------|-------------|
-| **Home** | 🏠 | Balance, stats, trust indicators, how it works |
+| **Home** | 🏠 | Balance, crypto market, gas, quick services |
 | **Plans** | 📋 | 4 staking plans with progress bars |
 | **Stakes** | 📈 | Active stakes with claim rewards + progress |
 | **Deposit** | 💰 | Wallet address + deposit verification form |
 | **Withdraw** | 💸 | Withdrawal form + history |
 | **Referral** | 👥 | Referral link + stats |
+
+### Sidebar Service Pages
+| Page | Features |
+|------|----------|
+| **🔍 Token Scanner** | Contract address input → Safety score (0-100) → Risk/safe indicators |
+| **⛽ Gas Tracker** | 4 networks (ETH, BSC, TRON, Polygon) → Low/Standard/Fast/Instant |
+| **🎓 Crypto Academy** | 8 lessons → 3 categories (Beginner/Intermediate/Advanced) → Detail modals |
+| **📊 Portfolio Tracker** | Balance breakdown → Asset allocation → Progress bars → Stats |
+| **🐋 Whale Alert** | Large transactions list → Network/amount/time → Auto-refresh |
+| **🎁 Airdrop Alert** | Active airdrops → Token/reward/deadline/chain/difficulty |
+| **💱 Instant Swap** | Token pair selector → Rate/fee calculator → Swap button |
+| **🧮 Tax Calculator** | Transaction summary → Deposits/withdrawals/rewards → History |
+| **👨‍💼 Expert Help** | Expert listings → Specialties/ratings → Book session button |
+
+### Dashboard Features
+- 💰 Balance card (available, staked, earned, referrals)
+- 📈 **Live Crypto Market** — 20 tokens with search, tap for details
+- ⛽ **Gas Prices** — 4 networks real-time
+- 🔍 Quick Services grid (Scan, Gas, Learn, Swap)
+- 📊 Trust indicators
+- 💡 How It Works
+- 🎁 Affiliate commission info
+
+### Live Crypto Market (20 Tokens)
+USDT, BTC, ETH, TRX, BNB, SOL, XRP, ADA, DOGE, POL, DOT, LINK, AVAX, UNI, LTC, ATOM, NEAR, APT, SUI, ARB
+
+**Features:**
+- Search bar (filter by name/symbol)
+- Table: Token, Price, 24H Change, Market Cap
+- Tap token → Detail modal (Price, 24H High/Low, Market Cap, Volume, Rank)
+- Show All / Show Less toggle
+- Real-time data from CoinGecko API
 
 ### Staking Plans
 | Plan | Days | Daily Rate | Min Amount | Progress |
@@ -222,22 +388,6 @@ Welcome, {name}! 👋
 | 📈 Growth | 14 | 1.5%/day | 50 USDT | 50% |
 | 🔥 Pro | 30 | 2.0%/day | 100 USDT | 75% |
 | 💎 Elite | 90 | 3.0%/day | 500 USDT | 100% |
-
-### Deposit Flow
-1. User copies wallet address (`TQ5zn...xuLh`)
-2. Sends USDT via TRC-20
-3. Submits deposit form (amount + optional TX hash)
-4. Channel auto-posts deposit notification
-5. Admin verifies and updates balance
-
-### Trust Indicators
-- 🔒 Secure Protocol
-- ⚡ Instant
-- 🌍 5K+ Users
-- 🛡️ Security badge
-- 💰 Daily Rewards badge
-- 💸 Fast Withdrawals badge
-- 👥 Active Community badge
 
 ---
 
@@ -258,40 +408,16 @@ Welcome, {name}! 👋
 | Text Secondary | Slate Grey | `#7A8CA5` |
 | Border | Dark Blue-Grey | `#1E2D45` |
 
-### Logo
-Gold equilateral triangle with a glowing circle inside — represents growth, stability, and value. SVG + PNG formats available.
-
-### Banner (1280x640 PNG)
-- 5 animated-style characters (phone, selfie, laptop, withdraw, celebrate)
-- Gold triangle logo with glow effects
-- Floating particles and sparkle effects
-- Trust message: "Trusted by 5,000+ users worldwide"
-- 40% Affiliate Commission badge
-- Corner bracket decorations
-- Dark gradient background with depth circles
-
-### Animations
-- fadeIn, fadeInUp, fadeInDown, slideIn, scaleIn
-- bounceIn, slideUp, slideDown
-- pulse, shimmer, float, glow, spin
-- Staggered delays for list items
-- Hover effects with translateY + shadow
-- Loading spinner (gold ring)
-- Toast notifications
-- Progress bars for stakes
-- Backdrop blur for bottom nav
-- Sidebar slide-in/out transition
-- Scan score ring animation
-
 ### Custom SVG Icons (25+)
 All icons are custom SVG with `stroke="currentColor"` for brand consistency:
 - Navigation: home, plans, stakes, deposit, withdraw, referral
 - Actions: wallet, copy, claim, clock, arrowRight, search, externalLink
 - Trust: shield, zap, gift, users, info, checkCircle, alert
-- Services: tokenScanner (shield+magnify), gasTracker (fuel pump), academy (graduation cap)
-- Services: portfolio (pie chart), whale, airdrop (parachute), swap (arrows)
-- Services: tax (calculator), expert (headset), book
-- UI: menu (hamburger), close (X), settings (gear), support (help circle)
+- Services: tokenScanner, gasTracker, academy, portfolio, whale, airdrop, swap, tax, expert
+- UI: menu (hamburger), close, settings, support
+
+### Animations
+fadeIn, fadeInUp, fadeInDown, slideIn, scaleIn, bounceIn, slideUp, pulse, shimmer, float, glow, spin, sidebar slide-in/out, scan score ring
 
 ---
 
@@ -305,13 +431,10 @@ git commit -m "description"
 git push origin main
 ```
 
-### Vercel Auto-Deploy
-Push to `main` branch triggers automatic deployment on Vercel.
-
-### Manual Redeploy
+### Vercel Redeploy
 ```
 https://vercel.com/aminul-islam1/vanguard-staking/deployments
-→ ⋯ → Redeploy
+→ ⋯ → Redeploy → Uncheck "Use existing Build Cache" → Deploy
 ```
 
 ### Post-Deploy Steps
@@ -324,19 +447,32 @@ https://vercel.com/aminul-islam1/vanguard-staking/deployments
 
 ## ⚠️ Important Notes
 
-1. **Supabase RLS:** If tables have Row Level Security enabled, disable them or add proper policies for the serverless API to work.
+1. **Vercel Hobby Plan:** Max 12 serverless functions. All API endpoints are in a single Express app (`api/index.ts`) to stay under the limit.
 
-2. **Bot Webhook:** Uses webhook mode (not polling). Webhook URL is auto-set to `{APP_URL}/api/webhook` when API starts.
+2. **Supabase RLS:** Must be disabled on all tables for serverless API to work. Run:
+   ```sql
+   ALTER TABLE public.users DISABLE ROW LEVEL SECURITY;
+   ALTER TABLE public.stakes DISABLE ROW LEVEL SECURITY;
+   ALTER TABLE public.withdrawals DISABLE ROW LEVEL SECURITY;
+   ALTER TABLE public.transactions DISABLE ROW LEVEL SECURITY;
+   ALTER TABLE public.service_purchases DISABLE ROW LEVEL SECURITY;
+   ```
 
-3. **Channel Admin:** Bot must be added as admin to `@VanguardStakingOfficial` with "Post Messages" permission.
+3. **Bot Webhook:** Uses webhook mode (not polling). Do NOT create `api/bot.ts` with polling — it conflicts with serverless.
 
 4. **Token Security:** Never commit tokens or keys to GitHub. Always use Vercel environment variables.
 
 5. **Deposit Verification:** Deposits require manual admin verification. Users submit amount + TX hash via the app.
 
-6. **CHANNEL_ID Format:** Use `@VanguardStakingOfficial` (with @). The code strips `@` when building `t.me/` URLs.
+6. **Withdrawal:** Deducts from user balance immediately. Admin approves/rejects.
 
 7. **Owner Wallet:** `TQ5zn9C7CAko9gKs3RRYyA1Tj9YasXxuLh` — TRC-20 USDT deposit address.
+
+8. **Real-time APIs:** Gas (Etherscan, BSCScan, TronGrid, PolygonScan), Prices (CoinGecko), Scanner (TronGrid, TronScan, Etherscan). All have fallback data if API fails.
+
+9. **Payment Verification:** Balance pay is auto-verified. Direct USDT requires admin to check wallet and run `/approve` command in bot.
+
+10. **GitHub Webhook:** If Vercel auto-deploy stops working, manually redeploy from Vercel dashboard.
 
 ---
 
@@ -344,139 +480,41 @@ https://vercel.com/aminul-islam1/vanguard-staking/deployments
 
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| 500 error on /api/user | Supabase tables missing or RLS enabled | Create tables + disable RLS |
+| 500 error on /api/* | Supabase RLS enabled | Disable RLS on all tables |
+| Build failed: 12 functions | Too many serverless functions | All endpoints must be in `api/index.ts` |
 | Bot not responding | BOT_TOKEN missing or wrong | Check Vercel ENV + redeploy |
 | Channel not posting | Bot not admin in channel | Add bot as channel admin |
-| Banner not showing | Image URL inaccessible | Check banner.png in repo |
-| "Join Channel" not working | Double @ in URL | CHANNEL_ID should be `@name` not `@@name` |
-| TypeScript build error | API type mismatch | Check setMyDescription format |
+| Banner not showing | Image URL inaccessible | Check banner.svg in repo |
+| Gas/Prices returning 404 | Vercel deploying old commit | Manual Redeploy from dashboard |
+| Withdrawal returns null | RLS blocking insert | Disable RLS on withdrawals table |
+| Payment not verifying | Admin not running /approve | Check bot DM for pending payments |
 | Mini app 403 | Domain not set in BotFather | Run /setdomain |
-| Mini app 500 | API crash | Check Vercel function logs |
-| Connection Failed | Vercel deployment protection | Disable in Settings |
-
----
-
-## 🍔 Hamburger Menu & Sidebar
-
-### Menu Structure
-```
-🍔 Hamburger Menu (Slide-in Sidebar)
-├── MAIN MENU
-│   ├── 🏠 Home (Dashboard)
-│   ├── 📋 Staking Plans
-│   ├── 📈 My Stakes
-│   ├── 💰 Deposit
-│   ├── 💸 Withdraw
-│   └── 👥 Referral
-├── ─────────────────
-├── 🛠️ CRYPTO SERVICES
-│   ├── 🔍 Token Scanner [NEW]
-│   ├── ⛽ Gas Tracker [LIVE]
-│   ├── 🎓 Crypto Academy [FREE]
-│   ├── 📊 Portfolio Tracker [SOON]
-│   ├── 🐋 Whale Alert [SOON]
-│   ├── 🎁 Airdrop Alert [SOON]
-│   ├── 💱 Instant Swap [SOON]
-│   ├── 🧮 Tax Calculator [SOON]
-│   └── 👨‍💼 Expert Help [SOON]
-├── ─────────────────
-└── 📞 Support
-```
-
-### Sidebar Features
-- Slide-in from left with smooth animation
-- Dark overlay backdrop with blur
-- Gold-themed icons matching brand
-- Badge system: NEW (green), LIVE (gold), FREE (blue), SOON (grey)
-- Disabled state for upcoming services
-- Active item highlight with gold dot
-- Close button with hover effect
-- Version info in footer
-
----
-
-## 🔍 Token Scanner (NEW)
-
-Check any token contract for safety before investing.
-
-| Feature | Description |
-|---------|-------------|
-| Contract Analysis | Scan TRC-20, ERC-20, BEP-20 addresses |
-| Safety Score | 0-100 score with visual ring |
-| Risk Indicators | Mint function, holder concentration, low liquidity |
-| Safe Indicators | Verified contract, locked liquidity, renounced ownership |
-| Details | Holder count, liquidity USD, contract age |
-| Disclaimer | DYOR advisory |
-
-**API:** Uses simulated data. Integrate BSCScan/Etherscan API for production.
-
----
-
-## ⛽ Gas Tracker (NEW)
-
-Real-time gas prices across 4 networks.
-
-| Network | Unit | Levels |
-|---------|------|--------|
-| Ethereum | Gwei | Low, Standard, Fast, Instant |
-| BSC | Gwei | Low, Standard, Fast, Instant |
-| TRON | Energy | Low, Standard, Fast, Instant |
-| Polygon | Gwei | Low, Standard, Fast, Instant |
-
-**Features:**
-- Auto-refresh on page open
-- Manual refresh button
-- Color-coded levels (gold=low, green=fast, red=instant)
-- Gas saving tips
-
----
-
-## 🎓 Crypto Academy (NEW)
-
-Free crypto education with 8 lessons across 3 categories.
-
-| Category | Lessons |
-|----------|---------|
-| Beginner | Blockchain, Wallet Setup, USDT & Stablecoins |
-| Intermediate | Staking, DeFi Basics, Gas Fees |
-| Advanced | Avoiding Scams, Portfolio Diversification |
-
-**Features:**
-- Category filter (All/Beginner/Intermediate/Advanced)
-- Lesson detail modal with full content
-- Duration indicators
-- Color-coded category badges
-- Animated card transitions
-
----
-
-## 🎨 Dashboard Quick Services
-
-New grid on dashboard home with 4 quick-access service cards:
-- 🔍 Scan → Token Scanner
-- ⛽ Gas → Gas Tracker
-- 🎓 Learn → Crypto Academy
-- 💱 Swap → Coming Soon (disabled)
+| npm warn deprecated | Old dependencies | Normal — not an error, build still succeeds |
 
 ---
 
 ## 📊 Current Status
 
 - ✅ Frontend: React + Vite (working)
-- ✅ Backend: Express API (working)
-- ✅ Database: Supabase (4 tables created)
+- ✅ Backend: Express API (single function)
+- ✅ Database: Supabase (5 tables, RLS disabled)
 - ✅ Bot: Telegram webhook (working)
 - ✅ Channel: Auto-posting (working)
-- ✅ Banner: Custom PNG with characters
+- ✅ Banner: SVG gold triangle
 - ✅ Logo: SVG gold triangle
-- ✅ Trust indicators: 4 trust cards
-- ✅ Deposit verification: Form + channel post
-- ✅ Animations: Full CSS animations
-- ✅ CONTEXT.md: This documentation
-- ✅ Hamburger Menu: Slide-in sidebar with services
-- ✅ Token Scanner: Contract safety checker
-- ✅ Gas Tracker: Multi-chain gas prices
+- ✅ Hamburger Menu: Slide-in sidebar
+- ✅ Token Scanner: Real-time TRC-20/ERC-20
+- ✅ Gas Tracker: Real-time 4 networks
 - ✅ Crypto Academy: 8 free lessons
+- ✅ Portfolio Tracker: Balance breakdown
+- ✅ Whale Alert: Blockchain transactions
+- ✅ Airdrop Alert: Verified listings
+- ✅ Instant Swap: Token swap UI
+- ✅ Tax Calculator: Transaction summary
+- ✅ Expert Help: Expert listings + booking
+- ✅ Crypto Market: 20 tokens with search + details
+- ✅ Payment System: Balance + Direct USDT
+- ✅ Admin Verification: Bot /approve, /reject, /payments
 
 ---
 
