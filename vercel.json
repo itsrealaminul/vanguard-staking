@@ -1,17 +1,6 @@
 {
   "version": 2,
   "rewrites": [
-    { "source": "/api/health", "destination": "/api/health" },
-    { "source": "/api/user", "destination": "/api/index" },
-    { "source": "/api/stakes", "destination": "/api/index" },
-    { "source": "/api/deposit", "destination": "/api/index" },
-    { "source": "/api/withdrawals", "destination": "/api/index" },
-    { "source": "/api/transactions", "destination": "/api/index" },
-    { "source": "/api/claim-reward", "destination": "/api/index" },
-    { "source": "/api/referral", "destination": "/api/index" },
-    { "source": "/api/admin/(.*)", "destination": "/api/index" },
-    { "source": "/api/webhook", "destination": "/api/index" },
-    { "source": "/api/setup-bot", "destination": "/api/index" },
     { "source": "/((?!api/)(?!.*\.(png|svg|jpg|jpeg|gif|webp|ico|css|js|woff|woff2|ttf|eot)$).*)", "destination": "/index.html" }
   ]
 }
