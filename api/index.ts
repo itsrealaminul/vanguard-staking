@@ -64,9 +64,27 @@ app.post('/api/webhook', async (req, res) => {
           ],
         };
         try {
+          const welcomeCaption = [
+            '━━━━━━━━━━━━━━━━━━━━━━',
+            '⚔️ <b>VANGUARD STAKING</b> ⚔️',
+            '━━━━━━━━━━━━━━━━━━━━━━',
+            '',
+            `Welcome, <b>${firstName}</b>! 👋`,
+            '',
+            '💰 <b>Stake USDT</b> → Earn up to <b>3% daily</b>',
+            '🔒 <b>Secure</b> → TRC-20 Protocol',
+            '⚡ <b>Fast</b> → Instant Deposits',
+            '🌍 <b>Trusted</b> → 5,000+ Users',
+            '👥 <b>Earn More</b> → 40% Commissions',
+            '',
+            '━━━━━━━━━━━━━━━━━━━━━━',
+            '🚀 <i>Tap below to start your staking journey!</i>',
+            '━━━━━━━━━━━━━━━━━━━━━━',
+          ].join('\n');
           await bot.sendPhoto(chatId, BANNER_URL, {
-            caption: `⚔️ Welcome to Vanguard Staking, ${firstName}!\n\n💰 Stake your USDT and earn up to 3% daily rewards.\n🔒 Secure • ⚡ Fast • 🌍 Trusted by 5,000+ users\n\nTap below to start your staking journey!`,
+            caption: welcomeCaption,
             reply_markup: keyboard,
+            parse_mode: 'HTML',
           });
         } catch {
           await bot.sendMessage(chatId, `⚔️ Welcome, ${firstName}!\n\n💰 Stake • Earn • Grow`, { reply_markup: keyboard });
